@@ -8,9 +8,9 @@ import { PaperProvider } from "react-native-paper";
 // Import screens
 import Home from "./components/tabs/Home.js";
 import About from "./components/tabs/About.js";
-import Curbside from "./components/tabs/Curbside.js";
-import Items from "./components/tabs/Items.js";
-import Learn from "./components/tabs/Learn.js";
+import CurbsideDropoff from "./components/tabs/CurbsideDropoff.js";
+import UserAccount from "./components/tabs/UserAccount.js";
+import BarcodeScan from "./components/tabs/BarcodeScan.js";
 import Tabnav from "./components/Tabnav.js";
 
 enableScreens();
@@ -40,18 +40,18 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Learn"
-            component={Learn}
+            name="User Account"
+            component={UserAccount}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Items"
-            component={Items}
+            name="Barcode Scan"
+            component={BarcodeScan}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Curbside"
-            component={Curbside}
+            name="Curbside Dropoff"
+            component={CurbsideDropoff}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
