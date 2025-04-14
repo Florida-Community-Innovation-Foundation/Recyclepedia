@@ -1,4 +1,3 @@
-<<<<<<< HEAD:frontend/app/components/tabs/Home.js
 import { Dimensions, Button } from "react-native";
 import React, { useState, useEffect, useRef, Easing } from "react";
 import {
