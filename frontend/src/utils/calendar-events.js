@@ -1,15 +1,15 @@
 import _ from "lodash";
-import { daysInMonth } from "./date";
+import { daysInMonth, monthNames } from "./date";
 
 export function getCalendarEvents() {
+  const currentDate = new Date();
   const event = {
-    month: "JUL",
+    month: monthNames[currentDate.getMonth()].toUpperCase().substring(0, 3),
     name: "Event Name",
     organizer: "Organizer Name",
     time: "Time",
     location: "Location",
   };
-  const currentDate = new Date();
   return _.map(
     _.range(
       1,
