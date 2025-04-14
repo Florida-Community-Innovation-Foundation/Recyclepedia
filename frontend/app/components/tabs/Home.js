@@ -1,3 +1,4 @@
+<<<<<<< HEAD:frontend/app/components/tabs/Home.js
 import { Dimensions, Button } from "react-native";
 import React, { useState, useEffect, useRef, Easing } from "react";
 import {
@@ -734,6 +735,29 @@ export default function Home({ navigation }) {
           </View>
         </View>
       </Modal>
+=======
+import React from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { liteClient as algoliasearch } from "algoliasearch/lite";
+import { InstantSearch } from "react-instantsearch-core";
+import { SearchBox } from "../SearchBox";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+
+const searchClient = algoliasearch("YourApplicationID", "YourSearchOnlyAPIKey");
+
+export default function Home() {
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {/* Search bar */}
+      <View style={styles.searchBarContainer}>
+        <View style={styles.searchBarIconContainer}>
+          <EvilIcons name="search" size={24} color="black" />
+        </View>
+        <InstantSearch searchClient={searchClient} indexName="INDEX_NAME">
+          <SearchBox />
+        </InstantSearch>
+      </View>
+>>>>>>> 2817ca2 (Add searchbox at the top of the home page):components/tabs/Home.js
     </ScrollView>
   );
 }
@@ -741,6 +765,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
+<<<<<<< HEAD:frontend/app/components/tabs/Home.js
     backgroundColor: "white",
   },
   greenButton: {
@@ -1309,4 +1334,30 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 105, // Add space to move it more to the right
   },
+=======
+    backgroundColor: "#024935",
+  },
+  adSpaceContainer: {
+    width: "343px",
+    height: "56px",
+    backgroundColor: "#16513D",
+    borderRadius: "4px",
+    padding: "8px 16px 8px 12px",
+    gap: "12px",
+  },
+  searchBarContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginTop: 52,
+    marginLeft: 16,
+    marginRight: 16,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+  },
+  searchBarIconContainer: {
+    flex: 1,
+    justifyContent: "center",
+    paddingLeft: 8,
+  },
+>>>>>>> 2817ca2 (Add searchbox at the top of the home page):components/tabs/Home.js
 });
