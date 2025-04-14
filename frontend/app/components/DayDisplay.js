@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginLeft: 6,
     alignItems: "center",
-    width: 70,
+    width: 80,
     height: 100,
   },
   eventsIndicator: {
