@@ -700,8 +700,6 @@ export default function Home() {
           <SearchBox />
         </InstantSearch>
       </View>
->>>>>>> 2817ca2 (Add searchbox at the top of the home page):components/tabs/Home.js
->>>>>>> e74d933 (feat(home): Add searchbox at the top of the home page):frontend/app/components/tabs/Home.js
     </ScrollView>
   );
 }
@@ -709,7 +707,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
-<<<<<<< HEAD:frontend/app/components/tabs/Home.js
     backgroundColor: "white",
   },
   greenButton: {
@@ -1278,9 +1275,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 105, // Add space to move it more to the right
   },
-=======
-    backgroundColor: "#024935",
-  },
   adSpaceContainer: {
     width: "343px",
     height: "56px",
@@ -1303,5 +1297,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 8,
   },
->>>>>>> 2817ca2 (Add searchbox at the top of the home page):components/tabs/Home.js
 });
