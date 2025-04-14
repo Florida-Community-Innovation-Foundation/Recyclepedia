@@ -32,7 +32,7 @@ const Custombar = ({ state, descriptors, navigation }) => {
             {options.tabBarIcon &&
               options.tabBarIcon({
                 size: calcFont(34),
-                color: "#2F4F2F",
+                color: "#024935",
               })}
           </TouchableOpacity>
         );
