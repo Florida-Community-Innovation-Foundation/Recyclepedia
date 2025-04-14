@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   eventsListContainer: {
-    marginTop: 20,
+    marginTop: 6,
     marginLeft: 6,
   },
 });

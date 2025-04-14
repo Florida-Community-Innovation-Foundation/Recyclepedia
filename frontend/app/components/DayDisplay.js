@@ -4,7 +4,10 @@ export function DayDisplay({ dayOfWeek, dayNum, hasEvents }) {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.dayOfWeekText}> {dayOfWeek} </Text>
+        <Text style={styles.dayOfWeekText}>
+          {" "}
+          {dayOfWeek.toUpperCase().substring(0, 3)}{" "}
+        </Text>
       </View>
       <View>
         <Text style={styles.dayNumText}> {dayNum} </Text>

@@ -1,6 +1,4 @@
-import _ from "lodash";
-
-const monthNames = [
+export const monthNames = [
   "January",
   "February",
   "March",
@@ -15,22 +13,18 @@ const monthNames = [
   "December",
 ];
 
-const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+export const dayNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
-export function daysInMonth(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const numOfDays = new Date(year, month, 0).getDate();
-  console.log(numOfDays);
-  const result = _.map(_.range(1, numOfDays + 1), (dayNum) => {
-    return {
-      dayOfWeek: dayNames[new Date(`${year}-${month}-${dayNum}`).getDay()],
-      dayNum: dayNum,
-      hasEvents: true,
-    };
-  });
-  console.log(result);
-  return result;
+export function daysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
 }
 
 export function printMonthAndYear(date) {

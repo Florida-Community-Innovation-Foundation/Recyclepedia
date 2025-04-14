@@ -4,25 +4,39 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableHighlight,
   TouchableOpacity,
 } from "react-native";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { printMonthAndYear, daysInMonth } from "../util/date";
+import { printMonthAndYear, daysInMonth, dayNames } from "../util/date";
 import { DayDisplay } from "./DayDisplay";
+import _ from "lodash";
+
+function getMonthDisplayData(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const numOfDays = daysInMonth(year, month);
+
+  return _.map(_.range(1, numOfDays + 1), (dayNum) => {
+    return {
+      dayOfWeek: dayNames[new Date(`${year}-${month}-${dayNum}`).getDay()],
+      dayNum: dayNum,
+    };
+  });
+}
 
 export function MonthDisplay() {
   const [date, setDate] = useState(new Date());
   const [selectedId, setSelectId] = useState();
+
   const renderItem = ({ item, index }) => {
     return (
-      <TouchableHighlight key={index}>
+      <TouchableOpacity key={index}>
         <DayDisplay
           dayOfWeek={item.dayOfWeek}
           dayNum={item.dayNum}
           hasEvents={item.hasEvents}
         />
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   };
 
@@ -44,7 +58,7 @@ export function MonthDisplay() {
       <View>
         <FlatList
           horizontal={true}
-          data={daysInMonth(date)}
+          data={getMonthDisplayData(date)}
           renderItem={renderItem}
           keyExtractor={(item) => item.dayNum}
           extraData={selectedId}
