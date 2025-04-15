@@ -22,27 +22,59 @@ function getMonthDisplayData(date) {
   });
 }
 
-export function MonthDisplay() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+export function MonthDisplay({
+  currentDate,
+  setCurrentDate,
+  dayDisplaysPressed,
+  setDayDisplaysPressed,
+}) {
   const [selectedId, setSelectId] = useState();
+
+  const dayDisplayHandlePress = (index) => {
+    setDayDisplaysPressed(
+      _.map(dayDisplaysPressed, (dayDisplayPressed, idx) => {
+        if (idx === index) {
+          return true;
+        }
+        return false;
+      }),
+    );
+  };
 
   const renderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity key={index}>
+      <TouchableOpacity
+        key={index}
+        onPress={() => dayDisplayHandlePress(index)}
+      >
         <DayDisplay
           dayOfWeek={item.dayOfWeek}
           dayNum={item.dayNum}
           hasEvents={item.hasEvents}
+          isPressed={dayDisplaysPressed[index]}
         />
       </TouchableOpacity>
     );
   };
 
+  const resetDayDisplays = () => {
+    setDayDisplaysPressed(
+      _.map(
+        _.range(
+          0,
+          getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth()),
+        ),
+        (dayNum) => false,
+      ),
+    );
+  };
   const handleLeftButtonPress = () => {
+    resetDayDisplays();
     setCurrentDate(subMonths(currentDate, 1));
   };
 
   const handleRightButtonPress = () => {
+    resetDayDisplays();
     setCurrentDate(addMonths(currentDate, 1));
   };
 

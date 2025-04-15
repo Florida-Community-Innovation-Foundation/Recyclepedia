@@ -41,7 +41,8 @@
     "xlsx": "^0.18.5",
     "expo-camera": "~16.0.18",
     "expo-image-picker": "~16.0.6",
-    "expo-image": "~2.0.7"
+    "expo-image": "~2.0.7",
+    "expo-calendar": "~14.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
