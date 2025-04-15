@@ -5,14 +5,15 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Linking,
-  Platform,
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import _ from "lodash";
 import { format } from "date-fns";
 import * as Calendar from "expo-calendar";
-import { convertTime } from "../util/calendar-events";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import { createDate, generateIcsString } from "../util/calendar-events";
 
 export function EventDisplay({ eventItem }) {
   const handleLocationPress = (location) => {
@@ -24,16 +25,9 @@ export function EventDisplay({ eventItem }) {
     try {
       const { status } = await Calendar.requestCalendarPermissionsAsync();
       if (status === "granted") {
-        console.log(
-          `${eventItem.startDate}T${convertTime(eventItem.startTime)}`,
-        );
         const eventData = {
-          startDate: new Date(
-            `${eventItem.startDate}T${convertTime(eventItem.startTime)}`,
-          ),
-          endDate: new Date(
-            `${eventItem.endDate}T${convertTime(eventItem.endTime)}`,
-          ),
+          startDate: createDate(eventItem.startDate, eventItem.startTime),
+          endDate: createDate(eventItem.endDate, eventItem.endTime),
           location: eventItem.location,
           notes: eventItem.details,
           title: eventItem.title,
@@ -48,13 +42,36 @@ export function EventDisplay({ eventItem }) {
     }
   };
 
-  const handleShareIconPress = () => {
-    console.log("Pressed share icon");
+  const handleShareIconPress = async () => {
+    const icsString = generateIcsString(eventDetails);
+    const filename = `event-${Date.now()}.ics`; // Unique filename
+    const fileUri = FileSystem.cacheDirectory + filename; // Use cache directory
+
+    try {
+      await FileSystem.writeAsStringAsync(fileUri, icsString, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+
+      console.log("ICS file written to:", fileUri);
+
+      // Check if sharing is available
+      if (!(await Sharing.isAvailableAsync())) {
+        console.error("Sharing is not available on this device.");
+        return;
+      }
+
+      await Sharing.shareAsync(fileUri, {
+        mimeType: "text/calendar", // IMPORTANT!
+        dialogTitle: "Share Event via Calendar",
+        UTI: "com.apple.ical.ics", // iOS specific UTI hint (optional but good)
+      });
+    } catch (error) {
+      console.error("Error creating or sharing ICS file:", error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {console.log(eventItem.startDate)}
       <View style={styles.eventDateContainer}>
         <Text style={styles.eventMonthText}>
           {format(eventItem.startDate, "MMM").toUpperCase()}
