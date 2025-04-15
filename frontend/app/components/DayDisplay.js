@@ -1,16 +1,35 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export function DayDisplay({ dayOfWeek, dayNum, hasEvents }) {
+export function DayDisplay({ dayOfWeek, dayNum, isPressed, hasEvents }) {
   return (
-    <View style={styles.container}>
+    <View
+      style={
+        isPressed
+          ? { ...styles.container, backgroundColor: "#fff" }
+          : styles.container
+      }
+    >
       <View>
-        <Text style={styles.dayOfWeekText}>
-          {" "}
-          {dayOfWeek.toUpperCase().substring(0, 3)}{" "}
+        <Text
+          style={
+            isPressed
+              ? { ...styles.dayOfWeekText, color: "#024935" }
+              : { ...styles.dayOfWeekText, color: "#fff" }
+          }
+        >
+          {dayOfWeek.toUpperCase().substring(0, 3)}
         </Text>
       </View>
       <View>
-        <Text style={styles.dayNumText}> {dayNum} </Text>
+        <Text
+          style={
+            isPressed
+              ? { ...styles.dayNumText, color: "#024935" }
+              : { ...styles.dayNumText, color: "#fff" }
+          }
+        >
+          {dayNum}
+        </Text>
       </View>
       <View>{hasEvents && <View style={styles.eventsIndicator} />}</View>
     </View>
@@ -21,12 +40,10 @@ const styles = StyleSheet.create({
   dayOfWeekText: {
     fontWeight: 400,
     fontSize: 21,
-    color: "#fff",
   },
   dayNumText: {
     fontWeight: 400,
     fontSize: 42,
-    color: "#fff",
   },
   container: {
     marginTop: 30,

@@ -6,29 +6,14 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
+import _ from "lodash";
 import { EventDisplay } from "./EventDisplay";
-import { getCalendarEvents } from "../util/calendar-events";
 
-export function EventsListDisplay({ dayDisplayPressed }) {
-  const [calendarEvents, setCalendarEvents] = useState([]);
-
-  const [selectedId, setSelectId] = useState();
-
-  useEffect(() => {
-    setCalendarEvents(getCalendarEvents());
-  }, []);
-
+export function EventsListDisplay({ calendarEvents, dayDisplayPressed }) {
   const renderItem = ({ item, index }) => {
     return (
       <TouchableHighlight key={index}>
-        <EventDisplay
-          month={item.month}
-          dayOfMonth={item.dayOfMonth}
-          name={item.name}
-          organizer={item.organizer}
-          time={item.time}
-          location={item.location}
-        />
+        <EventDisplay eventItem={item} />
       </TouchableHighlight>
     );
   };
@@ -44,7 +29,6 @@ export function EventsListDisplay({ dayDisplayPressed }) {
           data={calendarEvents}
           renderItem={renderItem}
           keyExtractor={(item) => item.eventId}
-          extraData={selectedId}
         />
       </View>
     </View>
