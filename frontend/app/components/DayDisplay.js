@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
+import dayjs from "dayjs";
+import { StyleSheet, Text, View } from "react-native";
 
 export function DayDisplay({ dayOfWeek, dayNum, isPressed, hasEvents }) {
   return (
@@ -17,7 +18,7 @@ export function DayDisplay({ dayOfWeek, dayNum, isPressed, hasEvents }) {
               : { ...styles.dayOfWeekText, color: "#fff" }
           }
         >
-          {dayOfWeek.toUpperCase().substring(0, 3)}
+          {dayjs(dayOfWeek).format("ddd").toUpperCase()}
         </Text>
       </View>
       <View>

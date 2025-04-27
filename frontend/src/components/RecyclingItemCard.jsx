@@ -15,9 +15,7 @@ const RecyclingItemCard = ({ item, canRecycle }) => {
   const handleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-  console.log(item.image);
 
-  console.log(item.Image);
   return (
     <View style={styles.container}>
       <View style={styles.badgeContainer}>

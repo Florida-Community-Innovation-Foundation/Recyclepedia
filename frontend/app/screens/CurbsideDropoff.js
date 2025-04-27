@@ -9,11 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { cityData } from "../util/CityData.js";
-import RecyclingList from "../components/RecyclingList.js";
+import RecyclingList from "~/components/RecyclingList";
 import { Picker } from "@react-native-picker/picker";
 
-export default function CurbsideDropoff() {
+const CurbsideDropoff = () => {
   const [city, setCity] = useState("");
   const [recyclingItems, setRecyclingItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

@@ -5,7 +5,6 @@ import { Tabs } from "expo-router";
 import React from "react";
 import Custombar from "~/components/Custombar";
 
-
 export default function BottomTabsLayout() {
   return (
     <Tabs

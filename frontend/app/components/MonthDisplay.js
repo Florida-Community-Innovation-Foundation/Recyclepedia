@@ -1,22 +1,20 @@
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import dayjs from "dayjs";
+import _ from "lodash";
 import { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   FlatList,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { DayDisplay } from "./DayDisplay";
-import _ from "lodash";
-import { addMonths, subMonths, getDaysInMonth, getDay, format } from "date-fns";
 
 function getMonthDisplayData(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  return _.map(_.range(1, getDaysInMonth(date) + 1), (dayNum) => {
+  return _.map(_.range(1, dayjs(date).daysInMonth() + 1), (dayNum) => {
     return {
-      dayOfWeek: format(new Date(year, month, dayNum), "iii").toUpperCase(),
+      dayOfWeek: dayjs(date).day(),
       dayNum: dayNum,
     };
   });
@@ -59,13 +57,7 @@ export function MonthDisplay({
 
   const resetDayDisplays = () => {
     setDayDisplaysPressed(
-      _.map(
-        _.range(
-          0,
-          getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth()),
-        ),
-        (dayNum) => false,
-      ),
+      _.map(_.range(0, dayjs(currentDate).daysInMonth()), (dayNum) => false),
     );
   };
   const handleLeftButtonPress = () => {
@@ -83,7 +75,7 @@ export function MonthDisplay({
       <View style={styles.monthToggle}>
         <View style={styles.monthTextContainer}>
           <Text style={styles.monthText}>
-            {format(currentDate, "LLLL yyyy")}
+            {dayjs(currentDate).format("MMM")}
           </Text>
         </View>
         <View style={styles.buttonContainer}>
