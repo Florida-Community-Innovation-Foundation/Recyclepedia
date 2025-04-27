@@ -3,9 +3,7 @@
     "name": "DiG",
     "slug": "DiG",
     "version": "1.0.0",
-<<<<<<< HEAD:frontend/app.json
-    "newArchEnabled": true
-=======
+    "newArchEnabled": true,
     "plugins": [
       [
         "expo-calendar",
@@ -14,6 +12,5 @@
         }
       ]
     ]
->>>>>>> 16520c2 (Add calendar integration and event interaction features):app.json
   }
 }

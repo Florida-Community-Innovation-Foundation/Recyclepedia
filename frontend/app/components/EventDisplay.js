@@ -1,19 +1,20 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Linking,
-} from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import _ from "lodash";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import * as Calendar from "expo-calendar";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { createDate, generateIcsString } from "../util/calendar-events";
+import _ from "lodash";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { generateIcsString } from "../util/calendarEvents";
+import { createDate } from "../util/dates";
 
 export function EventDisplay({ eventItem }) {
   const handleLocationPress = (location) => {
@@ -74,10 +75,10 @@ export function EventDisplay({ eventItem }) {
     <View style={styles.container}>
       <View style={styles.eventDateContainer}>
         <Text style={styles.eventMonthText}>
-          {format(eventItem.startDate, "MMM").toUpperCase()}
+          {dayjs(eventItem.startDate).format("MMM")}
         </Text>
         <Text style={styles.eventDayOfMonthText}>
-          {parseInt(format(eventItem.startDate, "d")) + 1}
+          {dayjs(eventItem.startDate).format("D")}
         </Text>
       </View>
       <View style={styles.eventDetailsBox}>
