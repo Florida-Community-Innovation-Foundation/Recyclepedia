@@ -1,19 +1,5 @@
+import dayjs from "dayjs";
 import _ from "lodash";
-import { getDaysInMonth, format } from "date-fns";
-
-function convertTime(timeString) {
-  const [timePrefix, timeSuffix] = _.split(timeString, " ");
-  if (timeSuffix == "AM") {
-    if (timePrefix.length === 4) return `0${timeSuffix}`;
-    return timePrefix;
-  }
-  const [hour, minutes] = _.split(timePrefix, ":");
-  return hour === "12" ? timePrefix : `${parseInt(hour) + 12}:${minutes}`;
-}
-
-export function createDate(dateString, timeString) {
-  return new Date(`${dateString}T${convertTime(timeString)}`);
-}
 
 export function getCalendarEvents(currentDate) {
   const events = [
@@ -40,8 +26,7 @@ export function getCalendarEvents(currentDate) {
   ];
   return _.filter(
     events,
-    (event) =>
-      format(new Date(event.startDate), "MMMM") === format(currentDate, "MMMM"),
+    (event) => dayjs(event.startDate).month() === dayjs(currentDate).month(),
   );
 }
 
