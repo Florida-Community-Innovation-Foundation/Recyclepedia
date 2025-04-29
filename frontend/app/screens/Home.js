@@ -1,44 +1,21 @@
-import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import dayjs from "dayjs";
 import { BlurView } from "expo-blur";
 import _ from "lodash";
-import { useEffect, useState } from "react";
-import { InstantSearch } from "react-instantsearch-core";
+import { useState } from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
-import { EventsListDisplay } from "../components/EventsListDisplay";
+import { EventsListDisplay } from "../components/events/EventsListDisplay";
+import { MonthDisplay } from "../components/events/MonthDisplay";
 import SubmitEventModal from "../components/modals/SubmitEventModal";
-import { MonthDisplay } from "../components/MonthDisplay";
-import { SearchBox } from "../components/SearchBox";
 import { getCalendarEvents } from "../util/calendarEvents";
 
-const searchClient = algoliasearch("YourApplicationID", "YourSearchOnlyAPIKey");
-
 export default function Home({ navigation }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [calendarEvents, setCalendarEvents] = useState(getCalendarEvents());
   const [dayDisplaysPressed, setDayDisplaysPressed] = useState(
-    _.map(_.range(0, dayjs(currentDate).daysInMonth()), (dayNum) => false),
+    _.map(_.range(0, dayjs(currentDate).daysInMonth()), () => false),
   );
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
-
-  useEffect(() => {
-    setCalendarEvents(getCalendarEvents(currentDate));
-  }, [currentDate]);
-
-  useEffect(() => {
-    if (_.indexOf(dayDisplaysPressed, true) !== -1) {
-      setCalendarEvents(
-        _.filter(
-          getCalendarEvents(currentDate),
-          (event) =>
-            parseInt(dayjs(event.startDate).date()) ===
-            _.indexOf(dayDisplaysPressed, true) + 1,
-        ),
-      );
-    }
-  }, [dayDisplaysPressed]);
 
   const submitEventButtonHandlePress = () => {
     setIsCalendarVisible(true);
@@ -48,15 +25,6 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Search bar */}
-        <View style={styles.searchBarContainer}>
-          <View style={styles.searchBarIconContainer}>
-            <EvilIcons name="search" size={24} color="black" />
-          </View>
-          <InstantSearch searchClient={searchClient} indexName="INDEX_NAME">
-            <SearchBox />
-          </InstantSearch>
-        </View>
         {/* Ad space */}
         <View style={styles.adSpaceContainer}>
           <Text style={styles.adSpaceText}> AD SPACE </Text>
@@ -74,7 +42,8 @@ export default function Home({ navigation }) {
         <View style={styles.eventsViewContainer}>
           <EventsListDisplay
             calendarEvents={calendarEvents}
-            dayDisplayPressed={_.indexOf(dayDisplaysPressed, true) !== -1}
+            dayDisplaysPressed={dayDisplaysPressed}
+            currentDate={currentDate}
           />
         </View>
       </ScrollView>
@@ -108,7 +77,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   adSpaceContainer: {
-    marginTop: 10,
+    marginTop: 50,
     backgroundColor: "#16513D",
     height: 56,
     justifyContent: "center",
