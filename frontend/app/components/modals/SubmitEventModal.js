@@ -1,6 +1,4 @@
-import { Picker } from "@react-native-picker/picker";
 import dayjs from "dayjs";
-import { BlurView } from "expo-blur";
 import { Formik } from "formik";
 import _ from "lodash";
 import { useState } from "react";
@@ -17,10 +15,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  useColorScheme,
 } from "react-native";
 import * as yup from "yup";
-import SubmitEventCalendar from "../SubmitEventCalendar";
-import SubmitEventInput from "../SubmitEventInput";
+import DateInput from "../events/DateInput";
+import EventCalendar from "../events/EventCalendar";
+import EventCategory from "../events/EventCategory";
+import EventTextInput from "../events/EventTextInput";
 
 const { width, height } = Dimensions.get("window");
 
@@ -30,24 +31,17 @@ export default function SubmitEventModal({
   setCalendarEvents,
 }) {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const colorScheme = useColorScheme();
 
   const inputFields = {
     text: {
-      event: ["title", "description", "location"],
-      person: ["name", "email"],
+      event: ["Event Title", "Event Description", "Event Location"],
+      person: ["Person Name", "Person Email"],
     },
-    date: ["start", "end"],
-    category: "category",
+    date: ["Start Date", "End Date"],
+    time: ["Start Time", "End Time"],
+    category: "Event Category",
   };
-
-  const eventCategories = [
-    "Workshop",
-    "Seminar",
-    "Community Event",
-    "Recycling Drive",
-    "Educational Event",
-    "Others",
-  ];
 
   const getFormValidationSchema = () => {
     const textFieldValidationSchema = _.reduce(
@@ -65,29 +59,7 @@ export default function SubmitEventModal({
       },
       {},
     );
-    // Dates must be of form yyyy-mm-dd, hh:mm AM/PM
-    const dateFieldValidationSchema = _.reduce(
-      [...inputFields.date],
-      (obj, key) => {
-        obj[key] = yup
-          .string()
-          .matches(
-            new RegExp(
-              "[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}, [0-9]{2}:[0-9]{2} [AM|PM]",
-            ),
-            "Valid Format: mm/dd/yyyy, hh:mm [AM|PM]",
-          )
-          .test("is-valid-date", "Invalid date", (value) => {
-            return !isNaN(new Date(value));
-          });
-        return obj;
-      },
-      {},
-    );
-    return yup.object().shape({
-      ...textFieldValidationSchema,
-      ...dateFieldValidationSchema,
-    });
+    return yup.object().shape(textFieldValidationSchema);
   };
 
   const getFormInitialValues = () => {
@@ -111,21 +83,40 @@ export default function SubmitEventModal({
       },
       {},
     );
+    const timeFieldValues = _.reduce(
+      [...inputFields.time],
+      (obj, key) => {
+        obj[key] = dayjs().format("HH:mm A");
+        return obj;
+      },
+      {},
+    );
     return {
       ...textFieldValues,
       ...dateFieldValues,
+      ...timeFieldValues,
+      pickerColor: colorScheme === "dark" ? "#FFFFFF" : "#000000",
     };
   };
 
-  const renderInputs = (inputFields, inputFieldCategory, inputFieldProps) => {
-    return _.map(inputFields, (inputField) => (
-      <SubmitEventInput
-        key={`${inputFieldCategory}${inputField}`}
-        inputField={inputField}
-        inputFieldCategory={inputFieldCategory}
-        setIsCalendarVisible={setIsCalendarVisible}
-      />
+  const renderTextInputs = (textInputFields) => {
+    return _.map(textInputFields, (textInputField, index) => (
+      <EventTextInput key={index} textInputField={textInputField} />
     ));
+  };
+
+  const renderDateInputs = (dateAndTimeInputFields) => {
+    return _.map(dateAndTimeInputFields, (dateAndTimeInputField, index) => {
+      const [dateInputField, timeInputField] = dateAndTimeInputField;
+      return (
+        <DateInput
+          key={index}
+          setIsCalendarVisible={setIsCalendarVisible}
+          dateInputField={dateInputField}
+          timeInputField={timeInputField}
+        />
+      );
+    });
   };
 
   return (
@@ -135,7 +126,6 @@ export default function SubmitEventModal({
         transparent={true}
         animationType="slide"
       >
-        <BlurView style={styles.blurView} blurType="light" blurAmount={30} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <SafeAreaView style={styles.CalendarmodalBackground}>
             <KeyboardAvoidingView style={styles.CalendareventModalContent}>
@@ -146,68 +136,27 @@ export default function SubmitEventModal({
                   validationSchema={getFormValidationSchema()}
                   initialValues={getFormInitialValues()}
                   onSubmit={(values) => {
-                    console.log(values);
                     setIsEventModalVisible(false);
+                    setIsCalendarVisible(false);
                     setCalendarEvents((prevCalendarEvents) => [
                       ...prevCalendarEvents,
                       values,
                     ]);
                   }}
                 >
-                  {({
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    setFieldValue,
-                    errors,
-                    touched,
-                    isValid,
-                  }) => {
-                    const inputFieldProps = [
-                      handleChange,
-                      handleBlur,
-                      values,
-                      errors,
-                      touched,
-                    ];
+                  {({ handleSubmit, isValid, errors, values }) => {
                     return (
                       <View>
-                        {renderInputs(
-                          inputFields.text.event,
-                          "Event",
-                          inputFieldProps,
-                        )}
-                        <Picker
-                          selectedValue={values.category}
-                          onValueChange={(itemValue) =>
-                            setFieldValue("category", itemValue)
-                          }
-                          style={styles.categoryPicker}
-                        >
-                          <Picker.Item label="Select a category" value="" />
-                          {eventCategories.map((category) => (
-                            <Picker.Item
-                              key={category}
-                              label={category}
-                              value={category}
-                            />
-                          ))}
-                        </Picker>
+                        {renderTextInputs(inputFields.text.event)}
+                        <EventCategory />
                         <View>
-                          {renderInputs(
-                            inputFields.date,
-                            "Date",
-                            inputFieldProps,
+                          {renderDateInputs(
+                            _.zip(inputFields.date, inputFields.time),
                           )}
-                          <SubmitEventCalendar
+                          <EventCalendar
                             isCalendarVisible={isCalendarVisible}
                           />
-                          {renderInputs(
-                            inputFields.text.person,
-                            "Person",
-                            inputFieldProps,
-                          )}
+                          {renderTextInputs(inputFields.text.person)}
                         </View>
                         <Button
                           onPress={handleSubmit}
@@ -238,9 +187,6 @@ export default function SubmitEventModal({
 }
 
 const styles = StyleSheet.create({
-  blurView: {
-    ...StyleSheet.absoluteFillObject,
-  },
   greenOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(47, 79, 47, 0.3)", // Green with transparency
@@ -710,11 +656,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 8,
-  },
-  categoryPicker: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    marginBottom: 10,
   },
   timePickerRow: {
     flexDirection: "row",
