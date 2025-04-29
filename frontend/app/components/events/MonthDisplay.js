@@ -1,7 +1,6 @@
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import dayjs from "dayjs";
 import _ from "lodash";
-import { useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -26,8 +25,6 @@ export function MonthDisplay({
   dayDisplaysPressed,
   setDayDisplaysPressed,
 }) {
-  const [selectedId, setSelectId] = useState();
-
   const dayDisplayHandlePress = (index) => {
     setDayDisplaysPressed(
       _.map(dayDisplaysPressed, (dayDisplayPressed, idx) => {
@@ -60,14 +57,15 @@ export function MonthDisplay({
       _.map(_.range(0, dayjs(currentDate).daysInMonth()), (dayNum) => false),
     );
   };
+
   const handleLeftButtonPress = () => {
     resetDayDisplays();
-    setCurrentDate(subMonths(currentDate, 1));
+    setCurrentDate(currentDate.subtract(1, "month"));
   };
 
   const handleRightButtonPress = () => {
     resetDayDisplays();
-    setCurrentDate(addMonths(currentDate, 1));
+    setCurrentDate(currentDate.add(1, "month"));
   };
 
   return (
@@ -75,7 +73,7 @@ export function MonthDisplay({
       <View style={styles.monthToggle}>
         <View style={styles.monthTextContainer}>
           <Text style={styles.monthText}>
-            {dayjs(currentDate).format("MMM")}
+            {currentDate.format("MMMM YYYY")}
           </Text>
         </View>
         <View style={styles.buttonContainer}>
@@ -99,7 +97,6 @@ export function MonthDisplay({
           data={getMonthDisplayData(currentDate)}
           renderItem={renderItem}
           keyExtractor={(item) => item.dayNum}
-          extraData={selectedId}
         />
       </View>
     </View>

@@ -13,8 +13,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { generateIcsString } from "../util/calendarEvents";
-import { createDate } from "../util/dates";
+import { generateIcsString } from "../../util/calendarEvents";
+import { createDate } from "../../util/dates";
 
 export function EventDisplay({ eventItem }) {
   const handleLocationPress = (location) => {
@@ -27,14 +27,20 @@ export function EventDisplay({ eventItem }) {
       const { status } = await Calendar.requestCalendarPermissionsAsync();
       if (status === "granted") {
         const eventData = {
-          startDate: createDate(eventItem.startDate, eventItem.startTime),
-          endDate: createDate(eventItem.endDate, eventItem.endTime),
-          location: eventItem.location,
-          notes: eventItem.details,
-          title: eventItem.title,
+          startDate: createDate(
+            eventItem["Start Date"],
+            eventItem["Start Time"],
+          ),
+          endDate: createDate(eventItem["End Date"], eventItem["End Time"]),
+          location: eventItem["Event Location"],
+          notes: eventItem["Event Description"],
+          title: eventItem["Event Title"],
         };
-        const { status } = await Calendar.createEventInCalendarAsync(eventData);
-        console.log("Calendar opened to date:", eventItem.startDate);
+        const { action } = await Calendar.createEventInCalendarAsync(eventData);
+        if (action === "saved") {
+          console.log("Calendar event created");
+          console.log(eventData);
+        }
       } else {
         console.error(`Failed to open calendar with status: ${status}`);
       }
@@ -75,34 +81,38 @@ export function EventDisplay({ eventItem }) {
     <View style={styles.container}>
       <View style={styles.eventDateContainer}>
         <Text style={styles.eventMonthText}>
-          {dayjs(eventItem.startDate).format("MMM")}
+          {dayjs(eventItem["Start Date"]).format("MMM")}
         </Text>
         <Text style={styles.eventDayOfMonthText}>
-          {dayjs(eventItem.startDate).format("D")}
+          {dayjs(eventItem["Start Date"]).format("D")}
         </Text>
       </View>
       <View style={styles.eventDetailsBox}>
         <View style={styles.topEventDetailsBoxSection}>
           <Text style={styles.eventTitleText}>
-            {eventItem.title.toUpperCase()}
+            {eventItem["Event Title"].toUpperCase()}
           </Text>
           <View style={styles.eventTimeContainer}>
             <EvilIcons name="clock" size={24} color="gray" />
             <Text style={styles.eventVenueText}>
-              {eventItem.startTime} - {eventItem.endTime}
+              {eventItem["Start Time"]} - {eventItem["End Time"]}
             </Text>
           </View>
           <TouchableWithoutFeedback
-            onPress={() => handleLocationPress(eventItem.location)}
+            onPress={() => handleLocationPress(eventItem["Event Location"])}
           >
             <View style={styles.eventTimeContainer}>
               <EvilIcons name="location" size={24} color="gray" />
-              <Text style={styles.eventVenueText}>{eventItem.location}</Text>
+              <Text style={styles.eventVenueText}>
+                {eventItem["Event Location"]}
+              </Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
         <View style={styles.bottomEventDetailsBoxSection}>
-          <Text style={styles.eventDetailsText}>{eventItem.details}</Text>
+          <Text style={styles.eventDetailsText}>
+            {eventItem["Event Description"]}
+          </Text>
           <View style={styles.iconsContainer}>
             <TouchableOpacity onPress={handleCalendarIconPress}>
               <View style={styles.calendarIconContainer}>
