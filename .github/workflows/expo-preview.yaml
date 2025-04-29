@@ -1,11 +1,16 @@
 name: Expo preview
 on: pull_request
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/
+    
     permissions:
       contents: read
       pull-requests: write
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
