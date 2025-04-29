@@ -1,33 +1,24 @@
-import dayjs from "dayjs";
-import _ from "lodash";
-
-export function getCalendarEvents(currentDate) {
-  const events = [
+export function getCalendarEvents() {
+  return [
     {
-      eventId: 1,
-      startDate: "2025-04-16",
-      endDate: "2025-04-16",
-      title: "Community Recycling Workshop",
-      startTime: "10:22 AM",
-      endTime: "12:22 PM",
-      location: "Community Center",
-      details: "Learn about recycling best practices",
+      "Start Date": "2025-04-16",
+      "End Date": "2025-04-16",
+      "Event Title": "Community Recycling Workshop",
+      "Start Time": "10:22 AM",
+      "End Time": "12:22 PM",
+      "Event Location": "Community Center",
+      "Event Description": "Learn about recycling best practices",
     },
     {
-      eventId: 2,
-      startDate: "2025-04-17",
-      endDate: "2025-04-17",
-      title: "Beach Cleanup",
-      startTime: "10:22 AM",
-      endTime: "01:22 PM",
-      location: "Miami Beach",
-      details: "Join us for a community beach cleanup",
+      "Start Date": "2025-04-17",
+      "End Date": "2025-04-17",
+      "Event Title": "Beach Cleanup",
+      "Start Time": "10:22 AM",
+      "End Time": "01:22 PM",
+      "Event Location": "Miami Beach",
+      "Event Description": "Join us for a community beach cleanup",
     },
   ];
-  return _.filter(
-    events,
-    (event) => dayjs(event.startDate).month() === dayjs(currentDate).month(),
-  );
 }
 
 export function generateIcsString(eventItem) {
@@ -40,11 +31,11 @@ export function generateIcsString(eventItem) {
     "BEGIN:VEVENT",
     `UID:recyclepedia.events@gmail.com`,
     `DTSTAMP:${new Date().toISOString()}`,
-    `DTSTART:${createDate(eventItem.startDate, eventItem.startTime).toISOString()}`,
-    `DTEND:${createDate(eventItem.endDate, eventItem.endTime).toISOString()}`,
-    `SUMMARY:${eventItem.title}`,
-    `DESCRIPTION:${eventItem.details}`,
-    `LOCATION:${eventItem.location}`,
+    `DTSTART:${createDate(eventItem["Start Date"], eventItem["Start Time"]).toISOString()}`,
+    `DTEND:${createDate(eventItem["End Date"], eventItem["End Time"]).toISOString()}`,
+    `SUMMARY:${eventItem["Event Title"]}`,
+    `DESCRIPTION:${eventItem["Event Description"]}`,
+    `LOCATION:${eventItem["Event Location"]}`,
     "STATUS:CONFIRMED",
     "SEQUENCE:0", // Usually 0 for new events
     "END:VEVENT",
