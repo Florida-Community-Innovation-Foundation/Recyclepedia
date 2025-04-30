@@ -1,7 +1,14 @@
 import Entypo from "@expo/vector-icons/Entypo";
+import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
+  const navigation = useNavigation();
+
+  const itemAcceptedButtonPress = () => {
+    navigation.navigate("Curbside Dropoff");
+  };
+
   return (
     <View style={styles.container}>
       {!itemChecked && (
@@ -27,7 +34,10 @@ export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
                 This item cannot go in your curbside bin. It must be disposed of
                 in a special drop-off center.
               </Text>
-              <Pressable style={styles.button}>
+              <Pressable
+                style={styles.button}
+                onPress={itemAcceptedButtonPress}
+              >
                 <Text style={styles.buttonText}>FIND ONE HERE!</Text>
               </Pressable>
             </>
@@ -64,7 +74,7 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     fontSize: 12,
     color: "#024935",
-    padding: 10,
+    padding: 15,
   },
   itemAcceptanceStatus: {
     fontFamily: "Titillium Web",
@@ -73,7 +83,7 @@ const styles = StyleSheet.create({
     color: "#024935",
     marginTop: 5,
     width: 280,
-    marginLeft: 10,
+    marginLeft: 15,
   },
   button: {
     borderRadius: 7,
