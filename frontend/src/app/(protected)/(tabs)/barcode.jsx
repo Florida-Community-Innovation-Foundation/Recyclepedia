@@ -1,13 +1,20 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import BarcodeInstructions from "../BarcodeInstructions";
 
 export default function BarcodeScan() {
+  const navigation = useNavigation();
   const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [barcode, setBarCode] = useState(null);
+
+  useEffect(() => {
+    navigation.addListener("tabPress", (event) => {
+      setBarCode(null);
+    });
+  }, [navigation]);
 
   const handleCameraPress = () => {
     CameraView.launchScanner({
@@ -49,16 +56,15 @@ export default function BarcodeScan() {
           )
         }
         {permission && permission.granted && (
-          <View styles={styles.cameraContainer}>
-            <CameraView ref={cameraRef} facing="front">
-              <AntDesign
-                name="picture"
-                height={300}
-                color="white"
-                onPress={handleCameraPress}
-              />
+          <Pressable onPress={handleCameraPress}>
+            <CameraView
+              ref={cameraRef}
+              style={styles.cameraContainer}
+              facing="back"
+            >
+              <View />
             </CameraView>
-          </View>
+          </Pressable>
         )}
         {/* Divider */}
         <View style={styles.divider}>
