@@ -10,7 +10,11 @@ export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={
+        itemAccepted ? styles.container : { ...styles.container, height: 150 }
+      }
+    >
       {!itemChecked && (
         <View style={styles.instructionContainer}>
           <Entypo name="warning" size={24} color="black" />
@@ -51,7 +55,7 @@ export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
 const styles = StyleSheet.create({
   container: {
     width: 310,
-    height: 150,
+    height: 90,
     backgroundColor: "#FFFFFF",
     borderRadius: 30,
     marginTop: 20,
@@ -81,7 +85,6 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 12,
     color: "#024935",
-    marginTop: 5,
     width: 280,
     marginLeft: 15,
   },
