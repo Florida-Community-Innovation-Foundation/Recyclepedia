@@ -35,7 +35,7 @@ export default function BottomTabsLayout() {
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons
-              name="barcode-scan"
+              name="camera-image"
               size={size}
               color={color}
             />
