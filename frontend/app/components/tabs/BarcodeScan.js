@@ -1,30 +1,35 @@
 import { useNavigation } from "@react-navigation/native";
-import { CameraView, useCameraPermissions } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import BarcodeInstructions from "../BarcodeInstructions";
+import * as ImagePicker from "expo-image-picker";
+import { useEffect, useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import BarcodeInstructions from "../barcode/BarcodeInstructions";
+import CameraWithBarcode from "../barcode/CameraWithBarcode";
 
 export default function BarcodeScan() {
   const navigation = useNavigation();
-  const cameraRef = useRef(null);
-  const [permission, requestPermission] = useCameraPermissions();
   const [barcode, setBarCode] = useState(null);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     navigation.addListener("tabPress", (event) => {
       setBarCode(null);
+      setImage(null);
     });
   }, [navigation]);
 
-  const handleCameraPress = () => {
-    CameraView.launchScanner({
-      barcodeTypes: ["ean13"],
-      isHighlightingEnabled: true,
+  const handleUploadPhotoPress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
-    CameraView.onModernBarcodeScanned((event) => {
-      setBarCode(event.data);
-      CameraView.dismissScanner();
-    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
   };
 
   return (
@@ -34,38 +39,11 @@ export default function BarcodeScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-        {/* Camera with barcode scanner */}
-        {
-          // Camera permissions are still loading.
-          !permission && <View />
-        }
-        {
-          // Camera permissions are not granted yet.
-          permission && !permission.granted && (
-            <View style={styles.permissionContainer}>
-              <Text style={styles.permissionMessage}>
-                We need your permission to show the camera
-              </Text>
-              <Pressable
-                style={styles.uploadPhotoButton}
-                onPress={requestPermission}
-              >
-                <Text style={styles.uploadPhotoText}>Grant permission</Text>
-              </Pressable>
-            </View>
-          )
-        }
-        {permission && permission.granted && (
-          <Pressable onPress={handleCameraPress}>
-            <CameraView
-              ref={cameraRef}
-              style={styles.cameraContainer}
-              facing="back"
-            >
-              <View />
-            </CameraView>
-          </Pressable>
+        {!image && <CameraWithBarcode />}
+        {image && (
+          <Image source={{ uri: image }} style={styles.cameraContainer} />
         )}
+
         {/* Divider */}
         <View style={styles.divider}>
           <View style={styles.dividerLine}></View>
@@ -73,7 +51,10 @@ export default function BarcodeScan() {
           <View style={styles.dividerLine}></View>
         </View>
         {/* Upload photo button */}
-        <Pressable style={styles.uploadPhotoButton}>
+        <Pressable
+          style={styles.uploadPhotoButton}
+          onPress={handleUploadPhotoPress}
+        >
           <Text style={styles.uploadPhotoText}>UPLOAD A PHOTO</Text>
         </Pressable>
         {/* Section showing instructions after scanning or uploading a photo */}
@@ -116,7 +97,6 @@ const styles = StyleSheet.create({
   cameraContainer: {
     width: 311,
     height: 300,
-    borderRadius: 8,
   },
   divider: {
     marginTop: 10,
