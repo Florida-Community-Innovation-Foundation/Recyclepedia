@@ -38,7 +38,8 @@
     "react-native-svg": "15.8.0",
     "react-native-svg-transformer": "^1.5.0",
     "react-native-vector-icons": "^10.2.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "expo-camera": "~16.0.18"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
