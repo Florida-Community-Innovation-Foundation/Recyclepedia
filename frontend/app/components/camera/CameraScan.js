@@ -2,19 +2,13 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function CameraWithBarcode() {
+export default function CameraScan({ setImage }) {
   const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
 
-  const handleCameraPress = () => {
-    CameraView.launchScanner({
-      barcodeTypes: ["ean13"],
-      isHighlightingEnabled: true,
-    });
-    CameraView.onModernBarcodeScanned((event) => {
-      setBarCode(event.data);
-      CameraView.dismissScanner();
-    });
+  const takePicture = async () => {
+    const photo = await cameraRef.current?.takePictureAsync();
+    setImage(photo?.uri);
   };
 
   if (!permission) {
@@ -25,14 +19,14 @@ export default function CameraWithBarcode() {
         <Text style={styles.permissionMessage}>
           We need your permission to show the camera
         </Text>
-        <Pressable style={styles.uploadPhotoButton} onPress={requestPermission}>
-          <Text style={styles.uploadPhotoText}>Grant permission</Text>
+        <Pressable style={styles.button} onPress={requestPermission}>
+          <Text style={styles.buttonText}>Grant permission</Text>
         </Pressable>
       </View>
     );
   } else {
     return (
-      <Pressable onPress={handleCameraPress}>
+      <>
         <CameraView
           ref={cameraRef}
           style={styles.cameraContainer}
@@ -40,7 +34,10 @@ export default function CameraWithBarcode() {
         >
           <View />
         </CameraView>
-      </Pressable>
+        <Pressable style={styles.button} onPress={takePicture}>
+          <Text style={styles.buttonText}>Take picture</Text>
+        </Pressable>
+      </>
     );
   }
 }
@@ -50,7 +47,7 @@ const styles = StyleSheet.create({
     width: 311,
     height: 300,
   },
-  uploadPhotoButton: {
+  button: {
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#828282",
@@ -60,7 +57,7 @@ const styles = StyleSheet.create({
     height: 43,
     marginTop: 10,
   },
-  uploadPhotoText: {
+  buttonText: {
     textAlign: "center",
     marginTop: 10,
     fontSize: 22,

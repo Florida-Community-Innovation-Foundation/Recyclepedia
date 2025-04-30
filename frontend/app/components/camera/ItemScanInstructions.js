@@ -2,7 +2,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
+export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
   const navigation = useNavigation();
 
   const itemAcceptedButtonPress = () => {
@@ -12,14 +12,14 @@ export default function BarcodeInstructions({ itemChecked, itemAccepted }) {
   return (
     <View
       style={
-        itemAccepted ? styles.container : { ...styles.container, height: 150 }
+        !itemChecked ? styles.container : { ...styles.container, height: 150 }
       }
     >
       {!itemChecked && (
         <View style={styles.instructionContainer}>
-          <Entypo name="warning" size={24} color="black" />
+          <Entypo name="warning" size={24} color="#024935" />
           <Text style={styles.instructionText}>
-            SCAN A BARCODE TO VIEW RECYCLING INFORMATION.
+            SCAN AN ITEM TO VIEW RECYCLING INFORMATION.
           </Text>
         </View>
       )}

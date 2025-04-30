@@ -1,15 +1,15 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "./tabs/Home.js";
-import About from "./tabs/About.js";
-import CurbsideDropoff from "./tabs/CurbsideDropoff.js";
-import BarcodeScan from "./tabs/BarcodeScan.js";
-import UserAccount from "./tabs/UserAccount.js";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import Custombar from "./Custombar.js";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import Custombar from "./Custombar.js";
+import About from "./tabs/About.js";
+import CurbsideDropoff from "./tabs/CurbsideDropoff.js";
+import Home from "./tabs/Home.js";
+import ItemScan from "./tabs/ItemScan.js";
+import UserAccount from "./tabs/UserAccount.js";
 const Tab = createBottomTabNavigator();
 
 function Tabnav() {
@@ -40,12 +40,12 @@ function Tabnav() {
         }}
       />
       <Tab.Screen
-        name="Barcode Scan"
-        component={BarcodeScan}
+        name="Item Scan"
+        component={ItemScan}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons
-              name="barcode-scan"
+              name="camera-image"
               size={size}
               color={color}
             />

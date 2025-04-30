@@ -1,18 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import BarcodeInstructions from "../barcode/BarcodeInstructions";
-import CameraWithBarcode from "../barcode/CameraWithBarcode";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import CameraScan from "../camera/CameraScan";
+import ItemScanInstructions from "../camera/ItemScanInstructions";
 
-export default function BarcodeScan() {
+export default function ItemScan() {
   const navigation = useNavigation();
-  const [barcode, setBarCode] = useState(null);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
     navigation.addListener("tabPress", (event) => {
-      setBarCode(null);
       setImage(null);
     });
   }, [navigation]);
@@ -24,8 +23,6 @@ export default function BarcodeScan() {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -39,9 +36,14 @@ export default function BarcodeScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-        {!image && <CameraWithBarcode />}
+        {!image && <CameraScan setImage={setImage} />}
         {image && (
-          <Image source={{ uri: image }} style={styles.cameraContainer} />
+          <Image
+            source={{ uri: image }}
+            style={styles.cameraContainer}
+            contentFit="cover"
+            enableLiveTextInteraction={true}
+          />
         )}
 
         {/* Divider */}
@@ -58,7 +60,7 @@ export default function BarcodeScan() {
           <Text style={styles.uploadPhotoText}>UPLOAD A PHOTO</Text>
         </Pressable>
         {/* Section showing instructions after scanning or uploading a photo */}
-        <BarcodeInstructions itemChecked={barcode} itemAccepted={false} />
+        <ItemScanInstructions itemChecked={image} itemAccepted={false} />
       </View>
     </View>
   );
