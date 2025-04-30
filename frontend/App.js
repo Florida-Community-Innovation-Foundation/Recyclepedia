@@ -1,17 +1,17 @@
-import React from "react";
-import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { enableScreens } from "react-native-screens";
+import React from "react";
+import { StyleSheet } from "react-native";
 import { PaperProvider } from "react-native-paper";
+import { enableScreens } from "react-native-screens";
 
 // Import screens
-import Home from "./app/components/tabs/Home.js";
+import Tabnav from "./app/components/Tabnav.js";
 import About from "./app/components/tabs/About.js";
 import CurbsideDropoff from "./app/components/tabs/CurbsideDropoff.js";
+import Home from "./app/components/tabs/Home.js";
+import ItemScan from "./app/components/tabs/ItemScan.js";
 import UserAccount from "./app/components/tabs/UserAccount.js";
-import BarcodeScan from "./app/components/tabs/BarcodeScan.js";
-import Tabnav from "./app/components/Tabnav.js";
 
 enableScreens();
 
@@ -45,8 +45,8 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Barcode Scan"
-            component={BarcodeScan}
+            name="Item Scan"
+            component={ItemScan}
             options={{ headerShown: false }}
           />
           <Stack.Screen
