@@ -184,7 +184,6 @@ const itemBase = {
   
   const generateCityData = (cityName, excludedItems = []) => {
     const allItems = Object.values(itemBase);
-    console.log(cityName,allItems)
   
     // array where each item includes a canRecycle property
     const cityItems = allItems.map(item => ({
