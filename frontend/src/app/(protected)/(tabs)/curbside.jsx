@@ -1,26 +1,23 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  Image,
+  SafeAreaView,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  Image,
+  View,
 } from "react-native";
-import { cityData } from "../../util/CityData.js";
-import RecyclingList from "../RecyclingList.js";
-import { Picker } from "@react-native-picker/picker";
+import RecyclingList from "~/components/RecyclingList";
 
-const CurbsideDropoff = ({ navigation }) => {
+const CurbsideDropoff = () => {
   const [city, setCity] = useState("");
   const [recyclingItems, setRecyclingItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleCityChange = (selectedCity) => {
     setCity(selectedCity);
-    setRecyclingItems(cityData[selectedCity] || []);
   };
 
   const handleSearchChange = (text) => {
@@ -48,18 +45,6 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         </View>
 
-        <View style={styles.cityPickerContainer}>
-          <Text style={styles.cityPickerLabel}>Select your city:</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker selectedValue={city} onValueChange={handleCityChange}>
-              <Picker.Item label="Select a City" value="" />
-              {Object.keys(cityData).map((cityName) => (
-                <Picker.Item key={cityName} label={cityName} value={cityName} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-
         {city && (
           <View style={styles.contentContainer}>
             <View style={styles.searchContainer}>
@@ -69,17 +54,10 @@ const CurbsideDropoff = ({ navigation }) => {
                 onChangeText={handleSearchChange}
                 placeholder="Search for recycling items..."
               />
-              <Image
-                source={require("../../../assets/magnifyingGlass.png")}
-                style={styles.searchIcon}
-              />
+              <Image style={styles.searchIcon} />
             </View>
 
-            <RecyclingList
-              items={filteredItems}
-              city={city}
-              cityData={cityData}
-            />
+            <RecyclingList items={filteredItems} city={city} />
 
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
@@ -136,10 +114,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 </Text>
               </View>
 
-              <TouchableOpacity
-                style={styles.alternativeButton}
-                onPress={() => navigation.navigate("Items")}
-              >
+              <TouchableOpacity style={styles.alternativeButton}>
                 <Text style={styles.alternativeButtonText}>
                   Find Alternative Recycling Options
                 </Text>

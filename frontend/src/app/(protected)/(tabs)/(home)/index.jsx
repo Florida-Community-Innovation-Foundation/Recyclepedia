@@ -1,28 +1,23 @@
-import { Dimensions, Button } from "react-native";
-import React, { useState, useEffect, useRef, Easing } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-  ScrollView,
-  Animated,
-  Pressable,
-  Modal,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
 import { BlurView } from "@react-native-community/blur";
-import { Calendar } from "react-native-calendars";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import DropDownPicker from "react-native-dropdown-picker";
+import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  Dimensions,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-export default function Home({ navigation }) {
+export default function Home() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,7 +26,7 @@ export default function Home({ navigation }) {
   const cloud2Animation = useRef(new Animated.Value(-150)).current; // Start in the middle of the screen
   const mountainAnimation = useRef(new Animated.Value(0)).current;
   const DiggyAnimation = useRef(new Animated.Value(0)).current;
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+
   const [isEventModalVisible, setIsEventModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [eventTitle, setEventTitle] = useState("");
@@ -41,10 +36,6 @@ export default function Home({ navigation }) {
   const [events, setEvents] = useState({});
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
   const [displayEvents, setDisplayEvents] = useState({});
-  const [isAddEventCalendarVisible, setIsAddEventCalendarVisible] =
-    useState(false);
-  const [isDisplayCalendarVisible, setIsDisplayCalendarVisible] =
-    useState(false);
 
   //I wanna add this now brotha
 
@@ -71,26 +62,8 @@ export default function Home({ navigation }) {
     { label: "PM", value: "PM" },
   ]);
 
-  // Toggle display calendar modal
-  const toggleDisplayCalendar = () => {
-    setIsDisplayCalendarVisible(!isDisplayCalendarVisible);
-  };
-
-  // Toggle add event calendar modal
-  const toggleAddEventCalendar = () => {
-    setIsAddEventCalendarVisible(!isAddEventCalendarVisible);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
-  };
-
-  const handleExplorePress = (message) => {
-    Alert.alert("Explore", message);
   };
 
   const handleSaveTime = () => {
@@ -297,7 +270,6 @@ export default function Home({ navigation }) {
       <View style={styles.skyContainer}>
         {/* Cloud 1 */}
         <Animated.Image
-          source={require("../../../assets/cloud.png")}
           style={[
             styles.cloud,
             {
@@ -310,7 +282,6 @@ export default function Home({ navigation }) {
 
         {/* Cloud 2 */}
         <Animated.Image
-          source={require("../../../assets/cloud.png")}
           style={[
             styles.cloud,
             { transform: [{ translateY: cloud2Animation }], top: 35 },
@@ -319,7 +290,6 @@ export default function Home({ navigation }) {
 
         {/* Floating Mountain */}
         <Animated.Image
-          source={require("../../../assets/Mountain.png")} // Replace with your mountain image
           style={[
             styles.mountain,
             { transform: [{ translateY: mountainAnimation }], top: 7 }, // Floating effect
@@ -328,7 +298,6 @@ export default function Home({ navigation }) {
 
         {/* Diggy */}
         <Animated.Image
-          source={require("../../../assets/Diggy.png")}
           style={[
             styles.diggy,
             { transform: [{ translateY: DiggyAnimation }], left: 85, top: 95 },
@@ -392,52 +361,10 @@ export default function Home({ navigation }) {
         <View style={styles.blueBubble}>
           <View style={styles.whiteBubble} />
           <Text style={styles.bubbleText}>Curbside Pickup</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Curbside")}>
+          <TouchableOpacity onPress={() => router.navigate("/curbside")}>
             <View style={styles.exploreBubble}>
               <Text style={styles.exploreText}>Explore</Text>
             </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* Second Bubble */}
-        <View style={styles.blueBubble}>
-          <View style={styles.whiteBubble} />
-          <Text style={styles.bubbleText}>Items</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Items")}>
-            <View style={styles.exploreBubble}>
-              <Text style={styles.exploreText}>Explore</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* Third Bubble */}
-        <View style={styles.blueBubble}>
-          <View style={styles.whiteBubble} />
-          <Text style={styles.bubbleText}>Learn</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Learn")}>
-            <View style={styles.exploreBubble}>
-              <Text style={styles.exploreText}>Explore</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Newsletter Section */}
-      <View style={styles.newsletterContainer}>
-        <View style={styles.newsletterTextContainer}>
-          <Text style={styles.newsletterText}>Subscribe to our Newsletter</Text>
-        </View>
-        <View style={styles.divider} />
-        <View style={styles.newsletterForm}>
-          <Text style={styles.emailLabel}>Email:</Text>
-          <TextInput
-            style={styles.emailInput}
-            placeholder="Your Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TouchableOpacity style={styles.signUpButton}>
-            <Text style={styles.signUpText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -464,276 +391,6 @@ export default function Home({ navigation }) {
           <Text style={styles.calendarText}>Tap to View Calendar</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Calendar Modal */}
-      <Modal
-        visible={isCalendarVisible}
-        transparent={true}
-        animationType="fade"
-      >
-        {/* Blur Effect */}
-        <BlurView
-          style={styles.blurView}
-          blurType="light"
-          blurAmount={isEventModalVisible ? 20 : 10} // Increase blur if Add Event modal is active
-        />
-
-        {/* Green Overlay */}
-        <View style={styles.greenOverlay} />
-
-        {/* Modal Content */}
-        <View style={styles.modalContentCalendar}>
-          <Text style={styles.modalTitleCalendar}>Community Calendar</Text>
-
-          {/* Calendar Component */}
-          <Calendar
-            markedDates={Object.keys(displayEvents).reduce((acc, date) => {
-              acc[date] = { marked: true };
-              return acc;
-            }, {})}
-            onDayPress={(day) => {
-              const events = displayEvents[day.dateString] || [];
-              if (events.length > 0) {
-                setSelectedEventDetails(events[0]); // Set the first event (assuming one per day)
-                setIsEventDetailModalVisible(true); // Trigger the modal to open
-              } else {
-                Alert.alert("No Events", "No events on this day.");
-              }
-            }}
-          />
-
-          {/* Close Button */}
-          <TouchableOpacity
-            style={styles.CalendarcloseButton}
-            onPress={toggleCalendar}
-          >
-            <Text style={styles.CalendarcloseButtonText}>X</Text>
-          </TouchableOpacity>
-
-          {/* Add Event Button */}
-          <TouchableOpacity
-            style={styles.calendarButton}
-            onPress={() => setIsEventModalVisible(true)} // Open Add Event Modal
-          >
-            <Text style={styles.calendarButtonText}>Add Event</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          visible={isEventModalVisible}
-          transparent={true}
-          animationType="slide"
-        >
-          <BlurView style={styles.blurView} blurType="light" blurAmount={30} />
-
-          <View style={styles.CalendarmodalBackground}>
-            <View style={styles.CalendareventModalContent}>
-              {/* Wrap all text inside <Text> */}
-              <Text style={styles.CalendarmodalTitle}>Add Event</Text>
-              <TextInput
-                style={styles.Calendarinput}
-                placeholder="Event Title"
-                placeholderTextColor="#888888" // Set the desired placeholder color
-                value={eventTitle}
-                onChangeText={setEventTitle}
-              />
-              <TextInput
-                style={styles.Calendarinput}
-                placeholder="Event Description"
-                placeholderTextColor="#888888" // Set the desired placeholder color
-                value={eventDescription}
-                onChangeText={setEventDescription}
-                multiline
-              />
-              <TextInput
-                style={styles.Calendarinput}
-                placeholder="Event Place"
-                placeholderTextColor="#888888" // Set the desired placeholder color
-                value={eventPlace}
-                onChangeText={setEventPlace}
-              />
-
-              {/* Calendar for Day Selection */}
-              <Calendar
-                onDayPress={handleDayPress} // Save selected day
-                markedDates={{
-                  [selectedDate]: {
-                    selected: true,
-                    marked: true,
-                    selectedColor: "blue",
-                  },
-                }}
-              />
-
-              {/* Display Selected Date */}
-              <Text style={[styles.dateText, { marginBottom: 10 }]}>
-                Selected Date: {selectedDate || "None"}
-              </Text>
-
-              <Text style={[styles.inputlabel, { marginBottom: 10 }]}>
-                Event Date: {selectedDate || "None"}
-              </Text>
-              <TouchableOpacity
-                style={styles.CalendartimeButton}
-                onPress={() => setIsTimePickerVisible(true)}
-              >
-                <Text style={styles.CalendartimeButtonText}>
-                  Select Time:{" "}
-                  {eventTime.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                </Text>
-              </TouchableOpacity>
-
-              {/* Time Picker */}
-              {isTimePickerVisible && (
-                <DateTimePicker
-                  value={eventTime}
-                  mode="time" // Time picker mode
-                  is24Hour={false} // Set to true for 24-hour format
-                  display="default"
-                  onChange={handleTimeChange} // Handle time selection
-                />
-              )}
-
-              <TouchableOpacity
-                style={styles.CalendarsaveButton}
-                onPress={saveEvent}
-              >
-                <Text style={styles.CalendarsaveButtonText}>Save Event</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.CalendarcloseButton}
-                onPress={() => setIsEventModalVisible(false)}
-              >
-                <Text style={styles.CalendarcloseButtonText}>X</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      </Modal>
-
-      <Modal
-        visible={isEventDetailModalVisible}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={styles.eventDetailModalOverlay}>
-          <View style={styles.eventDetailModal}>
-            {/* Close Button in Top-Right */}
-            <TouchableOpacity
-              style={styles.eventDetailCloseButton}
-              onPress={() => setIsEventDetailModalVisible(false)}
-            >
-              <Text style={styles.eventDetailCloseButtonText}>X</Text>
-            </TouchableOpacity>
-
-            {/* Event Title */}
-            <Text style={styles.eventDetailTitle}>
-              {selectedEventDetails?.title || "No Title"}
-            </Text>
-
-            {/* Event Details */}
-            <Text style={styles.eventDetailText}>
-              Description:{" "}
-              {selectedEventDetails?.description || "No Description"}
-            </Text>
-            <Text style={styles.eventDetailText}>
-              Place: {selectedEventDetails?.place || "No Place"}
-            </Text>
-            <Text style={styles.eventDetailText}>
-              Date: {selectedDate || "No Date Selected"}
-            </Text>
-            <Text style={styles.eventDetailText}>
-              Time: {selectedEventDetails?.time || "No Time Selected"}
-            </Text>
-
-            {/* Event Image */}
-            <Image
-              source={require("../../../assets/Diggy.png")} // Replace with your character image path
-              style={styles.eventCharacterImage}
-            />
-
-            {/* Delete Button in Bottom-Right */}
-            <TouchableOpacity
-              style={styles.eventDetailDeleteButton}
-              onPress={() =>
-                handleDeleteEvent(selectedDate, selectedEventDetails)
-              }
-            >
-              <Text style={styles.eventDetailDeleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={isTimePickerVisible}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={styles.timePickerModalOverlay}>
-          <View style={styles.timePickerModal}>
-            {/* Hours Input */}
-            <View style={styles.timePickerRow}>
-              <Text style={styles.timePickerLabel}>Hour:</Text>
-              <TextInput
-                style={styles.timeInput}
-                keyboardType="numeric"
-                maxLength={2} // Restrict input to 2 digits
-                value={selectedHour?.toString() || ""} // Display current hour or empty
-                onChangeText={(value) => {
-                  setSelectedHour(value); // Allow free input
-                }}
-                placeholder="HH"
-                placeholderTextColor="gray"
-              />
-            </View>
-
-            {/* Minutes Input */}
-            <View style={styles.timePickerRow}>
-              <Text style={styles.timePickerLabel}>Minutes:</Text>
-              <TextInput
-                style={styles.timeInput}
-                keyboardType="numeric"
-                maxLength={2} // Restrict input to 2 digits
-                value={selectedMinute?.toString() || ""} // Display current minutes or empty
-                onChangeText={(value) => {
-                  setSelectedMinute(value); // Allow free input
-                }}
-                placeholder="MM"
-                placeholderTextColor="gray"
-              />
-            </View>
-
-            <View style={styles.timePickerRow}>
-              <Text style={styles.timePickerLabel}>AM/PM:</Text>
-              <DropDownPicker
-                open={isDropdownOpen}
-                value={selectedPeriod} // Current value
-                items={[
-                  { label: "AM", value: "AM" },
-                  { label: "PM", value: "PM" },
-                ]}
-                setOpen={setIsDropdownOpen}
-                setValue={setSelectedPeriod}
-                setItems={setDropdownItems}
-                style={styles.timePickerDropdown}
-              />
-            </View>
-
-            {/* Save Button */}
-            <TouchableOpacity
-              style={styles.timePickerSaveButton}
-              onPress={() => handleSaveTime()}
-            >
-              <Text style={styles.timePickerSaveButtonText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </ScrollView>
   );
 }

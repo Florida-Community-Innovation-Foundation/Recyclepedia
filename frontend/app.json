@@ -3,6 +3,27 @@
     "name": "DiG",
     "slug": "DiG",
     "version": "1.0.0",
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "diggy": {
+      "image": "./assets/diggy.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "cloud": {
+      "image": "./assets/cloud.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "mountain": {
+      "image": "./assets/diggy.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "magnifyingGlass": {
+      "image": "./assets/diggy.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "plugins": ["expo-router"]
   }
 }
