@@ -54,10 +54,15 @@ export default function LoginScreen() {
           autoComplete="new-password"
         />
         <Pressable style={styles.signupButton}>
-          <Text style={styles.signupText}> CONTINUE</Text>
+          <Text style={styles.signupText} onPress={() => authContext.login()}>
+            CONTINUE
+          </Text>
         </Pressable>
         <Divider />
-        <Pressable style={styles.loginButton}>
+        <Pressable
+          style={styles.loginButton}
+          onPress={() => authContext.login()}
+        >
           <FontAwesome5
             name="google"
             size={20}
@@ -66,7 +71,10 @@ export default function LoginScreen() {
           />
           <Text style={styles.loginText}> Continue with Google </Text>
         </Pressable>
-        <Pressable style={styles.loginButton}>
+        <Pressable
+          style={styles.loginButton}
+          onPress={() => authContext.login()}
+        >
           <FontAwesome5
             name="apple"
             size={20}
