@@ -1,29 +1,10 @@
 {
   "expo": {
-    "name": "DiG",
-    "slug": "DiG",
+    "name": "Recyclepedia",
+    "slug": "Recyclepedia",
+    "scheme": "recyclepedia",
     "version": "1.0.0",
     "newArchEnabled": true,
-    "diggy": {
-      "image": "./assets/diggy.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "cloud": {
-      "image": "./assets/cloud.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "mountain": {
-      "image": "./assets/diggy.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "magnifyingGlass": {
-      "image": "./assets/diggy.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "plugins": ["expo-router"]
   }
 }
