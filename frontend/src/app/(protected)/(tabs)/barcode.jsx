@@ -3,8 +3,8 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import CameraScan from "../camera/CameraScan";
-import ItemScanInstructions from "../camera/ItemScanInstructions";
+import CameraScan from "~/components/camera/CameraScan";
+import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 
 export default function ItemScan() {
   const navigation = useNavigation();

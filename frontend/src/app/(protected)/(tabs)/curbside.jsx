@@ -9,9 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { cityData } from "../util/CityData.js";
-import RecyclingList from "../components/RecyclingList.js";
-import { Picker } from "@react-native-picker/picker";
+import RecyclingList from "~/components/RecyclingList";
 
 export default function CurbsideDropoff() {
   const [city, setCity] = useState("");
@@ -127,7 +125,7 @@ export default function CurbsideDropoff() {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 //
 
 const styles = StyleSheet.create({
@@ -256,5 +254,3 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
-
-export default CurbsideDropoff;
