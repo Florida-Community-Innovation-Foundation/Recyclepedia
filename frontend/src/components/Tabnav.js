@@ -4,7 +4,7 @@ import Home from "./tabs/Home.js";
 import About from "./tabs/About.js";
 import CurbsideDropoff from "./tabs/CurbsideDropoff.js";
 import BarcodeScan from "./tabs/BarcodeScan.js";
-import UserAccount from "./tabs/UserAccount.js";
+import UserProfile from "./tabs/UserProfile.js";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Custombar from "./Custombar.js";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -54,13 +54,13 @@ function Tabnav() {
         }}
       />
       <Tab.Screen
-        name="User Account"
-        component={UserAccount}
+        name="User Profile"
+        component={UserProfile}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="account" size={size} color={color} />
           ),
-          tabBarLabel: "UserAccount",
+          tabBarLabel: "UserProfile",
         }}
       />
       <Tab.Screen

@@ -297,7 +297,7 @@ export default function Home({ navigation }) {
       <View style={styles.skyContainer}>
         {/* Cloud 1 */}
         <Animated.Image
-          source={require("../../../assets/cloud.png")}
+          source={require("~/assets/cloud.png")}
           style={[
             styles.cloud,
             {
@@ -310,7 +310,7 @@ export default function Home({ navigation }) {
 
         {/* Cloud 2 */}
         <Animated.Image
-          source={require("../../../assets/cloud.png")}
+          source={require("~/assets/cloud.png")}
           style={[
             styles.cloud,
             { transform: [{ translateY: cloud2Animation }], top: 35 },
@@ -319,7 +319,7 @@ export default function Home({ navigation }) {
 
         {/* Floating Mountain */}
         <Animated.Image
-          source={require("../../../assets/Mountain.png")} // Replace with your mountain image
+          source={require("~/assets/Mountain.png")} // Replace with your mountain image
           style={[
             styles.mountain,
             { transform: [{ translateY: mountainAnimation }], top: 7 }, // Floating effect
@@ -328,7 +328,7 @@ export default function Home({ navigation }) {
 
         {/* Diggy */}
         <Animated.Image
-          source={require("../../../assets/Diggy.png")}
+          source={require("~/assets/Diggy.png")}
           style={[
             styles.diggy,
             { transform: [{ translateY: DiggyAnimation }], left: 85, top: 95 },
@@ -652,7 +652,7 @@ export default function Home({ navigation }) {
 
             {/* Event Image */}
             <Image
-              source={require("../../../assets/Diggy.png")} // Replace with your character image path
+              source={require("~/assets/Diggy.png")} // Replace with your character image path
               style={styles.eventCharacterImage}
             />
 
