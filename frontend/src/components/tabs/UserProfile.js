@@ -1,12 +1,27 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import diggy from "~/assets/Diggy.png";
 
 export default function UserProfile() {
+  const [profilePicture, setProfilePicture] = useState(diggy);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
+
+  const handleProfilePictureEdit = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfilePicture({ uri: result.assets[0].uri });
+    }
+  };
 
   return (
     <View style={styles.screen}>
@@ -15,8 +30,11 @@ export default function UserProfile() {
           <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
         </Pressable>
         {/* Profile Picture */}
-        <Image source={diggy} style={styles.profilePicture} />
-        <Pressable style={styles.profilePictureEdit}>
+        <Image source={profilePicture} style={styles.profilePicture} />
+        <Pressable
+          style={styles.profilePictureEdit}
+          onPress={handleProfilePictureEdit}
+        >
           <MaterialIcons name="edit" size={24} color="#024935" />
         </Pressable>
         <Text style={styles.username}> HELI </Text>
