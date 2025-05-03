@@ -1,3 +1,4 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
@@ -10,6 +11,9 @@ export default function UserProfile() {
   return (
     <View style={styles.screen}>
       <View style={styles.profileBackground}>
+        <Pressable style={styles.settings}>
+          <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
+        </Pressable>
         {/* Profile Picture */}
         <Image source={diggy} style={styles.profilePicture} />
         <Pressable style={styles.profilePictureEdit}>
@@ -80,6 +84,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#024935",
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
+  },
+  settings: {
+    alignItems: "flex-end",
+    marginRight: 15,
   },
   profilePicture: {
     height: 125,
