@@ -9,8 +9,8 @@ import {
   SafeAreaView,
   Image,
 } from "react-native";
-import { cityData } from "../../util/CityData.js";
-import RecyclingList from "../RecyclingList.js";
+import { cityData } from "~/utils/CityData.js";
+import RecyclingList from "~/components/RecyclingList.js";
 import { Picker } from "@react-native-picker/picker";
 
 const CurbsideDropoff = ({ navigation }) => {
@@ -70,7 +70,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 placeholder="Search for recycling items..."
               />
               <Image
-                source={require("../../../assets/magnifyingGlass.png")}
+                source={require("~/assets/magnifyingGlass.png")}
                 style={styles.searchIcon}
               />
             </View>
