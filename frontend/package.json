@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/bebas-neue": "^0.3.0",
+    "@expo-google-fonts/titillium-web": "^0.3.0",
     "@react-native-community/blur": "^4.4.1",
     "@react-native-community/datetimepicker": "8.3.0",
     "@react-native-firebase/analytics": "^21.5.0",

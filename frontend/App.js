@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { enableScreens } from "react-native-screens";
 import { PaperProvider } from "react-native-paper";
+import { useFonts, TitilliumWeb_400Regular, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import AppLoading from 'expo-app-loading';
 
 // Import screens
 import Home from "./app/components/tabs/Home.js";
@@ -18,6 +20,13 @@ enableScreens();
 const Stack = createStackNavigator();
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    TitilliumWeb_400Regular,
+    BebasNeue_400Regular,
+  });
+  
+  
+
   return (
     <PaperProvider>
       <NavigationContainer>
