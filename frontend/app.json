@@ -6,6 +6,9 @@
     "newArchEnabled": true,
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.aadit.kamat.DiG"
+    }
   }
 }
