@@ -62,7 +62,7 @@ const CurbsideDropoff = ({ navigation }) => {
         <Text style={[styles.cityPickerLabel, {fontSize: 22}, {fontFamily: 'BebasNeue_400Regular'} ]}>{selectText}</Text>
 
           <View style={styles.pickerWrapper}>
-            /This needs to display categories not areas of miami-dade/
+            {/*This needs to display categories not areas of miami-dade*/}
             <Picker style={styles.pickerText} selectedValue={city} onValueChange={handleCityChange}>
               <Picker.Item label="What do you want to recycle?" value="" />
               {Object.keys(cityData).map((cityName) => (
