@@ -13,21 +13,19 @@ import { cityData } from "../../util/CityData.js";
 import CategorySelector from "../CategorySelector.js";
 import CitySelector from "../CitySelector.js";
 import RecyclingList from "../RecyclingList.js";
-import { Picker } from "@react-native-picker/picker";
-import AppLoading from 'expo-app-loading';
-import RNPickerSelect from 'react-native-picker-select';
-
 
 const CurbsideDropoff = ({ navigation }) => {
   const [city, setCity] = useState(null);
   const [category, setCategory] = useState(null);
   const [recyclingItems, setRecyclingItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [subtitle, setSubtitle] = useState("FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.")
-  const [curbsideColor, setCurbsideColor] = useState("white")
-  const [dropoffColor, setDropoffColor] = useState("#024935")
-  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY")
-  const [address, setAddress] = useState("")
+  const [subtitle, setSubtitle] = useState(
+    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+  );
+  const [curbsideColor, setCurbsideColor] = useState("white");
+  const [dropoffColor, setDropoffColor] = useState("#024935");
+  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     console.log(city);
@@ -49,8 +47,8 @@ const CurbsideDropoff = ({ navigation }) => {
     </View>
   );
 
-  const curbside = () =>{
-    return(
+  const curbside = () => {
+    return (
       <View>
         <View style={styles.cityPickerContainer}>
           <Text
@@ -72,54 +70,58 @@ const CurbsideDropoff = ({ navigation }) => {
     return (
       <View>
         <View style={styles.cityPickerContainer}>
-        <Text style={[styles.cityPickerLabel, {fontSize: 22}, {fontFamily: 'BebasNeue_400Regular'} ]}>{selectText}</Text>
+          <Text
+            style={[
+              styles.cityPickerLabel,
+              { fontSize: 22 },
+              { fontFamily: "BebasNeue_400Regular" },
+            ]}
+          >
+            {selectText}
+          </Text>
           <CategorySelector setCategory={setCategory} />
           <View style={styles.pickerWrapper}>
-            <TextInput style={styles.input} placeholder="Enter your address" value={address} onChangeText={setAddress}></TextInput>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your address"
+              value={address}
+              onChangeText={setAddress}
+            ></TextInput>
           </View>
         </View>
       </View>
     );
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.headerContainer}>
-<<<<<<< Updated upstream
-          /Curbside and drop off buttons*/
-
-=======
           {/*Curbside and drop off pill buttons*/}
->>>>>>> Stashed changes
           <View style={styles.pillButtons}>
             <TouchableOpacity
-            style={[styles.curbsidePill, { backgroundColor: curbsideColor }]} // Dynamically update background color
-            onPress={() => {
-              setSubtitle("FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.");
-              setCurbsideColor("white");
-              setDropoffColor("#024935");
-              setSelectText("SELECT YOUR MUNICIPALITY:");
-             }}>
-                <Text style={[{fontFamily: 'BebasNeue_400Regular'},styles.pillText,  { color: curbsideColor === "white" ? "#024935" : "white" }]}>CURBSIDE</Text>
+              style={[styles.curbsidePill, { backgroundColor: curbsideColor }]} // Dynamically update background color
+              onPress={() => {
+                setSubtitle(
+                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+                );
+                setCurbsideColor("white");
+                setDropoffColor("#024935");
+                setSelectText("SELECT YOUR MUNICIPALITY:");
+              }}
+            >
+              <Text
+                style={[
+                  { fontFamily: "BebasNeue_400Regular" },
+                  styles.pillText,
+                  { color: curbsideColor === "white" ? "#024935" : "white" },
+                ]}
+              >
+                CURBSIDE
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-<<<<<<< Updated upstream
-            style={[styles.dropOffPill, { backgroundColor: dropoffColor }]}
-            onPress={() =>{
-              setSubtitle("FIND DROP-OFF LOCATIONS FOR ITEMS THAT CAN'T GO IN \nYOUR CURBSIDE BIN.")
-              setCurbsideColor("#024935");
-              setDropoffColor("white");
-              setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
-             }}>
-                <Text style={[styles.pillText, {fontFamily: 'BebasNeue_400Regular'}, { color: dropoffColor === "white" ? "#024935" : "white" }]}>DROP-OFF</Text>            </TouchableOpacity>
-          </View>
-
-          <Text style={[styles.subtitle, {color:"#BBB8B8"}, {fontFamily: 'BebasNeue_400Regular'}]}> {subtitle} </Text>
-
-=======
               style={[styles.dropOffPill, { backgroundColor: dropoffColor }]}
               onPress={() => {
                 setSubtitle(
@@ -127,7 +129,6 @@ const CurbsideDropoff = ({ navigation }) => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setCity("");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -142,6 +143,7 @@ const CurbsideDropoff = ({ navigation }) => {
               </Text>{" "}
             </TouchableOpacity>
           </View>
+
           <Text
             style={[
               styles.subtitle,
@@ -151,13 +153,11 @@ const CurbsideDropoff = ({ navigation }) => {
           >
             {subtitle}
           </Text>
->>>>>>> Stashed changes
         </View>
 
         {/*Conditionally rendering drop downs based on color */}
         {curbsideColor === "white" && curbside()}
         {dropoffColor === "white" && dropOff()}
-
 
         {city && (
           <View style={styles.contentContainer}>
@@ -251,9 +251,6 @@ const CurbsideDropoff = ({ navigation }) => {
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   // General Containers
   container: {
@@ -266,19 +263,13 @@ const styles = StyleSheet.create({
 
   //Button container
   pillButtons: {
-<<<<<<< Updated upstream
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 45,
-=======
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 45,
     marginBottom: 10,
->>>>>>> Stashed changes
   },
   curbsidePill: {
-    backgroundColor: '',
+    backgroundColor: "",
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 25,
@@ -287,7 +278,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   dropOffPill: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 25,
@@ -296,21 +287,18 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   pillText: {
-    color: 'white',
+    color: "white",
     fontSize: 30,
-    textAlign: 'center',
+    textAlign: "center",
   },
-
 
   buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 10,
     paddingHorizontal: 10,
-    paddingVertical:35
+    paddingVertical: 35,
   },
-
-
 
   // Header Styles
   headerContainer: {
@@ -324,12 +312,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
-<<<<<<< Updated upstream
-    textAlign : "center",
-    marginTop: -30
-=======
     textAlign: "center",
->>>>>>> Stashed changes
   },
 
   // City Picker Styles
@@ -338,32 +321,28 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 20,
   },
-  input:{
+  input: {
     height: 50,
     fontSize: 16,
-    color:"#828282",
+    color: "#828282",
   },
   cityPickerLabel: {
     fontSize: 16,
     color: "white",
-<<<<<<< Updated upstream
     marginBottom: 10,
-    marginTop: -20
-=======
->>>>>>> Stashed changes
+    marginTop: -20,
   },
   pickerWrapper: {
-    backgroundColor:"white",
+    backgroundColor: "white",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 10,
-    height:50,
+    height: 50,
     marginBottom: 15,
-
   },
-  pickerText:{
-    color:"#828282",
-    height : 50
+  pickerText: {
+    color: "#828282",
+    height: 50,
   },
   // Search Styles
   searchContainer: {
