@@ -1,5 +1,5 @@
 [tool.commitizen]
-version = "0.1.0"  # This should be your current semver version
+version = "1.0.0"  # This should be your current semver version
 name = "cz_jira"
 tag_format = "$version"
 version_scheme = "semver"
