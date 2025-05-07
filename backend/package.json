@@ -1,0 +1,17 @@
+{
+  "name": "recyclepedia-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "dotenvx run -- node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.40.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.2.0"
+  }
+}

@@ -3,6 +3,14 @@
     "name": "DiG",
     "slug": "DiG",
     "version": "1.0.0",
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "plugins": [
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app needs to access your calendar."
+        }
+      ]
+    ]
   }
 }

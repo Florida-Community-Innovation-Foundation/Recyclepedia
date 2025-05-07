@@ -6,12 +6,12 @@ import { enableScreens } from "react-native-screens";
 import { PaperProvider } from "react-native-paper";
 
 // Import screens
-import Home from "./app/components/tabs/Home.js";
-import About from "./app/components/tabs/About.js";
-import CurbsideDropoff from "./app/components/tabs/CurbsideDropoff.js";
-import UserAccount from "./app/components/tabs/UserAccount.js";
-import BarcodeScan from "./app/components/tabs/BarcodeScan.js";
-import Tabnav from "./app/components/Tabnav.js";
+import Home from "./app/screens/Home.js";
+import About from "./app/screens/About.js";
+import CurbsideDropoff from "./app/screens/CurbsideDropoff.js";
+import UserAccount from "./app/screens/UserAccount.js";
+import BarcodeScan from "./app/screens/BarcodeScan.js";
+import Tabnav from "./Tabnav.js";
 
 enableScreens();
 
