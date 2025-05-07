@@ -1,79 +1,75 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import _ from "lodash";
+import React from "react";
+import { Platform, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import { cityData } from "../util/CityData.js";
 
-const CitySelector = ({ onCityChange }) => {
-  const cities = [
-    'Aventura',
-    'Bal Harbour',
-    'Bay Harbor Islands',
-    'Biscayne Park',
-    'Coral Gables',
-    'Cutler Bay',
-    'Doral',
-    'El Portal',
-    'Florida City',
-    'Golden Beach',
-    'Hialeah',
-    'Hialeah Gardens',
-    'Homestead',
-    'Indian Creek',
-    'Key Biscayne',
-    'Medley',
-    'Miami',
-    'Miami Beach',
-    'Miami Gardens',
-    'Miami Lakes',
-    'Miami Shores',
-    'Miami Springs',
-    'North Bay Village',
-    'North Miami',
-    'North Miami Beach',
-    'Opa-Locka',
-    'Palmetto Bay',
-    'Pinecrest',
-    'South Miami',
-    'Sunny Isles Beach',
-    'Surfside',
-    'Sweetwater',
-    'Virginia Gardens',
-    'West Miami',
-    'Unincorporated Dade',
-  ];
+export default function CitySelector({ setCity }) {
+  const selectorData = _.chain(cityData)
+    .keys()
+    .map((city) => {
+      return { label: city, value: city };
+    });
 
-  return (
-    <View style={styles.pickerContainer}>
-      <Picker
-        onValueChange={(itemValue) => onCityChange(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item 
-          label="Select a municipality" 
-          value="" 
-          color="#888" 
+  if (Platform.OS === "android") {
+    return (
+      <View style={styles.androidPickerContainer}>
+        <Dropdown
+          style={styles.androidPicker}
+          data={selectorData}
+          labelField="label"
+          valueField="value"
+          itemTextStyle={styles.itemTextStyle}
+          placeholder="Select a municipality"
+          onChange={(item) => setCity(item.value)}
+          renderRightIcon={() => (
+            <FontAwesome name="caret-down" size={20} color="#024935" />
+          )}
         />
-        {cities.map((city) => (
-          <Picker.Item 
-            key={city} 
-            label={city} 
-            value={city} 
-          />
-        ))}
-      </Picker>
-    </View>
-  );
-};
+      </View>
+    );
+  } else {
+    return (
+      <Dropdown
+        style={styles.iosPicker}
+        data={selectorData}
+        labelField="label"
+        valueField="value"
+        itemTextStyle={styles.itemTextStyle}
+        placeholder="Select a municipality"
+        onChange={(item) => setCity(item.value)}
+        renderRightIcon={() => (
+          <FontAwesome name="caret-down" size={20} color="#024935" />
+        )}
+      />
+    );
+  }
+}
 
 const styles = {
-  pickerContainer: {
+  androidPickerContainer: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
   },
-  picker: {
+  androidPicker: {
     height: 50,
-    width: '100%',
+    width: "100%",
+  },
+  iosPicker: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    height: 50,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  iconStyle: {
+    marginRight: 10,
+  },
+  itemTextStyle: {
+    color: "#494B4A",
+    fontFamily: "Titillium Web",
   },
 };
-
-export default CitySelector;
