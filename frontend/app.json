@@ -19,7 +19,7 @@
     "updates": {
       "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
     },
-    "android": {}
+    "android": {},
     "plugins": [
       [
         "expo-calendar",
