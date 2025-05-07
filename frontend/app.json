@@ -9,6 +9,19 @@
     ],
     "ios": {
       "bundleIdentifier": "com.aadit.kamat.DiG"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "06c6a2cb-76dc-43ec-83bb-827a7072a931"
+      }
+    },
+    "owner": "aadit.kamat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
+    },
+    "android": {}
   }
 }
