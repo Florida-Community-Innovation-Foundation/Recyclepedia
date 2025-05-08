@@ -1,13 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { normalize } from "~/utils/normalize";
 import CategoryCard from "./CategoryCard";

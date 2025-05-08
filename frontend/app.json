@@ -24,7 +24,33 @@
         {
           "calendarPermission": "The app needs to access your calendar."
         }
+      ],
+      ["expo-font"],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": "true",
+          "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
+        }
       ]
     ]
+  },
+  "android": {
+    "config": {
+      "googleMaps": {
+        "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+      }
+    }
+  },
+  "ios": {
+    "config": {
+      "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+    }
   }
 }
