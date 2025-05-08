@@ -1,11 +1,17 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import _ from "lodash";
-import React from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { categoryData, cityData } from "../util/CityData.js";
 
 export default function DropdownSelector({ itemType, setItem }) {
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
+
   let selectorData;
   if (itemType === "city") {
     selectorData = _.chain(cityData)
@@ -31,8 +37,17 @@ export default function DropdownSelector({ itemType, setItem }) {
           <Text style={styles.itemTextStyle}>{item.label}</Text>
         </View>
       )}
-      placeholder="Select a municipality"
-      onChange={(item) => setItem(item.value)}
+      placeholderStyle={styles.placeholderStyle}
+      placeholder={
+        itemType === "city"
+          ? "Select municipality"
+          : "What do you want to recycle?"
+      }
+      value={value}
+      onChange={(item) => {
+        setValue(item.value);
+        setItem(item.value);
+      }}
       renderRightIcon={() => (
         <FontAwesome name="caret-down" size={20} color="#024935" />
       )}
@@ -60,5 +75,10 @@ const styles = {
   },
   selectedItem: {
     backgroundColor: "#CCDED6",
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    fontFamily: "Titillium Web",
+    color: "#828282",
   },
 };
