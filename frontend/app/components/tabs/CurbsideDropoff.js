@@ -12,12 +12,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { cityData } from "../../util/CityData.js";
 import DropdownSelector from "../DropdownSelector.js";
 import RecyclingList from "../RecyclingList.js";
 
 const CurbsideDropoff = ({ navigation }) => {
-  const [city, setCity] = useState(null);
   const [category, setCategory] = useState(null);
   const [recyclingItems, setRecyclingItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,11 +27,68 @@ const CurbsideDropoff = ({ navigation }) => {
   const [curbsideColor, setCurbsideColor] = useState("white");
   const [dropoffColor, setDropoffColor] = useState("#024935");
   const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
-  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState({});
+  const [finalAddress, setFinalAddress] = useState(null);
+  const [currentAddress, setCurrentAddress] = useState(null);
+  const [places, setPlaces] = useState([]);
+
+  const MAP_LABEL = "DROP-OFF LOCATIONS:";
 
   useEffect(() => {
-    setRecyclingItems(cityData[city] || []);
-  }, [city]);
+    console.log(finalAddress);
+    if (finalAddress) {
+      Location.geocodeAsync(finalAddress)
+        .then((coordinatesList) => {
+          setLocation(coordinatesList[0]);
+        })
+        .then(() => setRecyclingItems(cityData[finalAddress] || []))
+        .catch(console.error);
+    }
+  }, [finalAddress]);
+
+  useEffect(() => {
+    Location.reverseGeocodeAsync(location).then((addresses) => {
+      if (curbsideColor === "white") {
+        if (_.hasIn(cityData, addresses[0].city)) {
+          setFinalAddress(addresses[0].city);
+        } else {
+          setFinalAddress("");
+        }
+      } else {
+        setFinalAddress(
+          `${addresses[0].name}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country} ${addresses[0].postalCode}`,
+        );
+      }
+    });
+  }, [location]);
+
+  const handleSubmit = async () => {
+    if (category) {
+      try {
+        const fetchQuery = `${category} recycling centers near ${finalAddress}`;
+        console.log(fetchQuery);
+        const response = await fetch(
+          "https://places.googleapis.com/v1/places:searchText",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY,
+              "X-Goog-FieldMask":
+                "places.location,places.displayName,places.formattedAddress",
+            },
+            body: JSON.stringify({
+              textQuery: fetchQuery,
+            }),
+          },
+        );
+        const data = await response.json();
+        setPlaces(data["places"]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   const handleCurrentLocationPress = async (event) => {
     try {
@@ -40,24 +97,12 @@ const CurbsideDropoff = ({ navigation }) => {
         alert("Permission to access location was denied");
         return;
       }
-
-      const location = await Location.getCurrentPositionAsync({});
-      const addresses = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-      const address = addresses[0];
-      if (curbsideColor === "white") {
-        if (_.includes(cityData, address.city)) {
-          setCity(address.city);
-        } else {
-          setCity("");
-        }
-      } else {
-        setAddress(
-          `${address.name}, ${address.city}, ${address.region}, ${address.country} ${address.postalCode}`,
-        );
-      }
+      const position = await Location.getCurrentPositionAsync({});
+      const currentLocation = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      setLocation(currentLocation);
     } catch (error) {
       console.error(error.message);
     }
@@ -66,9 +111,10 @@ const CurbsideDropoff = ({ navigation }) => {
     setSearchQuery(text);
   };
 
-  const filteredItems = recyclingItems.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filterItems = (category) =>
+    recyclingItems.filter((item) =>
+      item.name.toLowerCase().includes(category.toLowerCase()),
+    );
 
   const DoAndDontSection = () => (
     <View style={styles.sectionContainer}>
@@ -76,52 +122,6 @@ const CurbsideDropoff = ({ navigation }) => {
       {/* Your Do's and Don't's items go here */}
     </View>
   );
-
-  const curbside = () => {
-    return (
-      <View>
-        <View style={styles.cityPickerContainer}>
-          <Text
-            style={[
-              styles.cityPickerLabel,
-              { fontSize: 25 },
-              { fontFamily: "BebasNeue_400Regular" },
-            ]}
-          >
-            {selectText}
-          </Text>
-          <DropdownSelector itemType="city" setItem={setCity} />
-        </View>
-      </View>
-    );
-  };
-
-  const dropOff = () => {
-    return (
-      <View>
-        <View style={styles.cityPickerContainer}>
-          <Text
-            style={[
-              styles.cityPickerLabel,
-              { fontSize: 22 },
-              { fontFamily: "BebasNeue_400Regular" },
-            ]}
-          >
-            {selectText}
-          </Text>
-          <DropdownSelector itemType="category" setItem={setCategory} />
-          <View style={styles.pickerWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your address"
-              value={address}
-              onChangeText={setAddress}
-            />
-          </View>
-        </View>
-      </View>
-    );
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -159,7 +159,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setCity("");
+                setFinalAddress("");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -187,9 +187,42 @@ const CurbsideDropoff = ({ navigation }) => {
         </View>
 
         {/*Conditionally rendering drop downs based on color */}
-        {curbsideColor === "white" && curbside()}
-        {dropoffColor === "white" && dropOff()}
+        {curbsideColor === "white" && (
+          <View>
+            <View style={styles.cityPickerContainer}>
+              <Text
+                style={[
+                  styles.cityPickerLabel,
+                  { fontSize: 25 },
+                  { fontFamily: "BebasNeue_400Regular" },
+                ]}
+              >
+                {selectText}
+              </Text>
+              <DropdownSelector itemType="city" setItem={setFinalAddress} />
+            </View>
+          </View>
+        )}
 
+        {dropoffColor === "white" && (
+          <View>
+            <View style={styles.cityPickerContainer}>
+              <Text
+                style={[
+                  styles.cityPickerLabel,
+                  { fontSize: 22 },
+                  { fontFamily: "BebasNeue_400Regular" },
+                ]}
+              >
+                {selectText}
+              </Text>
+              <DropdownSelector itemType="category" setItem={setCategory} />
+              <DropdownSelector itemType="city" setItem={setFinalAddress} />
+            </View>
+          </View>
+        )}
+
+        {/* Show "Use my current location" for users to populate location data automatically */}
         <Pressable
           style={styles.selectCurrentLocation}
           onPress={handleCurrentLocationPress}
@@ -200,7 +233,53 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         </Pressable>
 
-        {city && (
+        {dropoffColor === "white" && (
+          <Pressable style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}> Submit </Text>
+          </Pressable>
+        )}
+
+        {dropoffColor === "white" && (
+          <Text
+            style={[
+              styles.subtitle,
+              {
+                marginTop: 10,
+                marginBottom: 10,
+                color: "#FFFFFF",
+                textAlign: "left",
+                marginHorizontal: 32,
+              },
+              { fontFamily: "BebasNeue_400Regular" },
+            ]}
+          >
+            {MAP_LABEL}
+          </Text>
+        )}
+
+        {/* Map */}
+        <MapView
+          region={location}
+          style={
+            curbsideColor === "white"
+              ? [styles.map, { marginTop: 30 }]
+              : styles.map
+          }
+          provider={PROVIDER_GOOGLE}
+        >
+          {places &&
+            places.map((place, index) => (
+              <Marker
+                key={index}
+                coordinate={place.location}
+                title={place.displayName.text}
+                description={place.formattedAddress}
+              />
+            ))}
+        </MapView>
+
+        {/* Show recycling information */}
+        {finalAddress && (
           <View style={styles.contentContainer}>
             <View style={styles.searchContainer}>
               <TextInput
@@ -213,8 +292,8 @@ const CurbsideDropoff = ({ navigation }) => {
             </View>
 
             <RecyclingList
-              items={filteredItems}
-              city={city}
+              items={filterItems(searchQuery)}
+              city={finalAddress}
               cityData={cityData}
             />
 
@@ -303,7 +382,6 @@ const styles = StyleSheet.create({
   pillButtons: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 45,
     marginBottom: 10,
   },
   curbsidePill: {
@@ -341,7 +419,7 @@ const styles = StyleSheet.create({
   // Header Styles
   headerContainer: {
     alignItems: "center",
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   title: {
     fontSize: 28,
@@ -368,7 +446,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
     marginBottom: 10,
-    marginTop: -20,
+    marginTop: -10,
   },
   pickerWrapper: {
     backgroundColor: "white",
@@ -397,6 +475,35 @@ const styles = StyleSheet.create({
     fontFamily: "Titillium Web",
     fontSize: 14,
     fontWeight: 400,
+  },
+
+  //Submit Button Styles
+  submitButton: {
+    backgroundColor: "#24A0ED",
+    width: 150,
+    height: 40,
+    borderRadius: 8,
+    marginBottom: 5,
+    marginTop: 15,
+    marginLeft: 32,
+    marginRight: 32,
+    marginLeft: 200,
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    marginTop: 10,
+    textAlign: "center",
+  },
+  //Map Styles
+  map: {
+    width: 320,
+    height: 300,
+    marginHorizontal: 32,
+    borderRadius: 11,
+  },
+  callout: {
+    backgroundColor: "white",
+    padding: 10,
   },
   // Search Styles
   searchContainer: {

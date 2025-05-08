@@ -1,16 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import _ from "lodash";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { categoryData, cityData } from "../util/CityData.js";
 
 export default function DropdownSelector({ itemType, setItem }) {
   const [value, setValue] = useState("");
-
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
 
   let selectorData;
   if (itemType === "city") {
@@ -62,7 +58,7 @@ const styles = {
     borderColor: "#ddd",
     borderRadius: 10,
     padding: 10,
-    marginTop: 10,
+    marginTop: 5,
     paddingHorizontal: 10,
   },
   iconStyle: {
