@@ -3,7 +3,7 @@ import _ from "lodash";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { categoryData, cityData } from "../util/CityData.js";
+import { categoryData, cityData } from "~/utils/CityData.js";
 
 export default function DropdownSelector({ itemType, setItem }) {
   const [value, setValue] = useState("");

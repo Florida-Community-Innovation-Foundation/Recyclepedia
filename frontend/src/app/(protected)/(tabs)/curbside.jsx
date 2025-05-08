@@ -3,21 +3,21 @@ import * as Location from "expo-location";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import {
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { cityData } from "../../util/CityData.js";
-import DropdownSelector from "../DropdownSelector.js";
-import RecyclingList from "../RecyclingList.js";
+import DropdownSelector from "~/components/DropdownSelector";
+import RecyclingList from "~/components/RecyclingList";
+import { cityData } from "~/utils/CityData";
 
-const CurbsideDropoff = ({ navigation }) => {
+export default function CurbsideDropoff() {
   const [category, setCategory] = useState(null);
   const [recyclingItems, setRecyclingItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -363,7 +363,7 @@ const CurbsideDropoff = ({ navigation }) => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   // General Containers
