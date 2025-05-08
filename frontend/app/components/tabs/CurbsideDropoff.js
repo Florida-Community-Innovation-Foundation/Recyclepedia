@@ -1,6 +1,9 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import * as Location from "expo-location";
+import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import {
-  Image,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -28,10 +31,38 @@ const CurbsideDropoff = ({ navigation }) => {
   const [address, setAddress] = useState("");
 
   useEffect(() => {
-    console.log(city);
     setRecyclingItems(cityData[city] || []);
   }, [city]);
 
+  const handleCurrentLocationPress = async (event) => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const addresses = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      const address = addresses[0];
+      if (curbsideColor === "white") {
+        if (_.includes(cityData, address.city)) {
+          setCity(address.city);
+        } else {
+          setCity("");
+        }
+      } else {
+        setAddress(
+          `${address.name}, ${address.city}, ${address.region}, ${address.country} ${address.postalCode}`,
+        );
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   const handleSearchChange = (text) => {
     setSearchQuery(text);
   };
@@ -95,7 +126,7 @@ const CurbsideDropoff = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView styles={styles.scrollContainer}>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
           <View style={styles.pillButtons}>
@@ -129,6 +160,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
+                setCity("");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -140,7 +172,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 ]}
               >
                 DROP-OFF
-              </Text>{" "}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -159,6 +191,16 @@ const CurbsideDropoff = ({ navigation }) => {
         {curbsideColor === "white" && curbside()}
         {dropoffColor === "white" && dropOff()}
 
+        <Pressable
+          style={styles.selectCurrentLocation}
+          onPress={handleCurrentLocationPress}
+        >
+          <FontAwesome name="location-arrow" size={18} color="#828282" />
+          <Text style={styles.selectCurrentLocationText}>
+            Use my current location
+          </Text>
+        </Pressable>
+
         {city && (
           <View style={styles.contentContainer}>
             <View style={styles.searchContainer}>
@@ -168,10 +210,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 onChangeText={handleSearchChange}
                 placeholder="Search for recycling items..."
               />
-              <Image
-                source={require("../../../assets/magnifyingGlass.png")}
-                style={styles.searchIcon}
-              />
+              <FontAwesome name="search" size={20} color="#024935" />
             </View>
 
             <RecyclingList
@@ -259,8 +298,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginHorizontal: 10,
+    marginVertical: 10,
   },
-
   //Button container
   pillButtons: {
     flexDirection: "row",
@@ -338,11 +377,27 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 10,
     height: 50,
-    marginBottom: 15,
+    marginTop: 10,
+    paddingLeft: 10,
   },
   pickerText: {
     color: "#828282",
     height: 50,
+  },
+  // Location select Styles
+  selectCurrentLocation: {
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: 185,
+  },
+  selectCurrentLocationText: {
+    textAlign: "right",
+    color: "#828282",
+    textDecorationLine: "underline",
+    marginLeft: 5,
+    fontFamily: "Titillium Web",
+    fontSize: 14,
+    fontWeight: 400,
   },
   // Search Styles
   searchContainer: {
@@ -352,6 +407,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 15,
     marginBottom: 15,
+    marginHorizontal: 16,
   },
   searchInput: {
     flex: 1,
@@ -369,6 +425,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     marginBottom: 15,
+    marginHorizontal: 16,
   },
   sectionTitle: {
     fontSize: 20,
@@ -384,6 +441,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     marginBottom: 50,
+    marginHorizontal: 16,
     alignItems: "center",
   },
   alternativeText: {
