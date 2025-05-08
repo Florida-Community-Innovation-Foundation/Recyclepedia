@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import _ from "lodash";
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { cityData } from "../util/CityData.js";
 
@@ -10,7 +10,8 @@ export default function CitySelector({ setCity }) {
     .keys()
     .map((city) => {
       return { label: city, value: city };
-    });
+    })
+    .value();
 
   if (Platform.OS === "android") {
     return (
@@ -18,9 +19,11 @@ export default function CitySelector({ setCity }) {
         <Dropdown
           style={styles.androidPicker}
           data={selectorData}
-          labelField="label"
-          valueField="value"
-          itemTextStyle={styles.itemTextStyle}
+          renderItem={(item, selected) => (
+            <View style={selected ? styles.selectedItem : {}}>
+              <Text style={itemTextStyle}>{item.label}</Text>
+            </View>
+          )}
           placeholder="Select a municipality"
           onChange={(item) => setCity(item.value)}
           renderRightIcon={() => (
@@ -34,9 +37,11 @@ export default function CitySelector({ setCity }) {
       <Dropdown
         style={styles.iosPicker}
         data={selectorData}
-        labelField="label"
-        valueField="value"
-        itemTextStyle={styles.itemTextStyle}
+        renderItem={(item) => (
+          <View>
+            <Text style={styles.itemTextStyle}>{item.label}</Text>
+          </View>
+        )}
         placeholder="Select a municipality"
         onChange={(item) => setCity(item.value)}
         renderRightIcon={() => (
@@ -61,8 +66,8 @@ const styles = {
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 10,
-    height: 50,
-    marginVertical: 10,
+    padding: 10,
+    marginTop: 10,
     paddingHorizontal: 10,
   },
   iconStyle: {
@@ -71,5 +76,9 @@ const styles = {
   itemTextStyle: {
     color: "#494B4A",
     fontFamily: "Titillium Web",
+    fontSize: 16,
+  },
+  selectedItem: {
+    backgroundColor: "#CCDED6",
   },
 };
