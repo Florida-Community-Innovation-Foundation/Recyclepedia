@@ -13,8 +13,7 @@ import {
   View,
 } from "react-native";
 import { cityData } from "../../util/CityData.js";
-import CategorySelector from "../CategorySelector.js";
-import CitySelector from "../CitySelector.js";
+import DropdownSelector from "../DropdownSelector.js";
 import RecyclingList from "../RecyclingList.js";
 
 const CurbsideDropoff = ({ navigation }) => {
@@ -91,7 +90,7 @@ const CurbsideDropoff = ({ navigation }) => {
           >
             {selectText}
           </Text>
-          <CitySelector setCity={setCity} />
+          <DropdownSelector itemType="city" setItem={setCity} />
         </View>
       </View>
     );
@@ -110,14 +109,14 @@ const CurbsideDropoff = ({ navigation }) => {
           >
             {selectText}
           </Text>
-          <CategorySelector setCategory={setCategory} />
+          <DropdownSelector itemType="category" setItem={setCategory} />
           <View style={styles.pickerWrapper}>
             <TextInput
               style={styles.input}
               placeholder="Enter your address"
               value={address}
               onChangeText={setAddress}
-            ></TextInput>
+            />
           </View>
         </View>
       </View>
