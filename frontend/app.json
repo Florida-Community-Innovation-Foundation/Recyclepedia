@@ -6,7 +6,9 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
-      ["expo-router"],
+      [
+        "expo-router"
+      ],
       [
         "expo-camera",
         {
@@ -25,7 +27,9 @@
           "calendarPermission": "The app needs to access your calendar."
         }
       ],
-      ["expo-font"],
+      [
+        "expo-font"
+      ],
       [
         "expo-location",
         {
@@ -39,7 +43,31 @@
           "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
+      }
+    },
+    "owner": "aadit.kamat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/590ccc4f-8748-4498-862f-7d1b9e1d49e6"
+    },
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "ios": {}
   },
   "android": {
     "config": {
