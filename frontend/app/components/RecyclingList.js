@@ -13,7 +13,7 @@ import { normalize } from "../components/normalize";
 import CategoryCard from "./CategoryCard";
 import RecyclingItemCard from "./RecyclingItemCard";
 
-const RecyclingList = ({ items, city, cityData }) => {
+const RecyclingList = ({ items, city }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null);
 
@@ -74,8 +74,8 @@ const RecyclingList = ({ items, city, cityData }) => {
           <View style={styles.itemsGrid}>
             {filteredItems.map((item, index) => {
               const canRecycle =
-                city && cityData[city]
-                  ? cityData[city].some(
+                city && curbsideData[city]
+                  ? curbsideData[city].some(
                       (recyclableItem) =>
                         recyclableItem.name === item.name &&
                         recyclableItem.canRecycle,

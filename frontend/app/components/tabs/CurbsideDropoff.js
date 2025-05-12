@@ -1,4 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
@@ -13,7 +14,11 @@ import {
   View,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { cityData } from "../../util/CityData.js";
+import {
+  getCategories,
+  getCurbsideData,
+  getDropoffData,
+} from "../../util/baselineData.js";
 import DropdownSelector from "../DropdownSelector.js";
 import RecyclingList from "../RecyclingList.js";
 
@@ -28,62 +33,37 @@ const CurbsideDropoff = ({ navigation }) => {
   const [dropoffColor, setDropoffColor] = useState("#024935");
   const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
   const [location, setLocation] = useState({});
-  const [finalAddress, setFinalAddress] = useState(null);
-  const [currentAddress, setCurrentAddress] = useState(null);
+  const [city, setCity] = useState(null);
   const [places, setPlaces] = useState([]);
-
+  const { data, pending } = useQueries({
+    queries: [
+      { queryKey: ["categories"], queryFn: () => getCategories() },
+      { queryKey: ["curbside"], queryFn: () => getCurbsideData() },
+    ],
+    combine: (results) => {
+      return {
+        data: results.map((result) => result.data),
+        pending: results.some((result) => result.isPending),
+      };
+    },
+  });
   const MAP_LABEL = "DROP-OFF LOCATIONS:";
 
   useEffect(() => {
-    console.log(finalAddress);
-    if (finalAddress) {
-      Location.geocodeAsync(finalAddress)
-        .then((coordinatesList) => {
-          setLocation(coordinatesList[0]);
-        })
-        .then(() => setRecyclingItems(cityData[finalAddress] || []))
-        .catch(console.error);
-    }
-  }, [finalAddress]);
-
-  useEffect(() => {
-    Location.reverseGeocodeAsync(location).then((addresses) => {
-      if (curbsideColor === "white") {
-        if (_.hasIn(cityData, addresses[0].city)) {
-          setFinalAddress(addresses[0].city);
-        } else {
-          setFinalAddress("");
-        }
-      } else {
-        setFinalAddress(
-          `${addresses[0].name}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country} ${addresses[0].postalCode}`,
-        );
-      }
+    Location.geocodeAsync(city).then((geocodedLocation) => {
+      setLocation(_.pick(geocodedLocation[0], ["latitude", "longitude"]));
     });
-  }, [location]);
+  }, [city]);
+
+  const getCities = (curbsideData) =>
+    _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
   const handleSubmit = async () => {
     if (category) {
       try {
-        const fetchQuery = `${category} recycling centers near ${finalAddress}`;
-        console.log(fetchQuery);
-        const response = await fetch(
-          "https://places.googleapis.com/v1/places:searchText",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Goog-Api-Key": process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY,
-              "X-Goog-FieldMask":
-                "places.location,places.displayName,places.formattedAddress",
-            },
-            body: JSON.stringify({
-              textQuery: fetchQuery,
-            }),
-          },
-        );
-        const data = await response.json();
-        setPlaces(data["places"]);
+        getDropoffData(category).then((dropOffLocations) => {
+          setPlaces(dropOffLocations);
+        });
       } catch (error) {
         console.error(error);
       }
@@ -125,7 +105,7 @@ const CurbsideDropoff = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView styles={styles.scrollContainer}>
+      <ScrollView>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
           <View style={styles.pillButtons}>
@@ -159,7 +139,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setFinalAddress("");
+                setCity("");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -199,7 +179,7 @@ const CurbsideDropoff = ({ navigation }) => {
               >
                 {selectText}
               </Text>
-              <DropdownSelector itemType="city" setItem={setFinalAddress} />
+              <DropdownSelector setItem={setCity} cities={getCities(data[1])} />
             </View>
           </View>
         )}
@@ -216,8 +196,18 @@ const CurbsideDropoff = ({ navigation }) => {
               >
                 {selectText}
               </Text>
-              <DropdownSelector itemType="category" setItem={setCategory} />
-              <DropdownSelector itemType="city" setItem={setFinalAddress} />
+              <>
+                <DropdownSelector
+                  itemType="category"
+                  setItem={setCategory}
+                  categories={data[0]}
+                />
+                <DropdownSelector
+                  itemType="city"
+                  setItem={setCity}
+                  cities={getCities(data[1])}
+                />
+              </>
             </View>
           </View>
         )}
@@ -279,7 +269,7 @@ const CurbsideDropoff = ({ navigation }) => {
         </MapView>
 
         {/* Show recycling information */}
-        {finalAddress && (
+        {city && (
           <View style={styles.contentContainer}>
             <View style={styles.searchContainer}>
               <TextInput
@@ -291,11 +281,7 @@ const CurbsideDropoff = ({ navigation }) => {
               <FontAwesome name="search" size={20} color="#024935" />
             </View>
 
-            <RecyclingList
-              items={filterItems(searchQuery)}
-              city={finalAddress}
-              cityData={cityData}
-            />
+            <RecyclingList items={filterItems(searchQuery)} city={city} />
 
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
