@@ -1,7 +1,7 @@
 import express from "express";
 import _ from "lodash";
 import xlsx from "xlsx";
-import getBaselineData from "../utils/getBaselineDataFromStorage.js";
+import getBaselineData from "../utils/firebaseStorage.js";
 
 const router = express.Router();
 

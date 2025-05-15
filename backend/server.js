@@ -1,41 +1,48 @@
-import cookieParser from "cookie-parser";
-import express from "express";
-import createError from "http-errors";
-import logger from "morgan";
+// Copyright 2021 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-import indexRouter from "./routes/index.js";
+import app from "./app.js";
+import { initLogCorrelation, logger } from "./utils/logging.js";
+import { fetchProjectId } from "./utils/metadata.js";
 
-var server = express();
+/**
+ * Initialize app and start Express server
+ */
+const main = async () => {
+  let project = process.env.GOOGLE_CLOUD_PROJECT;
+  if (!project) {
+    try {
+      project = await fetchProjectId();
+    } catch {
+      logger.warn("Could not fetch Project Id for tracing.");
+    }
+  }
+  // Initialize request-based logger with project Id
+  initLogCorrelation(project);
 
-server.use(logger("dev"));
-server.use(express.json());
-server.use(express.urlencoded({ extended: false }));
-server.use(cookieParser());
-server.use(express.static("public"));
-server.set("view engine", "pug");
+  // Start server listening on PORT env var
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
+};
 
-server.use("/", indexRouter);
-
-// catch 404 and forward to error handler
-server.use(function (req, res, next) {
-  next(createError(404));
+/**
+ * Listen for termination signal
+ */
+process.on("SIGTERM", () => {
+  // Clean up resources on shutdown
+  logger.info("Caught SIGTERM.");
+  logger.flush();
 });
 
-// error handler
-server.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = err;
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error", { title: "Error" });
-});
-
-const port = process.env.PORT || 3000;
-
-server.listen(port, () => {
-  console.log(`Express server listening on port ${port}`);
-});
-
-export default server;
+main();
