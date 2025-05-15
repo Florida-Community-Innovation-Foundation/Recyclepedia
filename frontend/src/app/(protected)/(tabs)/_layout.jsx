@@ -2,7 +2,6 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import React from "react";
 import Custombar from "~/components/Custombar";
 
 export default function BottomTabsLayout() {

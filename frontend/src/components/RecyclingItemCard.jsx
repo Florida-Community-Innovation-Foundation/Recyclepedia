@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { normalize } from "~/utils/normalize";
 
-const RecyclingItemCard = ({ item, canRecycle }) => {
+const RecyclingItemCard = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => {
@@ -22,10 +22,10 @@ const RecyclingItemCard = ({ item, canRecycle }) => {
         <Text
           style={[
             styles.badge,
-            canRecycle ? styles.acceptedBadge : styles.avoidBadge,
+            item.canRecycle ? styles.acceptedBadge : styles.avoidBadge,
           ]}
         >
-          {canRecycle ? "Accepted" : "Avoid"}
+          {item.canRecycle ? "Accepted" : "Avoid"}
         </Text>
       </View>
 
@@ -33,7 +33,7 @@ const RecyclingItemCard = ({ item, canRecycle }) => {
         <View style={styles.textContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
           <Image
-            source={item.image}
+            source={item.imageURL || "https://placehold.co/96"}
             style={styles.itemImage}
             resizeMode="cover"
           />
@@ -62,8 +62,9 @@ const RecyclingItemCard = ({ item, canRecycle }) => {
               >
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
+              {console.log(item.imageURL)}
               <Image
-                source={item.image || "https://via.placeholder.com/400"} // Larger view of the image
+                source={item.imageURL || "https://placehold.co/250"} // Larger view of the image
                 style={styles.modalImage}
                 resizeMode="contain"
               />
@@ -74,10 +75,10 @@ const RecyclingItemCard = ({ item, canRecycle }) => {
               <Text
                 style={[
                   styles.modalItemStatus,
-                  canRecycle ? styles.acceptedBadge : styles.avoidBadge,
+                  item.canRecycle ? styles.acceptedBadge : styles.avoidBadge,
                 ]}
               >
-                {canRecycle ? "Can be Recycled" : "Cannot be Recycled"}
+                {item.canRecycle ? "Can be Recycled" : "Cannot be Recycled"}
               </Text>
             </View>
           </View>

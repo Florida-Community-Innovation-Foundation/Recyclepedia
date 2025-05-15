@@ -42,21 +42,14 @@
           "requestLocationPermission": "true",
           "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
         }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app needs to access your calendar."
+        }
       ]
     ],
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
-      }
-    },
-    "owner": "aadit.kamat",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/590ccc4f-8748-4498-862f-7d1b9e1d49e6"
-    },
     "android": {
       "permissions": [
         "android.permission.CAMERA",
@@ -74,11 +67,24 @@
       "googleMaps": {
         "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
       }
-    }
-  },
-  "ios": {
-    "config": {
-      "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+    },
+    "ios": {
+      "config": {
+        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+      },
+      "bundleIdentifier": "com.aadit.kamat.DiG"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "06c6a2cb-76dc-43ec-83bb-827a7072a931"
+      }
+    },
+    "owner": "aadit.kamat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
     }
   }
 }

@@ -2,28 +2,24 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const CategoryCard = ({ category, onSelect }) => {
+const CategoryCard = ({ image, category, onSelect }) => {
   return (
     <TouchableOpacity
-      onPress={() => onSelect(category.name)}
+      onPress={() => onSelect(category)}
       style={styles.container}
     >
       <View style={styles.imageContainer}>
-        <Image
-          source={category.image}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={image} style={styles.image} resizeMode="cover" />
         <View style={styles.overlay} />
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.categoryTitle}>{category.name}</Text>
+        <Text style={styles.categoryTitle}>{category}</Text>
         <View style={styles.actionContainer}>
           <Text style={styles.actionText}>
-            View all {category.name.toLowerCase()} items
+            View all {category.toLowerCase()} items
           </Text>
-          <Ionicons name="chevron-forward" size={20} color="#666" />
+          <Ionicons name="chevron-forward" size={20} color="#024935" />
         </View>
       </View>
     </TouchableOpacity>

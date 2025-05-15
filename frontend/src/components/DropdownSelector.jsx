@@ -3,31 +3,22 @@ import _ from "lodash";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { categoryData, cityData } from "~/utils/CityData.js";
 
-export default function DropdownSelector({ itemType, setItem }) {
+export default function DropdownSelector({ setItem, cities, categories }) {
   const [value, setValue] = useState("");
-
-  let selectorData;
-  if (itemType === "city") {
-    selectorData = _.chain(cityData)
-      .keys()
-      .map((city) => {
-        return { label: city, value: city };
-      })
-      .value();
-  } else if (itemType === "category") {
-    selectorData = _.chain(categoryData)
-      .map((category) => {
-        return { label: category, value: category };
-      })
-      .value();
-  }
 
   return (
     <Dropdown
       style={styles.picker}
-      data={selectorData}
+      data={
+        cities
+          ? _.map(cities, (city) => {
+              return { label: city, value: city };
+            })
+          : _.map(categories, (category) => {
+              return { label: category, value: category };
+            })
+      }
       renderItem={(item) => (
         <View>
           <Text style={styles.itemTextStyle}>{item.label}</Text>
@@ -35,9 +26,7 @@ export default function DropdownSelector({ itemType, setItem }) {
       )}
       placeholderStyle={styles.placeholderStyle}
       placeholder={
-        itemType === "city"
-          ? "Select municipality"
-          : "What do you want to recycle?"
+        cities ? "Select municipality" : "What do you want to recycle?"
       }
       value={value}
       onChange={(item) => {

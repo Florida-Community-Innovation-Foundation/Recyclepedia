@@ -1,0 +1,101 @@
+import express from "express";
+import _ from "lodash";
+import xlsx from "xlsx";
+import getBaselineData from "../utils/firebaseStorage.js";
+
+const router = express.Router();
+
+async function readBaselineData() {
+  const file = await getBaselineData();
+  return xlsx.read(file);
+}
+
+function mapCityToItem(data) {
+  const cities = _.chain(data[0]).keys().slice(2).value();
+  return _.chain(cities)
+    .map((city) => {
+      return {
+        [city]: {
+          categories: _.chain(data)
+            .filter((row) => {
+              return row[city] === "Yes";
+            })
+            .map((row) => row["Item"])
+            .value(),
+        },
+      };
+    })
+    .value();
+}
+
+function mapLocationToCity(data, locations) {
+  return _.chain(data)
+    .map((row) => {
+      const city = _.keys(row)[0];
+      return {
+        [city]: {
+          categories: row[city]["categories"],
+          latitude: _.filter(
+            locations,
+            (location) => location["City"] === city,
+          )[0]["Latitude"],
+          longitude: _.filter(
+            locations,
+            (location) => location["City"] === city,
+          )[0]["Longitude"],
+        },
+      };
+    })
+    .value();
+}
+
+async function getItemDetails(data) {
+  return _.chain(data)
+    .map((row) => {
+      return {
+        name: row["Item"],
+        category: row["Category"],
+        imageURL: row["Image URL"],
+        canRecycle: row["canRecycle"] === "Yes",
+        description: _.trim(row["Description"]),
+      };
+    })
+    .uniqBy("name")
+    .value();
+}
+
+function getDropoffLocations(data) {
+  return _.chain(data)
+    .map((row) => _.pick(row, ["Latitude", "Longitude", "Category"]))
+    .value();
+}
+
+router.get("/curbsideData", async (req, res) => {
+  const workbook = await readBaselineData();
+  const sheets = [
+    workbook.Sheets["Curbside"],
+    workbook.Sheets["Data Collection"],
+  ];
+  const curbsideItemCategories = xlsx.utils.sheet_to_json(sheets[0]);
+  let curbsideData = mapCityToItem(curbsideItemCategories);
+  const cityLocations = xlsx.utils.sheet_to_json(sheets[1]);
+  curbsideData = mapLocationToCity(curbsideData, cityLocations);
+  return res.json(curbsideData);
+});
+
+router.get("/itemsData", async (req, res) => {
+  const workbook = await readBaselineData();
+  const sheet = workbook.Sheets["Items"];
+  const itemsData = xlsx.utils.sheet_to_json(sheet);
+  return res.json(await getItemDetails(itemsData));
+});
+
+router.get("/dropOffData", async (req, res) => {
+  const workbook = await readBaselineData();
+  const sheet = workbook.Sheets["Items"];
+  const itemsData = xlsx.utils.sheet_to_json(sheet);
+  const dropOffLocations = getDropoffLocations(itemsData);
+  return res.json(dropOffLocations);
+});
+
+export default router;
