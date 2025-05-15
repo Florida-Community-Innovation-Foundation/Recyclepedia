@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "dotenvx run -f private/.env -- nodemon --experimental-json-modules server.js"
+    "start": "nodemon --exec \"dotenvx run -f private/.env -- node --experimental-json-modules server.js\""
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.43.0",
