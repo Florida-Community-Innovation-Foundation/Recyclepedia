@@ -1,5 +1,4 @@
 import * as Network from "expo-network";
-import _ from "lodash";
 
 async function getBaseURL() {
   const ipAddress = await Network.getIpAddressAsync();
@@ -25,15 +24,4 @@ export async function getItemsData() {
   const response = await fetch(`${baseURL}/itemsData`);
   const itemsData = await response.json();
   return itemsData;
-}
-
-export async function getCategories() {
-  const itemsData = await getItemsData();
-  return Array.from(
-    new Set(
-      _.chain(itemsData)
-        .map((item) => _.trim(item["Category"]))
-        .value(),
-    ),
-  );
 }

@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -15,30 +15,19 @@ import {
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
-  getCategories,
   getCurbsideData,
   getDropoffData,
+  getItemsData,
 } from "../../util/baselineData.js";
 import DropdownSelector from "../DropdownSelector.js";
 import RecyclingList from "../RecyclingList.js";
 
 const CurbsideDropoff = ({ navigation }) => {
-  const [category, setCategory] = useState(null);
-  const [recyclingItems, setRecyclingItems] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [subtitle, setSubtitle] = useState(
-    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
-  );
-  const [curbsideColor, setCurbsideColor] = useState("white");
-  const [dropoffColor, setDropoffColor] = useState("#024935");
-  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
-  const [location, setLocation] = useState({});
-  const [city, setCity] = useState(null);
-  const [places, setPlaces] = useState([]);
   const { data, pending } = useQueries({
     queries: [
-      { queryKey: ["categories"], queryFn: () => getCategories() },
+      { queryKey: ["items"], queryFn: () => getItemsData() },
       { queryKey: ["curbside"], queryFn: () => getCurbsideData() },
+      { queryKey: ["dropoff"], queryFn: () => getDropoffData() },
     ],
     combine: (results) => {
       return {
@@ -47,26 +36,50 @@ const CurbsideDropoff = ({ navigation }) => {
       };
     },
   });
+  const [itemsData, curbsideData, dropOffData] = data;
+
   const MAP_LABEL = "DROP-OFF LOCATIONS:";
 
-  useEffect(() => {
-    Location.geocodeAsync(city).then((geocodedLocation) => {
-      setLocation(_.pick(geocodedLocation[0], ["latitude", "longitude"]));
-    });
-  }, [city]);
+  const [category, setCategory] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [subtitle, setSubtitle] = useState(
+    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+  );
+  const [curbsideColor, setCurbsideColor] = useState("white");
+  const [dropoffColor, setDropoffColor] = useState("#024935");
+  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
+  const [city, setCity] = useState(null);
+  const [places, setPlaces] = useState(
+    _.map(curbsideData, (row) => {
+      const location = _.chain(row)
+        .values()
+        .head()
+        .pick(["latitude", "longitude"])
+        .value();
+      return {
+        name: _.keys(row)[0],
+        location: location,
+      };
+    }),
+  );
 
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
   const handleSubmit = async () => {
     if (category) {
-      try {
-        getDropoffData(category).then((dropOffLocations) => {
-          setPlaces(dropOffLocations);
-        });
-      } catch (error) {
-        console.error(error);
-      }
+      setPlaces(
+        _.chain(dropOffData)
+          .filter((dropOffLocation) => dropOffLocation["Category"] === category)
+          .map((dropOffLocation) => {
+            return {
+              latitude: dropOffLocation["Latitude"],
+              longitude: dropOffLocation["Longitude"],
+            };
+          })
+          .uniq()
+          .value(),
+      );
     }
   };
 
@@ -82,19 +95,34 @@ const CurbsideDropoff = ({ navigation }) => {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
-      setLocation(currentLocation);
+      const addresses = await Location.reverseGeocodeAsync(currentLocation);
+      setCity(addresses[0].city);
     } catch (error) {
       console.error(error.message);
     }
   };
+
   const handleSearchChange = (text) => {
     setSearchQuery(text);
   };
 
-  const filterItems = (category) =>
-    recyclingItems.filter((item) =>
-      item.name.toLowerCase().includes(category.toLowerCase()),
+  const filterItems = () => {
+    const filteredItems = _.filter(
+      curbsideData,
+      (obj) => _.keys(obj)[0] === city,
     );
+    const filteredItemCategories =
+      _.chain(filteredItems)
+        .head()
+        .values()
+        .map((obj) => obj["categories"])
+        .head()
+        .toLower()
+        .value() || [];
+    return _.filter(itemsData, (itemData) => {
+      return filteredItemCategories.includes(itemData.category.toLowerCase());
+    });
+  };
 
   const DoAndDontSection = () => (
     <View style={styles.sectionContainer}>
@@ -139,7 +167,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setCity("");
+                setCity("Miami");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -179,7 +207,10 @@ const CurbsideDropoff = ({ navigation }) => {
               >
                 {selectText}
               </Text>
-              <DropdownSelector setItem={setCity} cities={getCities(data[1])} />
+              <DropdownSelector
+                setItem={setCity}
+                cities={getCities(curbsideData)}
+              />
             </View>
           </View>
         )}
@@ -200,12 +231,15 @@ const CurbsideDropoff = ({ navigation }) => {
                 <DropdownSelector
                   itemType="category"
                   setItem={setCategory}
-                  categories={data[0]}
+                  categories={_.chain(itemsData)
+                    .map((item) => item.category)
+                    .uniq()
+                    .value()}
                 />
                 <DropdownSelector
                   itemType="city"
                   setItem={setCity}
-                  cities={getCities(data[1])}
+                  cities={getCities(curbsideData)}
                 />
               </>
             </View>
@@ -249,12 +283,19 @@ const CurbsideDropoff = ({ navigation }) => {
 
         {/* Map */}
         <MapView
-          region={location}
+          region={_.chain(curbsideData)
+            .filter((row) => _.keys(row)[0] === "Miami")
+            .head()
+            .values()
+            .head()
+            .pick(["latitude", "longitude"])
+            .value()}
           style={
             curbsideColor === "white"
               ? [styles.map, { marginTop: 30 }]
               : styles.map
           }
+          scrollDuringRotateOrZoomEnabled={false}
           provider={PROVIDER_GOOGLE}
         >
           {places &&
@@ -262,8 +303,7 @@ const CurbsideDropoff = ({ navigation }) => {
               <Marker
                 key={index}
                 coordinate={place.location}
-                title={place.displayName.text}
-                description={place.formattedAddress}
+                title={place.name}
               />
             ))}
         </MapView>
@@ -281,7 +321,13 @@ const CurbsideDropoff = ({ navigation }) => {
               <FontAwesome name="search" size={20} color="#024935" />
             </View>
 
-            <RecyclingList items={filterItems(searchQuery)} city={city} />
+            {city && (
+              <RecyclingList
+                items={filterItems()}
+                city={city}
+                curbsideData={curbsideData}
+              />
+            )}
 
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>

@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import _ from "lodash";
 import React, { useState } from "react";
 import {
   Image,
@@ -13,22 +14,44 @@ import { normalize } from "../components/normalize";
 import CategoryCard from "./CategoryCard";
 import RecyclingItemCard from "./RecyclingItemCard";
 
-const RecyclingList = ({ items, city }) => {
+const RecyclingList = ({ items, city, curbsideData }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null);
 
-  const categoriesWithImages = items.reduce((acc, item) => {
-    if (!acc.some((category) => category.name === item.category)) {
-      acc.push({
-        name: item.category,
-        image: item.image || "default_image_url",
-      });
-    }
-    return acc;
-  }, []);
+  const images = {
+    Paper: require("~/assets/img/Paper.jpg"),
+    Cans: require("~/assets/img/Cans.jpg"),
+    "Hazardous Waste": require("~/assets/img/Hazardous Waste.jpg"),
+    Metals: require("~/assets/img/Metals.jpg"),
+    Miscellaneous: require("~/assets/img/Miscellaneous.jpg"),
+    Electronics: require("~/assets/img/Electronics.jpg"),
+    "Household Items": require("~/assets/img/Household Items.jpg"),
+    Cardboard: require("~/assets/img/Cardboard.jpg"),
+    Furniture: require("~/assets/img/Furniture.jpg"),
+    Plastics: require("~/assets/img/Plastics.jpg"),
+    Textiles: require("~/assets/img/Textiles.jpg"),
+    Batteries: require("~/assets/img/Batteries.jpg"),
+    Medication: require("~/assets/img/Medication.jpg"),
+    Appliances: require("~/assets/img/Appliances.jpg"),
+    Glass: require("~/assets/img/Glass.jpg"),
+    "Plastic Bottles": require("~/assets/img/Plastic Bottles.jpg"),
+    Cartons: require("~/assets/img/Cartons.jpg"),
+    "Yard Waste": require("~/assets/img/Yard Waste.jpg"),
+  };
+
+  const categories = _.chain(items)
+    .map((item) => item.category)
+    .uniq()
+    .map((category) => {
+      return {
+        name: category,
+        image: images[category],
+      };
+    })
+    .value();
 
   const filteredItems = selectedCategory
-    ? items.filter((item) => item.category === selectedCategory)
+    ? _.filter(items, (item) => item.category === selectedCategory)
     : items;
 
   return (
@@ -36,10 +59,11 @@ const RecyclingList = ({ items, city }) => {
       {/* Categories */}
       {!selectedCategory && (
         <View style={styles.categoriesGrid}>
-          {categoriesWithImages.map((category, index) => (
+          {_.map(categories, (category, index) => (
             <CategoryCard
               key={index}
-              category={category}
+              image={category.image}
+              category={category.name}
               onSelect={setSelectedCategory}
             />
           ))}
@@ -73,20 +97,10 @@ const RecyclingList = ({ items, city }) => {
         >
           <View style={styles.itemsGrid}>
             {filteredItems.map((item, index) => {
-              const canRecycle =
-                city && curbsideData[city]
-                  ? curbsideData[city].some(
-                      (recyclableItem) =>
-                        recyclableItem.name === item.name &&
-                        recyclableItem.canRecycle,
-                    )
-                  : false;
-
               return (
                 <RecyclingItemCard
                   key={index}
                   item={item}
-                  canRecycle={canRecycle}
                   onPress={() => setExpandedItem(item)}
                 />
               );
