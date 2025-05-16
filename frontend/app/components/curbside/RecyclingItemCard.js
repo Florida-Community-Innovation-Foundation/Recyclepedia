@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { normalize } from "../../util/normalize";
+import { normalize } from "~/app/util/normalize";
 
 const RecyclingItemCard = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);

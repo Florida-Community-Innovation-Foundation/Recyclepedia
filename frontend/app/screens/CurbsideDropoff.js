@@ -18,10 +18,10 @@ import {
   getCurbsideData,
   getDropoffData,
   getItemsData,
-} from "../util/baselineData.js";
-import DropdownSelector from "../components/curbside/DropdownSelector.js";
-import RecyclingList from "../components/curbside/RecyclingList.js";
-import DoAndDontSection from "../components/curbside/DoAndDontSection.js";
+} from "~/app/util/baselineData.js";
+import DropdownSelector from "~/app/components/curbside/DropdownSelector.js";
+import RecyclingList from "~/app/components/curbside/RecyclingList.js";
+import DoAndDontSection from "~/app/components/curbside/DoAndDontSection.js";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -108,20 +108,19 @@ const CurbsideDropoff = ({ navigation }) => {
   };
 
   const filterItems = () => {
-    const filteredItems = _.filter(
-      curbsideData,
+    const filteredItems = _.chain(curbsideData).filter(
       (obj) => _.keys(obj)[0] === city,
-    );
-    const filteredItemCategories =
-      _.chain(filteredItems)
-        .head()
-        .values()
-        .map((obj) => obj["categories"])
-        .head()
-        .toLower()
-        .value() || [];
-    return _.filter(itemsData, (itemData) => {
-      return filteredItemCategories.includes(itemData.category.toLowerCase());
+    ).head()
+      .values()
+      .map((obj) => obj["items"])
+      .head()
+      .toLower()
+      .split(",")
+      .value() || [];
+    return _.filter(itemsData, (item) => {
+      return searchQuery ?
+      (item.category.toLowerCase().startsWith(searchQuery.toLowerCase())
+      && filteredItems.includes(item.name.toLowerCase())): true;
     });
   };
 
@@ -303,30 +302,30 @@ const CurbsideDropoff = ({ navigation }) => {
         </MapView>
 
         {/* Show recycling information */}
-        {curbsideColor === "white" && 
+        {curbsideColor === "white" &&
           <>
-          {
-            city && 
-            <View style={styles.contentContainer}>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.searchInput}
-                value={searchQuery}
-                onChangeText={handleSearchChange}
-                placeholder="Search for recycling items..."
+            {
+              city &&
+              <View style={styles.contentContainer}>
+                <View style={styles.searchContainer}>
+                  <TextInput
+                    style={styles.searchInput}
+                    value={searchQuery}
+                    onChangeText={handleSearchChange}
+                    placeholder="Search for recycling items..."
+                  />
+                  <FontAwesome name="search" size={20} color="#024935" />
+                </View>
+              </View>
+            }
+            {
+              city &&
+              <RecyclingList
+                items={filterItems()}
+                city={city}
+                curbsideData={curbsideData}
               />
-              <FontAwesome name="search" size={20} color="#024935" />
-            </View>
-            </View>
-          }
-          {
-            city && 
-            <RecyclingList
-              items={filterItems()}
-              city={city}
-              curbsideData={curbsideData}
-            />
-          }
+            }
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
@@ -555,7 +554,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
 
- 
+
 
   // Alternative Section Styles
   alternativeContainer: {

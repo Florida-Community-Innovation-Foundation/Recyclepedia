@@ -11,12 +11,12 @@ import { enableScreens } from "react-native-screens";
 
 // Import screens
 import { ActivityIndicator } from "react-native-paper";
-import Tabnav from "./app/components/navigation/Tabnav.js";
-import About from "./app/screens/About.js";
-import BarcodeScan from "./app/screens/BarcodeScan.js";
-import CurbsideDropoff from "./app/screens/CurbsideDropoff.js";
-import Home from "./app/screens/Home.js";
-import UserAccount from "./app/screens/UserAccount.js";
+import Tabnav from "~/app/components/navigation/Tabnav.js";
+import About from "~/app/screens/About.js";
+import BarcodeScan from "~/app/screens/BarcodeScan.js";
+import CurbsideDropoff from "~/app/screens/CurbsideDropoff.js";
+import Home from "~/app/screens/Home.js";
+import UserAccount from "~/app/screens/UserAccount.js";
 
 enableScreens();
 
