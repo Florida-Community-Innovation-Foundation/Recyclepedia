@@ -4,7 +4,39 @@
     "slug": "DiG",
     "version": "1.0.0",
     "newArchEnabled": true,
+    "plugins": [
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": "true",
+          "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app needs to access your calendar."
+        }
+      ]
+    ],
+    "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
     "ios": {
+      "config": {
+        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+      },
       "bundleIdentifier": "com.aadit.kamat.DiG"
     },
     "extra": {
@@ -18,15 +50,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
-    },
-    "android": {},
-    "plugins": [
-      [
-        "expo-calendar",
-        {
-          "calendarPermission": "The app needs to access your calendar."
-        }
-      ]
-    ]
+    }
   }
 }

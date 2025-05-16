@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { normalize } from "~/util/normalize";
-import CategoryCard from "~/components/curbside/CategoryCard";
-import RecyclingItemCard from "~/components/curbside/RecyclingItemCard";
+import { normalize } from "~/app/util/normalize";
+import CategoryCard from "~/app/components/curbside/CategoryCard";
+import RecyclingItemCard from "~/app/components/curbside/RecyclingItemCard";
 
 const RecyclingList = ({ items, city, curbsideData }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -40,10 +40,9 @@ const RecyclingList = ({ items, city, curbsideData }) => {
   };
 
   const categories = _.chain(items)
-    .map((item) => _.trim(item.category))
+    .map((item) => item.category)
     .uniq()
     .map((category) => {
-      console.log(category)
       return {
         name: category,
         image: images[category],

@@ -1,62 +1,79 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import { BebasNeue_400Regular, useFonts } from "@expo-google-fonts/bebas-neue";
+import { TitilliumWeb_400Regular } from "@expo-google-fonts/titillium-web";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { enableScreens } from "react-native-screens";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { Suspense } from "react";
+import { StyleSheet } from "react-native";
+import ErrorBoundary from "react-native-error-boundary";
 import { PaperProvider } from "react-native-paper";
+import { enableScreens } from "react-native-screens";
 
 // Import screens
-import Home from "./app/screens/Home.js";
-import About from "./app/screens/About.js";
-import CurbsideDropoff from "./app/screens/CurbsideDropoff.js";
-import UserAccount from "./app/screens/UserAccount.js";
-import BarcodeScan from "./app/screens/BarcodeScan.js";
-import Tabnav from "./Tabnav.js";
+import { ActivityIndicator } from "react-native-paper";
+import Tabnav from "~/app/components/navigation/Tabnav.js";
+import About from "~/app/screens/About.js";
+import BarcodeScan from "~/app/screens/BarcodeScan.js";
+import CurbsideDropoff from "~/app/screens/CurbsideDropoff.js";
+import Home from "~/app/screens/Home.js";
+import UserAccount from "~/app/screens/UserAccount.js";
 
 enableScreens();
 
 const Stack = createStackNavigator();
+const queryClient = new QueryClient();
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    TitilliumWeb_400Regular,
+    BebasNeue_400Regular,
+  });
+
   return (
-    <PaperProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="MainTabs">
-          {/* Tabnav as a screen */}
-          <Stack.Screen
-            name="MainTabs"
-            component={Tabnav}
-            options={{ headerShown: false }}
-          />
-          {/* Additional screens */}
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="About"
-            component={About}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="User Account"
-            component={UserAccount}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Barcode Scan"
-            component={BarcodeScan}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Curbside Dropoff"
-            component={CurbsideDropoff}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <ErrorBoundary>
+      <Suspense fallback={<ActivityIndicator size="large" animating={true} />}>
+        <QueryClientProvider client={queryClient}>
+          <PaperProvider>
+            <NavigationContainer>
+              <Stack.Navigator initialRouteName="MainTabs">
+                {/* Tabnav as a screen */}
+                <Stack.Screen
+                  name="MainTabs"
+                  component={Tabnav}
+                  options={{ headerShown: false }}
+                />
+                {/* Additional screens */}
+                <Stack.Screen
+                  name="Home"
+                  component={Home}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="About"
+                  component={About}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="User Account"
+                  component={UserAccount}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Barcode Scan"
+                  component={BarcodeScan}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Curbside Dropoff"
+                  component={CurbsideDropoff}
+                  options={{ headerShown: false }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </QueryClientProvider>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 

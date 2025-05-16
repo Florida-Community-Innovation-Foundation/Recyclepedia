@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { DayDisplay } from "./DayDisplay";
+import { DayDisplay } from "~/app/components/events/DayDisplay";
 
 function getMonthDisplayData(date) {
   return _.map(_.range(1, dayjs(date).daysInMonth() + 1), (dayNum) => {

@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
   View,
 } from "react-native";
-import { EventDisplay } from "./EventDisplay";
+import { EventDisplay } from "~/app/components/events/EventDisplay";
 
 export function EventsListDisplay({
   calendarEvents,

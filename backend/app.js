@@ -1,7 +1,6 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import createError from "http-errors";
-import logger from "morgan";
 
 import indexRouter from "./routes/index.js";
 
@@ -29,12 +28,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render("error", { title: "Error" });
-});
-
-const port = process.env.PORT;
-
-app.listen(port, () => {
-  console.log(`Express app listening on port ${port}`);
 });
 
 export default app;
