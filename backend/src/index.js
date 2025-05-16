@@ -1,21 +1,40 @@
+import cookieParser from "cookie-parser";
 import express from "express";
-import firebase from "firebase-admin";
-import serviceAccount from "../serviceAccountKey.json";
+import createError from "http-errors";
+import logger from "morgan";
 
-firebase.initializeApp({
-  credential: firebase.credential.cert(serviceAccount),
-  databaseURL: "YOUR_DATABASE_URL", // Replace with your Realtime Database URL
+import indexRouter from "./routes/index.js";
+
+var app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static("public"));
+app.set("view engine", "pug");
+
+app.use("/", indexRouter);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
-const db = firebase.database(); // Get a reference to the database
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = err;
 
-const app = express();
+  // render the error page
+  res.status(err.status || 500);
+  res.render("error", { title: "Error" });
+});
+
 const port = process.env.PORT;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.listen(port, () => {
+  console.log(`Express app listening on port ${port}`);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+export default app;

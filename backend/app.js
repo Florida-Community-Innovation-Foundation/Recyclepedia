@@ -30,10 +30,4 @@ app.use(function (err, req, res, next) {
   res.render("error", { title: "Error" });
 });
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Express app listening on port ${port}`);
-});
-
 export default app;
