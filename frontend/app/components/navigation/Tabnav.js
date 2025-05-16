@@ -1,10 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../screens/Home.js";
-import About from "../screens/About.js";
-import CurbsideDropoff from "../screens/CurbsideDropoff.js";
-import BarcodeScan from "../screens/BarcodeScan.js";
-import UserAccount from "../screens/UserAccount.js";
+import Home from "../../screens/Home.js";
+import About from "../../screens/About.js";
+import CurbsideDropoff from "../../screens/CurbsideDropoff.js";
+import BarcodeScan from "../../screens/BarcodeScan.js";
+import UserAccount from "../../screens/UserAccount.js";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Custombar from "./Custombar.js";
 import EvilIcons from "@expo/vector-icons/EvilIcons";

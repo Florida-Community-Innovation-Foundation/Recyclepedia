@@ -19,8 +19,9 @@ import {
   getDropoffData,
   getItemsData,
 } from "../util/baselineData.js";
-import DropdownSelector from "../components/DropdownSelector.js";
-import RecyclingList from "../components/RecyclingList.js";
+import DropdownSelector from "../components/curbside/DropdownSelector.js";
+import RecyclingList from "../components/curbside/RecyclingList.js";
+import DoAndDontSection from "../components/curbside/DoAndDontSection.js";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -123,13 +124,6 @@ const CurbsideDropoff = ({ navigation }) => {
       return filteredItemCategories.includes(itemData.category.toLowerCase());
     });
   };
-
-  const DoAndDontSection = () => (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Curbside Pickup Do's and Don't's</Text>
-      {/* Your Do's and Don't's items go here */}
-    </View>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -309,8 +303,11 @@ const CurbsideDropoff = ({ navigation }) => {
         </MapView>
 
         {/* Show recycling information */}
-        {city && (
-          <View style={styles.contentContainer}>
+        {curbsideColor === "white" && 
+          <>
+          {
+            city && 
+            <View style={styles.contentContainer}>
             <View style={styles.searchContainer}>
               <TextInput
                 style={styles.searchInput}
@@ -320,15 +317,16 @@ const CurbsideDropoff = ({ navigation }) => {
               />
               <FontAwesome name="search" size={20} color="#024935" />
             </View>
-
-            {city && (
-              <RecyclingList
-                items={filterItems()}
-                city={city}
-                curbsideData={curbsideData}
-              />
-            )}
-
+            </View>
+          }
+          {
+            city && 
+            <RecyclingList
+              items={filterItems()}
+              city={city}
+              curbsideData={curbsideData}
+            />
+          }
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
@@ -393,8 +391,8 @@ const CurbsideDropoff = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-        )}
+          </>
+        }
       </ScrollView>
     </SafeAreaView>
   );
@@ -557,21 +555,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
 
-  // Section Styles
-  sectionContainer: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    marginHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#234E13",
-    marginBottom: 15,
-    textAlign: "center",
-  },
+ 
 
   // Alternative Section Styles
   alternativeContainer: {
