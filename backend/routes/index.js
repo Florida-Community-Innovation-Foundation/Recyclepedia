@@ -16,7 +16,7 @@ function mapCityToItem(data) {
     .map((city) => {
       return {
         [city]: {
-          categories: _.chain(data)
+          items: _.chain(data)
             .filter((row) => {
               return row[city] === "Yes";
             })
@@ -34,7 +34,7 @@ function mapLocationToCity(data, locations) {
       const city = _.keys(row)[0];
       return {
         [city]: {
-          categories: row[city]["categories"],
+          items: row[city]["items"],
           latitude: _.filter(
             locations,
             (location) => location["City"] === city,
