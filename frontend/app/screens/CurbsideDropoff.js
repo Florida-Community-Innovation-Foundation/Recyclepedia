@@ -118,9 +118,7 @@ const CurbsideDropoff = ({ navigation }) => {
       .split(",")
       .value() || [];
     return _.filter(itemsData, (item) => {
-      return searchQuery ?
-      (item.category.toLowerCase().startsWith(searchQuery.toLowerCase())
-      && filteredItems.includes(item.name.toLowerCase())): true;
+      return filteredItems.includes(item.name.toLowerCase()) && item.category.toLowerCase().startsWith(searchQuery.toLowerCase());
     });
   };
 
