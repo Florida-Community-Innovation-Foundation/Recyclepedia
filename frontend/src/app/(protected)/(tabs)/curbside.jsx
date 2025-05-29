@@ -2,25 +2,25 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
-    getCurbsideData,
-    getDropoffData,
-    getItemsData,
-} from "../../util/baselineData.js";
-import DropdownSelector from "../DropdownSelector.js";
-import RecyclingList from "../RecyclingList.js";
+  getCurbsideData,
+  getDropoffData,
+  getItemsData,
+} from "~/utils/baselineData.js";
+import DropdownSelector from "~/components/DropdownSelector";
+import RecyclingList from "~/components/RecyclingList";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -83,7 +83,7 @@ const CurbsideDropoff = ({ navigation }) => {
     }
   };
 
-  const handleCurrentLocationPress = async (event) => {
+  const handleCurrentLocationPress = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -111,16 +111,19 @@ const CurbsideDropoff = ({ navigation }) => {
       curbsideData,
       (obj) => _.keys(obj)[0] === city,
     );
-    const filteredItemCategories =
-      _.chain(filteredItems)
-        .head()
-        .values()
-        .map((obj) => obj["categories"])
-        .head()
-        .toLower()
-        .value() || [];
+    const filteredItemCategories = _.chain(filteredItems)
+      .head()
+      .valuesIn()
+      .map((item) => item.categories)
+      .head()
+      .map((category) => _.toLower(category))
+      .uniq()
+      .value();
     return _.filter(itemsData, (itemData) => {
-      return filteredItemCategories.includes(itemData.category.toLowerCase());
+      return (
+        filteredItemCategories.includes(itemData.category.toLowerCase()) &&
+        itemData.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     });
   };
 
@@ -320,15 +323,7 @@ const CurbsideDropoff = ({ navigation }) => {
               />
               <FontAwesome name="search" size={20} color="#024935" />
             </View>
-
-            {city && (
-              <RecyclingList
-                items={filterItems()}
-                city={city}
-                curbsideData={curbsideData}
-              />
-            )}
-
+            {city && <RecyclingList items={filterItems()} />}
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
@@ -436,7 +431,8 @@ const styles = StyleSheet.create({
   },
   pillText: {
     color: "white",
-    fontSize: 30,
+    fontFamily: "Bebas Neue",
+    fontSize: 25,
     textAlign: "center",
   },
 
@@ -459,7 +455,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 17,
+    fontFamily: "Bebas Neue",
     textAlign: "center",
   },
 

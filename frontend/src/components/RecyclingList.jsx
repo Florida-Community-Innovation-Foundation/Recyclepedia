@@ -2,19 +2,19 @@ import { Ionicons } from "@expo/vector-icons";
 import _ from "lodash";
 import React, { useState } from "react";
 import {
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { normalize } from "~/utils/normalize";
 import CategoryCard from "./CategoryCard";
 import RecyclingItemCard from "./RecyclingItemCard";
 
-const RecyclingList = ({ items, city, curbsideData }) => {
+const RecyclingList = ({ items }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null);
 
