@@ -4,7 +4,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "dotenvx run -f private/.env -- node --experimental-json-modules server.js",
+    "start": "dotenvx run -f .env -- node --experimental-json-modules server.js",
     "dev": "nodemon --exec \"dotenvx run -f private/.env.development -- node --experimental-json-modules server.js\""
   },
   "dependencies": {

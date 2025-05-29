@@ -20,20 +20,20 @@ import { fetchProjectId } from "./utils/metadata.js";
  * Initialize app and start Express server
  */
 const main = async () => {
-  let project = process.env.GOOGLE_CLOUD_PROJECT;
-  if (!project) {
-    try {
+  try {
+    let project = process.env.GOOGLE_CLOUD_PROJECT;
+    if (!project) {
       project = await fetchProjectId();
-    } catch {
-      logger.warn("Could not fetch Project Id for tracing.");
     }
-  }
-  // Initialize request-based logger with project Id
-  initLogCorrelation(project);
+    // Initialize request-based logger with project Id
+    initLogCorrelation(project);
 
-  // Start server listening on PORT env var
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
+    // Start server listening on PORT env var
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
+  } catch (err) {
+    logger.error(err.message);
+  }
 };
 
 /**
