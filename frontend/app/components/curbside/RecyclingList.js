@@ -14,7 +14,7 @@ import { normalize } from "~/app/util/normalize";
 import CategoryCard from "~/app/components/curbside/CategoryCard";
 import RecyclingItemCard from "~/app/components/curbside/RecyclingItemCard";
 
-const RecyclingList = ({ items, city, curbsideData }) => {
+const RecyclingList = ({ items }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null);
 

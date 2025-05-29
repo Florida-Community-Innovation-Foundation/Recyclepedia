@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -84,7 +84,7 @@ const CurbsideDropoff = ({ navigation }) => {
     }
   };
 
-  const handleCurrentLocationPress = async (event) => {
+  const handleCurrentLocationPress = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -300,30 +300,18 @@ const CurbsideDropoff = ({ navigation }) => {
         </MapView>
 
         {/* Show recycling information */}
-        {curbsideColor === "white" &&
-          <>
-            {
-              city &&
-              <View style={styles.contentContainer}>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.searchInput}
-                    value={searchQuery}
-                    onChangeText={handleSearchChange}
-                    placeholder="Search for recycling items..."
-                  />
-                  <FontAwesome name="search" size={20} color="#024935" />
-                </View>
-              </View>
-            }
-            {
-              city &&
-              <RecyclingList
-                items={filterItems()}
-                city={city}
-                curbsideData={curbsideData}
+        {city && (
+          <View style={styles.contentContainer}>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                value={searchQuery}
+                onChangeText={handleSearchChange}
+                placeholder="Search for recycling items..."
               />
-            }
+              <FontAwesome name="search" size={20} color="#024935" />
+            </View>
+            {city && <RecyclingList items={filterItems()} />}
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
@@ -431,7 +419,8 @@ const styles = StyleSheet.create({
   },
   pillText: {
     color: "white",
-    fontSize: 30,
+    fontFamily: "Bebas Neue",
+    fontSize: 25,
     textAlign: "center",
   },
 
@@ -454,7 +443,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 17,
+    fontFamily: "Bebas Neue",
     textAlign: "center",
   },
 
