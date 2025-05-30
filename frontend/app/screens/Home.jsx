@@ -6,9 +6,9 @@ import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { EventsListDisplay } from "~/app/components/events/EventsListDisplay";
 import { MonthDisplay } from "~/app/components/events/MonthDisplay";
 import SubmitEventModal from "~/app/components/modals/SubmitEventModal";
-import { getCalendarEvents } from "~/app/util/calendarEvents";
+import { getCalendarEvents } from "~/app/utils/calendarEvents.js";
 
-export default function Home({ navigation }) {
+export default function Home() {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [calendarEvents, setCalendarEvents] = useState(getCalendarEvents());
   const [dayDisplaysPressed, setDayDisplaysPressed] = useState(

@@ -18,10 +18,10 @@ import {
   getCurbsideData,
   getDropoffData,
   getItemsData,
-} from "~/app/util/baselineData.js";
-import DropdownSelector from "~/app/components/curbside/DropdownSelector.js";
-import RecyclingList from "~/app/components/curbside/RecyclingList.js";
-import DoAndDontSection from "~/app/components/curbside/DoAndDontSection.js";
+} from "~/app/utils/baselineData.js";
+import DropdownSelector from "~/app/components/curbside/DropdownSelector";
+import RecyclingList from "~/app/components/curbside/RecyclingList";
+import DoAndDontSection from "~/app/components/curbside/DoAndDontSection";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -108,17 +108,21 @@ const CurbsideDropoff = ({ navigation }) => {
   };
 
   const filterItems = () => {
-    const filteredItems = _.chain(curbsideData).filter(
-      (obj) => _.keys(obj)[0] === city,
-    ).head()
-      .values()
-      .map((obj) => obj["items"])
-      .head()
-      .toLower()
-      .split(",")
-      .value() || [];
+    const filteredItems =
+      _.chain(curbsideData)
+        .filter((obj) => _.keys(obj)[0] === city)
+        .head()
+        .values()
+        .map((obj) => obj["items"])
+        .head()
+        .toLower()
+        .split(",")
+        .value() || [];
     return _.filter(itemsData, (item) => {
-      return filteredItems.includes(item.name.toLowerCase()) && item.category.toLowerCase().startsWith(searchQuery.toLowerCase());
+      return (
+        filteredItems.includes(item.name.toLowerCase()) &&
+        item.category.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
     });
   };
 
@@ -355,8 +359,8 @@ const CurbsideDropoff = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </>
-        }
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -523,8 +527,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-
-
 
   // Alternative Section Styles
   alternativeContainer: {
