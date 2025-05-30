@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { normalize } from "~/app/utils/normalize.js";
+import { normalize } from "~/app/utils/normalize";
 import CategoryCard from "~/app/components/curbside/CategoryCard";
 import RecyclingItemCard from "~/app/components/curbside/RecyclingItemCard";
 
