@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "~/app/screens/Home";
 import About from "~/app/screens/About";
 import CurbsideDropoff from "~/app/screens/CurbsideDropoff";
-import BarcodeScan from "~/app/screens/BarcodeScan";
+import ItemScan from "~/app/screens/ItemScan";
 import UserAccount from "~/app/screens/UserAccount";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Custombar from "~/app/components/navigation/Custombar";
@@ -39,17 +39,17 @@ function Tabnav() {
         }}
       />
       <Tab.Screen
-        name="Barcode Scan"
-        component={BarcodeScan}
+        name="Item Scan"
+        component={ItemScan}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons
-              name="barcode-scan"
+              name="camera-image"
               size={size}
               color={color}
             />
           ),
-          tabBarLabel: "BarcodeScan",
+          tabBarLabel: "ItemScan",
         }}
       />
       <Tab.Screen

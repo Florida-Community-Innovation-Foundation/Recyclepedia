@@ -11,7 +11,7 @@ import { enableScreens } from "react-native-screens";
 import { ActivityIndicator } from "react-native-paper";
 import Tabnav from "~/app/components/navigation/Tabnav";
 import About from "~/app/screens/About";
-import BarcodeScan from "~/app/screens/BarcodeScan";
+import ItemScan from "~/app/screens/ItemScan";
 import CurbsideDropoff from "~/app/screens/CurbsideDropoff";
 import Home from "~/app/screens/Home";
 import UserAccount from "~/app/screens/UserAccount";
@@ -52,8 +52,8 @@ export default function App() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                  name="Barcode Scan"
-                  component={BarcodeScan}
+                  name="Item Scan"
+                  component={ItemScan}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen
