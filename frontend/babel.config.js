@@ -3,7 +3,6 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-      // Add the module-resolver plugin
       [
         "module-resolver",
         {

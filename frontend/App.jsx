@@ -1,9 +1,7 @@
-import { BebasNeue_400Regular, useFonts } from "@expo-google-fonts/bebas-neue";
-import { TitilliumWeb_400Regular } from "@expo-google-fonts/titillium-web";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { StyleSheet } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
 import { PaperProvider } from "react-native-paper";
@@ -24,11 +22,6 @@ const Stack = createStackNavigator();
 const queryClient = new QueryClient();
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
-    TitilliumWeb_400Regular,
-    BebasNeue_400Regular,
-  });
-
   return (
     <ErrorBoundary>
       <Suspense fallback={<ActivityIndicator size="large" animating={true} />}>
