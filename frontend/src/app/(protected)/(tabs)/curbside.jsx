@@ -18,10 +18,10 @@ import {
   getCurbsideData,
   getDropoffData,
   getItemsData,
-} from "~/app/utils/baselineData.js";
-import DropdownSelector from "~/app/components/curbside/DropdownSelector";
-import RecyclingList from "~/app/components/curbside/RecyclingList";
-import DoAndDontSection from "~/app/components/curbside/DoAndDontSection";
+} from "~/utils/baselineData.js";
+import DropdownSelector from "~/components/curbside/DropdownSelector";
+import RecyclingList from "~/components/curbside/RecyclingList";
+import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({

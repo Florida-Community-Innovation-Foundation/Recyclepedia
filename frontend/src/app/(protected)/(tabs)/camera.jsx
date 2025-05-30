@@ -3,15 +3,15 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import CameraScan from "~/app/components/camera/CameraScan";
-import ItemScanInstructions from "~/app/components/camera/ItemScanInstructions";
+import CameraScan from "~/components/camera/CameraScan";
+import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 
 export default function ItemScan() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    navigation.addListener("tabPress", (event) => {
+    navigation.addListener("tabPress", () => {
       setImage(null);
     });
   }, [navigation]);

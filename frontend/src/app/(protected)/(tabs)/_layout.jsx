@@ -1,36 +1,27 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "~/app/screens/Home";
-import About from "~/app/screens/About";
-import CurbsideDropoff from "~/app/screens/CurbsideDropoff";
-import ItemScan from "~/app/screens/ItemScan";
-import UserAccount from "~/app/screens/UserAccount";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import Custombar from "~/app/components/navigation/Custombar";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-const Tab = createBottomTabNavigator();
+import { Tabs } from "expo-router";
+import Custombar from "~/components/navigation/Custombar";
 
-function Tabnav() {
+export default function BottomTabsLayout() {
   return (
-    <Tab.Navigator
+    <Tabs
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <Custombar {...props} />}
-      initialRouteName="Home"
+      backBehavior="order"
     >
-      <Tab.Screen
-        name="Home"
-        component={Home}
+      <Tabs.Screen
+        name="(home)"
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Icon name="home" size={size} color={color} />
+            <MaterialIcons name="home" size={size} color={color} />
           ),
           tabBarLabel: "Home",
         }}
       />
-      <Tab.Screen
-        name="Curbside Dropoff"
-        component={CurbsideDropoff}
+      <Tabs.Screen
+        name="curbside"
         options={{
           tabBarIcon: ({ size, color }) => (
             <EvilIcons name="location" size={size} color={color} />
@@ -38,9 +29,8 @@ function Tabnav() {
           tabBarLabel: "CurbsideDropoff",
         }}
       />
-      <Tab.Screen
-        name="Item Scan"
-        component={ItemScan}
+      <Tabs.Screen
+        name="camera"
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons
@@ -52,19 +42,19 @@ function Tabnav() {
           tabBarLabel: "ItemScan",
         }}
       />
-      <Tab.Screen
-        name="User Account"
-        component={UserAccount}
+
+      <Tabs.Screen
+        name="profile"
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="account" size={size} color={color} />
           ),
-          tabBarLabel: "UserAccount",
+          tabBarLabel: "UserProfile",
         }}
       />
-      <Tab.Screen
-        name="About"
-        component={About}
+
+      <Tabs.Screen
+        name="about"
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="contact-support" size={size} color={color} />
@@ -72,8 +62,6 @@ function Tabnav() {
           tabBarLabel: "About",
         }}
       />
-    </Tab.Navigator>
+    </Tabs>
   );
 }
-
-export default Tabnav;

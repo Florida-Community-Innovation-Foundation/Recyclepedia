@@ -1,10 +1,12 @@
 {
   "expo": {
-    "name": "DiG",
-    "slug": "DiG",
+    "name": "Recyclepedia",
+    "slug": "Recyclepedia",
+    "scheme": "recyclepedia",
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
+      "expo-router",
       [
         "expo-camera",
         {

@@ -1,5 +1,6 @@
+import { useRouter } from "expo-router";
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 const baseWidth = 375;
@@ -9,7 +10,9 @@ const calcFont = (percent) => {
   return Math.round(scaleFactor * percent);
 };
 
-const Custombar = ({ state, descriptors, navigation }) => {
+export default function Custombar({ state, descriptors, navigation }) {
+  const router = useRouter();
+
   return (
     <View style={styles.bar}>
       {state.routes.map((route, index) => {
@@ -39,7 +42,7 @@ const Custombar = ({ state, descriptors, navigation }) => {
       })}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   bar: {
@@ -56,4 +59,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-export default Custombar;
