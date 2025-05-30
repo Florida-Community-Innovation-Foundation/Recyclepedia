@@ -177,7 +177,6 @@ const CurbsideDropoff = ({ navigation }) => {
               <Text
                 style={[
                   styles.pillText,
-                  { fontFamily: "BebasNeue_400Regular" },
                   { color: dropoffColor === "white" ? "#024935" : "white" },
                 ]}
               >
@@ -186,13 +185,7 @@ const CurbsideDropoff = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <Text
-            style={[
-              styles.subtitle,
-              { color: "#BBB8B8" },
-              { fontFamily: "BebasNeue_400Regular" },
-            ]}
-          >
+          <Text style={[styles.subtitle, { color: "#BBB8B8" }]}>
             {subtitle}
           </Text>
         </View>
@@ -201,15 +194,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {curbsideColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text
-                style={[
-                  styles.cityPickerLabel,
-                  { fontSize: 25 },
-                  { fontFamily: "BebasNeue_400Regular" },
-                ]}
-              >
-                {selectText}
-              </Text>
+              <Text style={styles.cityPickerLabel}>{selectText}</Text>
               <DropdownSelector
                 setItem={setCity}
                 cities={getCities(curbsideData)}
@@ -221,15 +206,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {dropoffColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text
-                style={[
-                  styles.cityPickerLabel,
-                  { fontSize: 22 },
-                  { fontFamily: "BebasNeue_400Regular" },
-                ]}
-              >
-                {selectText}
-              </Text>
+              <Text style={styles.cityPickerLabel}>{selectText}</Text>
               <>
                 <DropdownSelector
                   itemType="category"
@@ -323,7 +300,9 @@ const CurbsideDropoff = ({ navigation }) => {
               />
               <FontAwesome name="search" size={20} color="#024935" />
             </View>
-            {city && <RecyclingList items={filterItems()} />}
+            {city && (
+              <RecyclingList items={_.sortBy(filterItems(), "category")} />
+            )}
             <DoAndDontSection />
             <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
@@ -414,23 +393,24 @@ const styles = StyleSheet.create({
   curbsidePill: {
     backgroundColor: "",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginHorizontal: -6,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    marginHorizontal: -20,
     borderWidth: 1,
     borderColor: "white",
   },
   dropOffPill: {
     backgroundColor: "green",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginHorizontal: -6,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    marginHorizontal: -10,
     borderWidth: 1,
     borderColor: "white",
   },
   pillText: {
     color: "white",
+    fontWeight: 400,
     fontFamily: "Bebas Neue",
     fontSize: 25,
     textAlign: "center",
@@ -472,7 +452,9 @@ const styles = StyleSheet.create({
     color: "#828282",
   },
   cityPickerLabel: {
-    fontSize: 16,
+    fontSize: 22,
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
     color: "white",
     marginBottom: 10,
     marginTop: -10,
@@ -525,7 +507,7 @@ const styles = StyleSheet.create({
   },
   //Map Styles
   map: {
-    width: 320,
+    width: 340,
     height: 300,
     marginHorizontal: 32,
     borderRadius: 11,
