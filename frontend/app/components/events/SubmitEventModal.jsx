@@ -18,10 +18,10 @@ import {
   useColorScheme,
 } from "react-native";
 import * as yup from "yup";
-import DateInput from "../events/DateInput";
-import EventCalendar from "../events/EventCalendar";
-import EventCategory from "../events/EventCategory";
-import EventTextInput from "../events/EventTextInput";
+import DateInput from "./DateInput";
+import EventCalendar from "./EventCalendar";
+import EventCategory from "./EventCategory";
+import EventTextInput from "./EventTextInput";
 
 const { width, height } = Dimensions.get("window");
 

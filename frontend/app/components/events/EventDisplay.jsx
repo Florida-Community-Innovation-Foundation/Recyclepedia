@@ -13,8 +13,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { generateIcsString } from "../../util/calendarEvents";
-import { createDate } from "../../util/dates";
+import { generateIcsString } from "~/app/utils/calendarEvents.js";
+import { createDate } from "~/app/utils/dates";
 
 export function EventDisplay({ eventItem }) {
   const handleLocationPress = (location) => {

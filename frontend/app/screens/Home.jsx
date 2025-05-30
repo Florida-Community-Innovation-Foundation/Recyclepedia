@@ -3,12 +3,12 @@ import { BlurView } from "expo-blur";
 import _ from "lodash";
 import { useState } from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
-import { EventsListDisplay } from "../components/events/EventsListDisplay";
-import { MonthDisplay } from "../components/events/MonthDisplay";
-import SubmitEventModal from "../components/modals/SubmitEventModal";
-import { getCalendarEvents } from "../util/calendarEvents";
+import { EventsListDisplay } from "~/app/components/events/EventsListDisplay";
+import { MonthDisplay } from "~/app/components/events/MonthDisplay";
+import SubmitEventModal from "~/app/components/modals/SubmitEventModal";
+import { getCalendarEvents } from "~/app/utils/calendarEvents";
 
-export default function Home({ navigation }) {
+export default function Home() {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [calendarEvents, setCalendarEvents] = useState(getCalendarEvents());
   const [dayDisplaysPressed, setDayDisplaysPressed] = useState(
