@@ -1,6 +1,11 @@
 import { Redirect, Stack } from "expo-router";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "~/utils/authContext";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)", // anchor
@@ -8,6 +13,7 @@ export const unstable_settings = {
 
 export default function ProtectedLayout() {
   const authState = useContext(AuthContext);
+  const queryClient = new QueryClient();
 
   if (!authState.isReady) {
     return null;
@@ -18,8 +24,10 @@ export default function ProtectedLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-    </Stack>
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </QueryClientProvider>
   );
 }
