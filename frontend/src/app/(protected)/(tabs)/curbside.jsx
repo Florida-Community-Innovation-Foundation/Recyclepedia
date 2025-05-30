@@ -1,8 +1,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
-import _ from "lodash";
+import _, { size } from "lodash";
 import { useState } from "react";
+import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 import {
   Pressable,
   SafeAreaView,
@@ -23,6 +24,9 @@ import DropdownSelector from "~/components/DropdownSelector";
 import RecyclingList from "~/components/RecyclingList";
 
 const CurbsideDropoff = ({ navigation }) => {
+  
+
+ 
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
@@ -62,6 +66,12 @@ const CurbsideDropoff = ({ navigation }) => {
       };
     }),
   );
+  const [fontsLoaded] = useFonts({
+    BebasNeue_400Regular,
+  });
+   if (!fontsLoaded) {
+    return null; // Or a loading spinner
+  }  
 
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
@@ -194,7 +204,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {curbsideColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={styles.cityPickerLabel}>{selectText}</Text>
+              <Text style={[styles.cityPickerLabel, {fontSize:25}, {fontFamily:"BebasNeue_400Regular"}]}>{selectText}</Text>
               <DropdownSelector
                 setItem={setCity}
                 cities={getCities(curbsideData)}
@@ -206,7 +216,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {dropoffColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={styles.cityPickerLabel}>{selectText}</Text>
+              <Text style={[styles.cityPickerLabel, {fontSize:25}, {fontFamily:"BebasNeue_400Regular"}]}>{selectText}</Text>
               <>
                 <DropdownSelector
                   itemType="category"
@@ -261,7 +271,7 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         )}
 
-        {/* Map */}
+        {/* Map 
         <MapView
           region={_.chain(curbsideData)
             .filter((row) => _.keys(row)[0] === "Miami")
@@ -286,7 +296,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 title={place.name}
               />
             ))}
-        </MapView>
+        </MapView>*/}
 
         {/* Show recycling information */}
         {city && (
@@ -388,21 +398,23 @@ const styles = StyleSheet.create({
   pillButtons: {
     flexDirection: "row",
     justifyContent: "center",
+    
     marginBottom: 10,
+    marginVertical: 60
   },
   curbsidePill: {
     backgroundColor: "",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    paddingVertical: 2,
+    paddingHorizontal: 22,
     borderRadius: 30,
-    marginHorizontal: -20,
+    marginHorizontal: -10,
     borderWidth: 1,
     borderColor: "white",
   },
   dropOffPill: {
     backgroundColor: "green",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    paddingVertical: 2,
+    paddingHorizontal: 22,
     borderRadius: 30,
     marginHorizontal: -10,
     borderWidth: 1,
@@ -411,8 +423,8 @@ const styles = StyleSheet.create({
   pillText: {
     color: "white",
     fontWeight: 400,
-    fontFamily: "Bebas Neue",
-    fontSize: 25,
+    fontFamily: "BebasNeue_400Regular",
+    fontSize: 33,
     textAlign: "center",
   },
 
@@ -435,9 +447,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 17,
-    fontFamily: "Bebas Neue",
+    fontSize: 20,
+    fontFamily: "BebasNeue_400Regular",
     textAlign: "center",
+    marginTop:5
   },
 
   // City Picker Styles
