@@ -1,0 +1,45 @@
+name: Expo preview
+on: pull_request
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.1
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-cache: false
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Verify Expo project
+        run: |
+          if [ ! -f app.json ]; then
+            echo "Error: app.json not found. Ensure you are in the Expo project directory."
+            exit 1
+          fi
+
+      - name: Create preview
+        # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
+        # Use your own, or keep the automatically inferred branch name from `--auto`, when using different triggers.
+        run:
+          eas update --auto --branch ${{ github.event.pull_request.head.ref }}
