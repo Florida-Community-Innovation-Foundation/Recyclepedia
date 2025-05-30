@@ -271,7 +271,7 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         )}
 
-        {/* Map 
+        {/*Map*/} 
         <MapView
           region={_.chain(curbsideData)
             .filter((row) => _.keys(row)[0] === "Miami")
@@ -296,7 +296,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 title={place.name}
               />
             ))}
-        </MapView>*/}
+        </MapView>
 
         {/* Show recycling information */}
         {city && (
