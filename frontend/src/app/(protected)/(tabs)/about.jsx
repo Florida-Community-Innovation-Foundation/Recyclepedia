@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: calcHeight(20),
-    backgroundColor: "#FFFF",
+    backgroundColor: "#FFFFFF",
   },
   socialIconContainer: {
     flexDirection: "row",
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     marginHorizontal: calcWidth(15),
   },
   boxTop: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: calcWidth(1),
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   },
   boxMiddle: {
     padding: calcHeight(20),
-    backgroundColor: "#FFF",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: calcWidth(1),
