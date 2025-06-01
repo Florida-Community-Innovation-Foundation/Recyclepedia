@@ -19,8 +19,9 @@ import {
   getDropoffData,
   getItemsData,
 } from "~/utils/baselineData.js";
-import DropdownSelector from "~/components/DropdownSelector";
-import RecyclingList from "~/components/RecyclingList";
+import DropdownSelector from "~/components/curbside/DropdownSelector";
+import RecyclingList from "~/components/curbside/RecyclingList";
+import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -107,32 +108,23 @@ const CurbsideDropoff = ({ navigation }) => {
   };
 
   const filterItems = () => {
-    const filteredItems = _.filter(
-      curbsideData,
-      (obj) => _.keys(obj)[0] === city,
-    );
-    const filteredItemCategories = _.chain(filteredItems)
-      .head()
-      .valuesIn()
-      .map((item) => item.categories)
-      .head()
-      .map((category) => _.toLower(category))
-      .uniq()
-      .value();
-    return _.filter(itemsData, (itemData) => {
+    const filteredItems =
+      _.chain(curbsideData)
+        .filter((obj) => _.keys(obj)[0] === city)
+        .head()
+        .values()
+        .map((obj) => obj["items"])
+        .head()
+        .toLower()
+        .split(",")
+        .value() || [];
+    return _.filter(itemsData, (item) => {
       return (
-        filteredItemCategories.includes(itemData.category.toLowerCase()) &&
-        itemData.category.toLowerCase().includes(searchQuery.toLowerCase())
+        filteredItems.includes(item.name.toLowerCase()) &&
+        item.category.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
     });
   };
-
-  const DoAndDontSection = () => (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Curbside Pickup Do's and Don't's</Text>
-      {/* Your Do's and Don't's items go here */}
-    </View>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -193,9 +185,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {curbsideColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={[styles.cityPickerLabel, { fontSize: 25 }]}>
-                {selectText}
-              </Text>
+              <Text style={styles.cityPickerLabel}>{selectText}</Text>
               <DropdownSelector
                 setItem={setCity}
                 cities={getCities(curbsideData)}
@@ -207,9 +197,7 @@ const CurbsideDropoff = ({ navigation }) => {
         {dropoffColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={[styles.cityPickerLabel, { fontSize: 25 }]}>
-                {selectText}
-              </Text>
+              <Text style={styles.cityPickerLabel}>{selectText}</Text>
               <>
                 <DropdownSelector
                   itemType="category"
@@ -263,7 +251,7 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         )}
 
-        {/*Map*/}
+        {/* Map */}
         <MapView
           region={_.chain(curbsideData)
             .filter((row) => _.keys(row)[0] === "Miami")
@@ -390,9 +378,7 @@ const styles = StyleSheet.create({
   pillButtons: {
     flexDirection: "row",
     justifyContent: "center",
-
     marginBottom: 10,
-    marginVertical: 60,
   },
   curbsidePill: {
     backgroundColor: "",
@@ -540,22 +526,6 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-  },
-
-  // Section Styles
-  sectionContainer: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    marginHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#234E13",
-    marginBottom: 15,
-    textAlign: "center",
   },
 
   // Alternative Section Styles

@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { AuthContext } from "~/utils/authContext";
-import Divider from "../components/Divider";
+import Divider from "~/components/common/Divider";
 
 export default function LoginScreen() {
   const authContext = useContext(AuthContext);

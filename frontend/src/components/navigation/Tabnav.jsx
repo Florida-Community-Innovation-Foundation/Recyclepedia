@@ -1,8 +1,10 @@
+import ItemScan from "~/app/screens/ItemScan";
+import Custombar from "~/app/components/navigation/Custombar";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import Custombar from "~/components/navigation/Custombar";
+import Custombar from "~/components/Custombar";
 
 export default function BottomTabsLayout() {
   return (
@@ -29,8 +31,9 @@ export default function BottomTabsLayout() {
           tabBarLabel: "CurbsideDropoff",
         }}
       />
-      <Tabs.Screen
-        name="camera"
+      <Tab.Screen
+        name="Item Scan"
+        component={ItemScan}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons
