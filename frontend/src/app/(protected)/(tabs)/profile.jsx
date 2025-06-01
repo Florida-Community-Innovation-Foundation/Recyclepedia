@@ -3,7 +3,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import diggy from "~/assets/Diggy.png";
+import diggy from "~/assets/diggy.png";
 
 export default function UserAccount() {
   const [profilePicture, setProfilePicture] = useState(diggy);
