@@ -145,7 +145,6 @@ const CurbsideDropoff = ({ navigation }) => {
             >
               <Text
                 style={[
-                  { fontFamily: "BebasNeue_400Regular" },
                   styles.pillText,
                   { color: curbsideColor === "white" ? "#024935" : "white" },
                 ]}
@@ -246,7 +245,6 @@ const CurbsideDropoff = ({ navigation }) => {
                 textAlign: "left",
                 marginHorizontal: 32,
               },
-              { fontFamily: "BebasNeue_400Regular" },
             ]}
           >
             {MAP_LABEL}
@@ -384,17 +382,17 @@ const styles = StyleSheet.create({
   },
   curbsidePill: {
     backgroundColor: "",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    paddingVertical: 2,
+    paddingHorizontal: 22,
     borderRadius: 30,
-    marginHorizontal: -20,
+    marginHorizontal: -10,
     borderWidth: 1,
     borderColor: "white",
   },
   dropOffPill: {
     backgroundColor: "green",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
+    paddingVertical: 2,
+    paddingHorizontal: 22,
     borderRadius: 30,
     marginHorizontal: -10,
     borderWidth: 1,
@@ -404,7 +402,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: 400,
     fontFamily: "Bebas Neue",
-    fontSize: 25,
+    fontSize: 33,
     textAlign: "center",
   },
 
@@ -427,9 +425,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: 20,
     fontFamily: "Bebas Neue",
+    fontWeight: 400,
     textAlign: "center",
+    marginTop: 5,
   },
 
   // City Picker Styles

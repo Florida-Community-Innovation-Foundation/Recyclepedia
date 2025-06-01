@@ -10,7 +10,7 @@ async function readBaselineData() {
   return xlsx.read(file);
 }
 
-function mapCityToItem(data) {
+function mapCityToCategories(data) {
   const cities = _.chain(data[0]).keys().slice(2).value();
   return _.chain(cities)
     .map((city) => {
@@ -20,7 +20,7 @@ function mapCityToItem(data) {
             .filter((row) => {
               return row[city] === "Yes";
             })
-            .map((row) => row["Item"])
+            .map((row) => row["Category"])
             .value(),
         },
       };
@@ -77,7 +77,7 @@ router.get("/curbsideData", async (req, res) => {
     workbook.Sheets["Data Collection"],
   ];
   const curbsideItemCategories = xlsx.utils.sheet_to_json(sheets[0]);
-  let curbsideData = mapCityToItem(curbsideItemCategories);
+  let curbsideData = mapCityToCategories(curbsideItemCategories);
   const cityLocations = xlsx.utils.sheet_to_json(sheets[1]);
   curbsideData = mapLocationToCity(curbsideData, cityLocations);
   return res.json(curbsideData);

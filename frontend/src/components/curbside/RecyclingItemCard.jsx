@@ -22,7 +22,7 @@ const RecyclingItemCard = ({ item }) => {
         <Text
           style={[
             styles.badge,
-            canRecycle ? styles.acceptedBadge : styles.avoidBadge,
+            item.canRecycle ? styles.acceptedBadge : styles.avoidBadge,
           ]}
         >
           {item.canRecycle ? "Accepted" : "Avoid"}
