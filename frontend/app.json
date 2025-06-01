@@ -1,10 +1,12 @@
 {
   "expo": {
-    "name": "DiG",
-    "slug": "DiG",
+    "name": "Recyclepedia",
+    "slug": "Recyclepedia",
+    "scheme": "recyclepedia",
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
+      "expo-router",
       [
         "expo-camera",
         {
@@ -53,7 +55,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "06c6a2cb-76dc-43ec-83bb-827a7072a931"
+        "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
       }
     },
     "owner": "aadit.kamat",

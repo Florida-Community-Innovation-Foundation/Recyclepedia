@@ -1,20 +1,23 @@
 {
   "name": "dig",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
+    "start": "dotenvx run -f .env -- expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo-google-fonts/bebas-neue": "^0.3.0",
-    "@expo-google-fonts/titillium-web": "^0.3.0",
+    "@firebase/app": "^0.11.5",
+    "@firebase/auth": "^1.10.1",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/blur": "^4.4.1",
     "@react-native-community/datetimepicker": "8.3.0",
     "@react-native-firebase/analytics": "^21.5.0",
     "@react-native-picker/picker": "2.11.0",
+    "expo-router": "~5.0.5",
+    "expo-status-bar": "~2.2.3",
     "@react-navigation/bottom-tabs": "^7.0.4",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.0",
@@ -27,9 +30,7 @@
     "expo-file-system": "^18.1.8",
     "expo-image": "~2.1.7",
     "expo-image-picker": "~16.1.4",
-    "expo-router": "~5.0.5",
     "expo-sharing": "^13.1.5",
-    "expo-status-bar": "~2.2.3",
     "firebase": "^11.0.2",
     "formik": "^2.4.6",
     "@tanstack/react-query": "^5.75.7",
@@ -66,6 +67,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@dotenvx/dotenvx-pro": "^0.17.5",
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-module-resolver": "^5.0.2"
   },

@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { normalize } from "~/app/utils/normalize";
-import CategoryCard from "~/app/components/curbside/CategoryCard";
-import RecyclingItemCard from "~/app/components/curbside/RecyclingItemCard";
+import { normalize } from "~/utils/normalize";
+import CategoryCard from "~/components/curbside/CategoryCard";
+import RecyclingItemCard from "~/components/curbside/RecyclingItemCard";
 
 const RecyclingList = ({ items }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Modal,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { normalize } from "~/app/utils/normalize";
+import { normalize } from "~/utils/normalize";
 
 const RecyclingItemCard = ({ item }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -22,7 +22,7 @@ const RecyclingItemCard = ({ item }) => {
         <Text
           style={[
             styles.badge,
-            item.canRecycle ? styles.acceptedBadge : styles.avoidBadge,
+            canRecycle ? styles.acceptedBadge : styles.avoidBadge,
           ]}
         >
           {item.canRecycle ? "Accepted" : "Avoid"}
