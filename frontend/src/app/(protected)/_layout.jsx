@@ -13,7 +13,7 @@ export const unstable_settings = {
 
 export default function ProtectedLayout() {
   const authState = useContext(AuthContext);
-  const queryClient = new QueryClient();
+  const queryClient = useMemo(() => new QueryClient(), []);
 
   if (!authState.isReady) {
     return null;
