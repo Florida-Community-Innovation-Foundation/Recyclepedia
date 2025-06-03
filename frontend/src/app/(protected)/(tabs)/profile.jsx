@@ -4,6 +4,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import diggy from "~/assets/diggy.png";
+import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+
 
 export default function UserProfile() {
   const [profilePicture, setProfilePicture] = useState(diggy);
@@ -22,6 +24,13 @@ export default function UserProfile() {
       setProfilePicture({ uri: result.assets[0].uri });
     }
   };
+
+    const [fontsLoaded] = useFonts({
+      BebasNeue_400Regular,
+    });
+     if (!fontsLoaded) {
+      return null;
+    }  
 
   return (
     <View style={styles.screen}>
@@ -90,7 +99,20 @@ export default function UserProfile() {
             </View>
           </View>
         </View>
+
+        {/* Interactive Games */}
+        <View>
+          <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
+           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+
+          <View style={styles.gameSlot}></View>
+          <View style={styles.gameSlot}></View>
+          <View style={styles.gameSlot}></View>
+        </View>   
+
+
       </View>
+    </View>
     </View>
   );
 }
@@ -111,13 +133,13 @@ const styles = StyleSheet.create({
     height: 125,
     width: 125,
     backgroundColor: "#D9D9D9",
-    borderRadius: "50%",
+    borderRadius: 62.5, //orginal was  borderRadius: "50%"
     marginLeft: 130,
   },
   profilePictureEdit: {
     width: 35,
     height: 35,
-    borderRadius: "50%",
+    borderRadius: 17.5, // orginal was borderRadius: "50%"
     backgroundColor: "#FFFFFF",
     marginLeft: 220,
     marginTop: -30,
@@ -126,7 +148,7 @@ const styles = StyleSheet.create({
   },
   username: {
     color: "#FFFFFF",
-    fontFamily: "Bebas Neue",
+    fontFamily: "BebasNeue_400Regular",
     fontWeight: 400,
     fontSize: 32,
     textAlign: "center",
@@ -148,7 +170,7 @@ const styles = StyleSheet.create({
   },
   recyclingHeaderText: {
     color: "#024935",
-    fontFamily: "Bebas Neue",
+    fontFamily: "BebasNeue_400Regular",
     fontWeight: 400,
     fontSize: 20,
   },
@@ -202,7 +224,7 @@ const styles = StyleSheet.create({
   },
   updateButtonText: {
     color: "#FFFFFF",
-    fontFamily: "Bebas Neue",
+    fontFamily: "BebasNeue_400Regular",
     fontWeight: 400,
     fontSize: 16,
     marginTop: 3,
@@ -228,5 +250,15 @@ const styles = StyleSheet.create({
     color: "#024935",
     textAlign: "right",
     marginLeft: 175,
-  },
+  },gameSlot: {
+    width: '40%',
+    height: 140,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    borderColor: '#D9D9D9',
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+},
 });
