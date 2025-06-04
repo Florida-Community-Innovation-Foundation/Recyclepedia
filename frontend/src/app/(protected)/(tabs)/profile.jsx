@@ -2,9 +2,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from "react-native";
 import diggy from "~/assets/diggy.png";
-import { useFonts, BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 
 export default function UserAccount() {
   const [profilePicture, setProfilePicture] = useState(diggy);
@@ -24,13 +30,6 @@ export default function UserAccount() {
     }
   };
 
-  const [fontsLoaded] = useFonts({
-    BebasNeue_400Regular,
-  });
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <View style={styles.screen}>
       <View style={styles.profileBackground}>
@@ -47,7 +46,7 @@ export default function UserAccount() {
         </Pressable>
         <Text style={styles.username}> HELI </Text>
       </View>
-      <View style={styles.profileInfo}>
+      <ScrollView style={styles.profileInfo}>
         {/* Recycling Goal */}
         <View style={styles.recyclingInfoContainer}>
           <View style={styles.recyclingHeader}>
@@ -100,21 +99,15 @@ export default function UserAccount() {
         </View>
 
         {/* Interactive Games */}
-        <View>
+        <View style={styles.interactiveGamesContainer}>
           <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-            }}
-          >
+          <View style={styles.gameSlotsContainer}>
             <View style={styles.gameSlot}></View>
             <View style={styles.gameSlot}></View>
             <View style={styles.gameSlot}></View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -135,13 +128,13 @@ const styles = StyleSheet.create({
     height: 125,
     width: 125,
     backgroundColor: "#D9D9D9",
-    borderRadius: 62.5, //orginal was  borderRadius: "50%"
+    borderRadius: 62.5,
     marginLeft: 130,
   },
   profilePictureEdit: {
     width: 35,
     height: 35,
-    borderRadius: 17.5, // orginal was borderRadius: "50%"
+    borderRadius: 17.5,
     backgroundColor: "#FFFFFF",
     marginLeft: 220,
     marginTop: -30,
@@ -164,7 +157,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   recyclingInfoContainer: {
-    marginTop: 20,
+    marginTop: 30,
   },
   recyclingHeader: {
     display: "flex",
@@ -172,17 +165,17 @@ const styles = StyleSheet.create({
   },
   recyclingHeaderText: {
     color: "#024935",
-    fontFamily: "BebasNeue_400Regular",
+    fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 20,
   },
   recyclingGoalItemsNumber: {
     color: "#024935",
     fontFamily: "Titillium Web",
-    fontWeight: 500,
+    fontWeight: 700,
     fontSize: 15,
     textAlign: "center",
-    marginLeft: 150,
+    marginLeft: 165,
   },
   recyclingGoalBar: {
     backgroundColor: "#A5CCB7",
@@ -218,15 +211,15 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   updateButton: {
-    width: 62,
-    height: 23,
+    width: 63,
+    height: 25,
     borderRadius: 8,
     backgroundColor: "#188038",
-    marginLeft: 175,
+    marginLeft: 190,
   },
   updateButtonText: {
     color: "#FFFFFF",
-    fontFamily: "BebasNeue_400Regular",
+    fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 16,
     marginTop: 3,
@@ -254,7 +247,7 @@ const styles = StyleSheet.create({
     marginLeft: 175,
   },
   gameSlot: {
-    width: "40%",
+    flex: 1,
     height: 140,
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -263,5 +256,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 8,
+  },
+  gameSlotsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  interactiveGamesContainer: {
+    marginTop: 20,
   },
 });
