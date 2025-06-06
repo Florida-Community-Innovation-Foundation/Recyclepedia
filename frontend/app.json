@@ -6,47 +6,43 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
-      [
-        "expo-router"
-      ],
+      "expo-router",
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Recyclepedia to access your camera"
+          "cameraPermission": "Allow Recyclepedia to access your camera."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "Allow Recyclepedia to access your photos to scan items for recycleability."
         }
       ],
       [
         "expo-calendar",
         {
-          "calendarPermission": "The app needs to access your calendar."
+          "calendarPermission": "Allow Recyclepedia to access your calendar."
         }
       ],
-      [
-        "expo-font"
-      ],
+      "expo-font",
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow Recyclepedia to use your location."
         }
       ],
       [
         "expo-maps",
         {
           "requestLocationPermission": "true",
-          "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
+          "locationPermission": "Allow Recyclepedia to use your location."
         }
       ],
       [
         "expo-calendar",
         {
-          "calendarPermission": "The app needs to access your calendar."
+          "calendarPermission": "Allow Recyclepedia to access your calendar."
         }
       ]
     ],
@@ -57,10 +53,28 @@
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR",
         "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
-    "ios": {}
+    "ios": {},
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8041a99b-f7c9-41f1-8ca4-7067c7b4223f"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8041a99b-f7c9-41f1-8ca4-7067c7b4223f"
+    }
   },
   "android": {
     "config": {
@@ -72,11 +86,11 @@
       "config": {
         "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
       },
-      "bundleIdentifier": "com.aadit.kamat.DiG"
+      "bundleIdentifier": "com.aadit.kamat.Recyclepedia"
     },
     "extra": {
       "eas": {
-        "projectId": "06c6a2cb-76dc-43ec-83bb-827a7072a931"
+        "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
       }
     },
     "owner": "aadit.kamat",

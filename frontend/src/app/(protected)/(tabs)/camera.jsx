@@ -11,7 +11,7 @@ export default function ItemScan() {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    navigation.addListener("tabPress", (event) => {
+    navigation.addListener("tabPress", () => {
       setImage(null);
     });
   }, [navigation]);

@@ -8,8 +8,7 @@ import diggy from "~/assets/diggy.png";
 import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
 import { useNavigation } from '@react-navigation/native';
 
-
-export default function UserProfile() {
+export default function UserAccount() {
   const [profilePicture, setProfilePicture] = useState(diggy);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
@@ -45,13 +44,6 @@ export default function UserProfile() {
     }
   };
 
-    const [fontsLoaded] = useFonts({
-      BebasNeue_400Regular,
-    });
-     if (!fontsLoaded) {
-      return null;
-    }  
-
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
     <View style={styles.screen}>
@@ -69,7 +61,7 @@ export default function UserProfile() {
         </Pressable>
         <Text style={styles.username}> HELI </Text>
       </View>
-      <View style={styles.profileInfo}>
+      <ScrollView style={styles.profileInfo}>
         {/* Recycling Goal */}
         <View style={styles.recyclingInfoContainer}>
           <View style={styles.recyclingHeader}>
@@ -122,8 +114,9 @@ export default function UserProfile() {
         </View>
 
         {/* Interactive Games */}
-        <Text style={[styles.recyclingHeaderText, { marginTop: 10 }]}> INTERACTIVE GAMES </Text>
-           <ScrollView horizontal style={{marginTop: 10 }} contentContainerStyle={{ flexDirection: 'row', gap: 5}}>
+        <View style={styles.interactiveGamesContainer}>
+          <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
+          <ScrollView horizontal style={{marginTop: 10 }} contentContainerStyle={{ flexDirection: 'row', gap: 5}}>
             <Pressable  style={styles.gameSlot} onPress={() => router.push('/featuredGameScreen')} >
               <Image source={require("/assets/FeatureGameImage.png")} style={styles.featuredGameImg}></Image>
             </Pressable>
@@ -132,8 +125,8 @@ export default function UserProfile() {
             </Pressable>
             <Pressable  style={styles.gameSlot}></Pressable>
           </ScrollView>
-    </View>
-    </View>
+         </View>
+        </View>
     </ScrollView>
   );
 }
@@ -156,13 +149,13 @@ const styles = StyleSheet.create({
     height: 125,
     width: 125,
     backgroundColor: "#D9D9D9",
-    borderRadius: 62.5, //orginal was  borderRadius: "50%"
+    borderRadius: 62.5,
     marginLeft: 130,
   },
   profilePictureEdit: {
     width: 35,
     height: 35,
-    borderRadius: 17.5, // orginal was borderRadius: "50%"
+    borderRadius: 17.5,
     backgroundColor: "#FFFFFF",
     marginLeft: 220,
     marginTop: -30,
@@ -185,7 +178,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   recyclingInfoContainer: {
-    marginTop: 20,
+    marginTop: 30,
   },
   recyclingHeader: {
     display: "flex",
@@ -193,17 +186,18 @@ const styles = StyleSheet.create({
   },
   recyclingHeaderText: {
     color: "#024935",
-    fontFamily: "BebasNeue_400Regular",
+    fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 20,
+    marginTop: 10,
   },
   recyclingGoalItemsNumber: {
     color: "#024935",
     fontFamily: "Titillium Web",
-    fontWeight: 500,
+    fontWeight: 700,
     fontSize: 15,
     textAlign: "center",
-    marginLeft: 150,
+    marginLeft: 165,
   },
   recyclingGoalBar: {
     backgroundColor: "#A5CCB7",
@@ -239,15 +233,15 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   updateButton: {
-    width: 62,
-    height: 23,
+    width: 63,
+    height: 25,
     borderRadius: 8,
     backgroundColor: "#188038",
-    marginLeft: 175,
+    marginLeft: 190,
   },
   updateButtonText: {
     color: "#FFFFFF",
-    fontFamily: "BebasNeue_400Regular",
+    fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 16,
     marginTop: 3,
@@ -275,14 +269,14 @@ const styles = StyleSheet.create({
     marginLeft: 175,
   },
   gameSlot: {
-    width: 140, 
+    flex: 1,
     height: 140,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
-    borderColor: '#D9D9D9',
+    borderColor: "#D9D9D9",
     borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 8,
   },
   featuredGameImg: {
@@ -296,4 +290,12 @@ const styles = StyleSheet.create({
     height: 130,
     resizeMode: "contain",
   }
+  gameSlotsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  interactiveGamesContainer: {
+    marginTop: 20,
+  },
 });

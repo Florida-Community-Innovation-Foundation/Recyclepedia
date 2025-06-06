@@ -11,8 +11,8 @@ import {
   View,
 } from "react-native";
 import { normalize } from "~/utils/normalize";
-import CategoryCard from "./CategoryCard";
-import RecyclingItemCard from "./RecyclingItemCard";
+import CategoryCard from "~/components/curbside/CategoryCard";
+import RecyclingItemCard from "~/components/curbside/RecyclingItemCard";
 
 const RecyclingList = ({ items }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);

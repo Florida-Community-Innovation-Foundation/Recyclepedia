@@ -31,9 +31,7 @@ export default function CameraScan({ setImage }) {
           ref={cameraRef}
           style={styles.cameraContainer}
           facing="back"
-        >
-          <View />
-        </CameraView>
+        />
         <Pressable style={styles.button} onPress={takePicture}>
           <Text style={styles.buttonText}>Take picture</Text>
         </Pressable>
