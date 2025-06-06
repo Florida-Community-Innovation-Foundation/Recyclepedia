@@ -2,20 +2,34 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-} from "react-native";
+import {router} from "expo-router";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import diggy from "~/assets/diggy.png";
+import { useFonts, BebasNeue_400Regular } from '@expo-google-fonts/bebas-neue';
+import { useNavigation } from '@react-navigation/native';
 
 export default function UserAccount() {
   const [profilePicture, setProfilePicture] = useState(diggy);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
+  const [carbonOffset, setCarbonOffset] = useState(0); //note that this is in kg CO2 saved
+  const [num, setNum] = useState(0);
+  const navigation = useNavigation();
+
+
+  const materials =  new Map([ //not used at the moment but will be used to calculate carbon offset
+        ["plastic", 1.02 ], // kg CO2 saved per kg of plastic 
+        ["paper", 0.46],
+        ["glass", 0.31],
+        ["metals", 5.86],
+        ["scrap metals", 3.57],
+        ["aluminum", 8.14],
+        ["steel", 0.86],
+        ["copper", 2.66],
+        ["textiles", 3.37],
+    ]);
+
+    
 
   const handleProfilePictureEdit = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -31,6 +45,7 @@ export default function UserAccount() {
   };
 
   return (
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
     <View style={styles.screen}>
       <View style={styles.profileBackground}>
         <Pressable style={styles.settings}>
@@ -92,7 +107,7 @@ export default function UserAccount() {
               </View>
               <View style={styles.recyclingStatsText}>
                 <Text style={styles.recyclingStatsLabel}>Carbon Offset:</Text>
-                <Text style={styles.recyclingStatsInfo}>2.5kg CO2</Text>
+                <Text style={styles.recyclingStatsInfo}>{carbonOffset}kg CO2</Text>
               </View>
             </View>
           </View>
@@ -101,19 +116,25 @@ export default function UserAccount() {
         {/* Interactive Games */}
         <View style={styles.interactiveGamesContainer}>
           <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
-          <View style={styles.gameSlotsContainer}>
-            <View style={styles.gameSlot}></View>
-            <View style={styles.gameSlot}></View>
-            <View style={styles.gameSlot}></View>
-          </View>
+          <ScrollView horizontal style={{marginTop: 10 }} contentContainerStyle={{ flexDirection: 'row', gap: 5}}>
+            <Pressable  style={styles.gameSlot} onPress={() => router.push('/featuredGameScreen')} >
+              <Image source={require("/assets/FeatureGameImage.png")} style={styles.featuredGameImg}></Image>
+            </Pressable>
+            <Pressable  style={styles.gameSlot} onPress={() => router.push('/learnGameScreen')}>
+              <Image source={require("/assets/LearnGameImageTwo.png")} style={styles.learningGameImg}></Image>
+            </Pressable>
+            <Pressable  style={styles.gameSlot}></Pressable>
+          </ScrollView>
+         </View>
         </View>
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {},
+  screen: {
+    paddingBottom: 100
+  },
   profileBackground: {
     paddingTop: 80,
     backgroundColor: "#024935",
@@ -168,6 +189,7 @@ const styles = StyleSheet.create({
     fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 20,
+    marginTop: 10,
   },
   recyclingGoalItemsNumber: {
     color: "#024935",
@@ -257,6 +279,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 8,
   },
+  featuredGameImg: {
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
+     borderColor: 'red',
+  },
+  learningGameImg: {
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
+  }
   gameSlotsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
