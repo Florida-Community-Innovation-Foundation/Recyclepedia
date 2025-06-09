@@ -9,6 +9,8 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, animation: "none" }}>
         <Stack.Screen name="(protected)" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="featuredGameScreen" />
+        <Stack.Screen name="learnGameScreen" />
       </Stack>
     </AuthProvider>
   );

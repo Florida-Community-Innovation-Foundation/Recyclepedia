@@ -2,20 +2,71 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
+import { Link } from "expo-router";
 import {
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  ScrollView,
 } from "react-native";
+import naturePicture from "~/assets/naturePicture.jpg";
 import diggy from "~/assets/diggy.png";
+import toter from "~/assets/toter.png";
+import mountain from "~/assets/Mountain.png";
+import learnGameImageTwo from "~/assets/LearnGameImageTwo.png";
+import cartons from "~/assets/cartons.png";
+
+import { useNavigation } from "@react-navigation/native";
 
 export default function UserAccount() {
-  const [profilePicture, setProfilePicture] = useState(diggy);
+  const [profilePicture, setProfilePicture] = useState(naturePicture);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
+  const [carbonOffset, setCarbonOffset] = useState(0); //note that this is in kg CO2 saved
+  const [num, setNum] = useState(0);
+  const navigation = useNavigation();
+
+  const learningGames = [
+    {
+      image: toter,
+      title: "Recycle Round Up",
+      color: "#A9DEF9",
+      url: "https://kids.nationalgeographic.com/games/action-adventure/article/recycle-roundup-new",
+    },
+    {
+      image: cartons,
+      title: "Litter Critter",
+      color: "#234E13",
+      url: "https://www.abcya.com/games/recycling_game",
+    },
+    {
+      image: learnGameImageTwo,
+      title: "Recycle or Not",
+      color: "#A9DEF9",
+      url: "https://www.recycleornot.org/",
+    },
+    {
+      image: mountain,
+      title: "Recycling Waste",
+      color: "#DBF4D2",
+      url: "https://www.turtlediary.com/game/recycling-waste.html",
+    },
+  ];
+
+  const materials = new Map([
+    //not used at the moment but will be used to calculate carbon offset
+    ["plastic", 1.02], // kg CO2 saved per kg of plastic
+    ["paper", 0.46],
+    ["glass", 0.31],
+    ["metals", 5.86],
+    ["scrap metals", 3.57],
+    ["aluminum", 8.14],
+    ["steel", 0.86],
+    ["copper", 2.66],
+    ["textiles", 3.37],
+  ]);
 
   const handleProfilePictureEdit = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -31,89 +82,121 @@ export default function UserAccount() {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.profileBackground}>
-        <Pressable style={styles.settings}>
-          <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
-        </Pressable>
-        {/* Profile Picture */}
-        <Image source={profilePicture} style={styles.profilePicture} />
-        <Pressable
-          style={styles.profilePictureEdit}
-          onPress={handleProfilePictureEdit}
-        >
-          <MaterialIcons name="edit" size={24} color="#024935" />
-        </Pressable>
-        <Text style={styles.username}> HELI </Text>
-      </View>
-      <ScrollView style={styles.profileInfo}>
-        {/* Recycling Goal */}
-        <View style={styles.recyclingInfoContainer}>
-          <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> RECYCLING GOAL </Text>
-            <Text
-              style={styles.recyclingGoalItemsNumber}
-            >{`${itemsRecycled}/${totalItemsToRecycle} Items`}</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.containerContent}
+    >
+      <View style={styles.screen}>
+        <View style={styles.profileBackground}>
+          <Pressable style={styles.settings}>
+            <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
+          </Pressable>
+          {/* Profile Picture */}
+          <Image source={profilePicture} style={styles.profilePicture} />
+          <Pressable
+            style={styles.profilePictureEdit}
+            onPress={handleProfilePictureEdit}
+          >
+            <MaterialIcons name="edit" size={24} color="#024935" />
+          </Pressable>
+          <Text style={styles.username}> HELI </Text>
+        </View>
+        <ScrollView style={styles.profileInfo}>
+          {/* Recycling Goal */}
+          <View style={styles.recyclingInfoContainer}>
+            <View style={styles.recyclingHeader}>
+              <Text style={styles.recyclingHeaderText}> RECYCLING GOAL </Text>
+              <Text
+                style={styles.recyclingGoalItemsNumber}
+              >{`${itemsRecycled}/${totalItemsToRecycle} Items`}</Text>
+            </View>
+            {/* Recycling Goal Bar */}
+            <View style={styles.recyclingGoalBar}>
+              <View
+                style={[
+                  styles.recyclingGoalCompleted,
+                  {
+                    width: `${new Number((itemsRecycled * 100) / totalItemsToRecycle).toFixed(2)}%`,
+                  },
+                ]}
+              />
+            </View>
           </View>
-          {/* Recycling Goal Bar */}
-          <View style={styles.recyclingGoalBar}>
+          {/* Recycling Stats */}
+          <View style={styles.recyclingInfoContainer}>
+            <View style={styles.recyclingHeader}>
+              <Text style={styles.recyclingHeaderText}> RECYCLING STATS </Text>
+              <Pressable style={styles.updateButton}>
+                <Text style={styles.updateButtonText}> UPDATE </Text>
+              </Pressable>
+            </View>
             <View
               style={[
-                styles.recyclingGoalCompleted,
-                {
-                  width: `${new Number((itemsRecycled * 100) / totalItemsToRecycle).toFixed(2)}%`,
-                },
+                styles.recyclingStatsContainer,
+                styles.recyclingStatsContainerShadow,
               ]}
-            />
-          </View>
-        </View>
-        {/* Recycling Stats */}
-        <View style={styles.recyclingInfoContainer}>
-          <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> RECYCLING STATS </Text>
-            <Pressable style={styles.updateButton}>
-              <Text style={styles.updateButtonText}> UPDATE </Text>
-            </Pressable>
-          </View>
-          <View
-            style={[
-              styles.recyclingStatsContainer,
-              styles.recyclingStatsContainerShadow,
-            ]}
-          >
-            <View style={styles.recyclingStatsTextContainer}>
-              <View style={styles.recyclingStatsText}>
-                <Text style={styles.recyclingStatsLabel}>
-                  Total Items Recycled:
-                </Text>
-                <Text style={styles.recyclingStatsInfo}>
-                  {`${itemsRecycled}`}
-                </Text>
-              </View>
-              <View style={styles.recyclingStatsText}>
-                <Text style={styles.recyclingStatsLabel}>Carbon Offset:</Text>
-                <Text style={styles.recyclingStatsInfo}>2.5kg CO2</Text>
+            >
+              <View style={styles.recyclingStatsTextContainer}>
+                <View style={styles.recyclingStatsText}>
+                  <Text style={styles.recyclingStatsLabel}>
+                    Total Items Recycled:
+                  </Text>
+                  <Text style={styles.recyclingStatsInfo}>
+                    {`${itemsRecycled}`}
+                  </Text>
+                </View>
+                <View style={styles.recyclingStatsText}>
+                  <Text style={styles.recyclingStatsLabel}>Carbon Offset:</Text>
+                  <Text style={styles.recyclingStatsInfo}>
+                    {carbonOffset}kg CO2
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        {/* Interactive Games */}
-        <View style={styles.interactiveGamesContainer}>
-          <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
-          <View style={styles.gameSlotsContainer}>
-            <View style={styles.gameSlot}></View>
-            <View style={styles.gameSlot}></View>
-            <View style={styles.gameSlot}></View>
+          {/* Interactive Games */}
+          <View style={styles.interactiveGamesContainer}>
+            <Text style={styles.recyclingHeaderText}> INTERACTIVE GAMES </Text>
+            <ScrollView
+              horizontal
+              style={styles.interactiveGamesContainerScroll}
+              contentContainerStyle={styles.interactiveGamesContainerContent}
+            >
+              <Link style={styles.gameSlot} href="/featuredGameScreen">
+                <Image source={diggy} style={styles.featuredGameImg}></Image>
+              </Link>
+              {learningGames.map((game, index) => (
+                <View key={index}>
+                  <Link
+                    style={styles.gameSlot}
+                    href={`/learnGameScreen?image=${encodeURIComponent(game.image)}&title=${encodeURIComponent(game.title)}&color=${encodeURIComponent(game.color)}&url=${encodeURIComponent(game.url)}`}
+                  >
+                    <Image
+                      source={game.image}
+                      style={styles.learningGameImg}
+                    ></Image>
+                  </Link>
+                </View>
+              ))}
+            </ScrollView>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {},
+  container: {
+    flex: 1,
+  },
+  containerContent: {
+    flexGrow: 1,
+  },
+  screen: {
+    paddingBottom: 100,
+  },
   profileBackground: {
     paddingTop: 80,
     backgroundColor: "#024935",
@@ -168,6 +251,7 @@ const styles = StyleSheet.create({
     fontFamily: "Bebas Neue",
     fontWeight: 400,
     fontSize: 20,
+    marginTop: 10,
   },
   recyclingGoalItemsNumber: {
     color: "#024935",
@@ -257,6 +341,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 8,
   },
+  featuredGameImg: {
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
+    borderColor: "red",
+  },
+  learningGameImg: {
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
+  },
   gameSlotsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -264,5 +359,12 @@ const styles = StyleSheet.create({
   },
   interactiveGamesContainer: {
     marginTop: 20,
+  },
+  interactiveGamesContainerScroll: {
+    marginTop: 10,
+  },
+  interactiveGamesContainerContent: {
+    flexDirection: "row",
+    gap: 5,
   },
 });
