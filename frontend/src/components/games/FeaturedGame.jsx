@@ -86,10 +86,12 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
+    color: "#000000",
   },
   buttonText: {
     fontSize: 15,
     marginRight: 4,
+    color: "#000000",
   },
 });
 
