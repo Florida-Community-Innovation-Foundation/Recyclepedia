@@ -23,7 +23,10 @@ const auth = new GoogleAuth();
 export async function fetchProjectId() {
   // Use the 'google-auth-library' to make a request to the metadata server or
   // default to Application Default Credentials in your local environment.
-  return await auth.getProjectId();
+
+  return "recyclepedia-456818"; // [note]: this is bad, not sure where to put it
+
+  //return await auth.getProjectId();
 }
 
 /**

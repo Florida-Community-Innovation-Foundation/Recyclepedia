@@ -9,13 +9,29 @@ import {
   Text,
   View,
   ScrollView,
+  TextInput,
 } from "react-native";
 import diggy from "~/assets/diggy.png";
+//import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
+
+const handleSearchChange = (text) => {
+  setSearchQuery(text);
+}
+
+// export const options = {
+//   headerShown: false,
+// };
 
 export default function UserAccount() {
   const [profilePicture, setProfilePicture] = useState(diggy);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
+
+  //const navigation = useNavigation();
+  //const [settings, setSettings] = useState(false);
+  //const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const handleProfilePictureEdit = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -33,7 +49,13 @@ export default function UserAccount() {
   return (
     <View style={styles.screen}>
       <View style={styles.profileBackground}>
-        <Pressable style={styles.settings}>
+        <Pressable style={styles.settings} f
+          onPress={() => {
+            //navigation.navigate("Settings");
+            //setSettings(!settings);
+            router.push('/(tabs)/prof/settings');
+          }}
+        >
           <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
         </Pressable>
         {/* Profile Picture */}
@@ -107,6 +129,21 @@ export default function UserAccount() {
             <View style={styles.gameSlot}></View>
           </View>
         </View>
+
+        {/* Settings Menu (THIS SHOULDN'T BE HERE) */}
+        {/*settings === true && (
+          <View>
+            <Text>
+              SETTINGS AND PRIVACY
+            </Text>
+            <TextInput
+              value={searchQuery}
+              onChangeText={handleSearchChange}
+              placeholder="Search"
+            />
+          </View>
+        )*/}
+
       </ScrollView>
     </View>
   );

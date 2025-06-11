@@ -24,6 +24,8 @@ import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 
 const CurbsideDropoff = ({ navigation }) => {
+  //console.log("Hello!");
+
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
@@ -131,9 +133,10 @@ const CurbsideDropoff = ({ navigation }) => {
       <ScrollView>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
-          <View style={styles.pillButtons}>
+
+          {/* Curbside button */}
+          <View style={ styles.pillButtonsContainer }>
             <TouchableOpacity
-              style={[styles.curbsidePill, { backgroundColor: curbsideColor }]} // Dynamically update background color
               onPress={() => {
                 setSubtitle(
                   "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
@@ -143,18 +146,25 @@ const CurbsideDropoff = ({ navigation }) => {
                 setSelectText("SELECT YOUR MUNICIPALITY:");
               }}
             >
-              <Text
-                style={[
-                  styles.pillText,
-                  { color: curbsideColor === "white" ? "#024935" : "white" },
-                ]}
-              >
-                CURBSIDE
-              </Text>
-            </TouchableOpacity>
-
+              {/* Curbside selected */}
+              {
+                curbsideColor === "white" &&
+                <View style={ styles.pillButtonSelected }>
+                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
+                </View>
+                
+              }
+              {/* Curbside not selected */}
+              {
+                curbsideColor !== "white" &&
+                <View style={ styles.pillButtonNotSelected }>
+                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
+                </View>                
+              }              
+            </TouchableOpacity>            
+            
+            {/* Drop-Off Button */}
             <TouchableOpacity
-              style={[styles.dropOffPill, { backgroundColor: dropoffColor }]}
               onPress={() => {
                 setSubtitle(
                   "FIND DROP-OFF LOCATIONS FOR ITEMS THAT CAN'T GO IN \nYOUR CURBSIDE BIN.",
@@ -165,14 +175,22 @@ const CurbsideDropoff = ({ navigation }) => {
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
-              <Text
-                style={[
-                  styles.pillText,
-                  { color: dropoffColor === "white" ? "#024935" : "white" },
-                ]}
-              >
-                DROP-OFF
-              </Text>
+              {/* Drop-off selected */}
+              {
+                dropoffColor === "white" &&
+                <View style={ styles.pillButtonSelected }>
+                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : white } ]}> Drop-Off </Text>
+                </View>
+                
+              }
+
+              {/* Drop-off not selected */}
+              {
+                dropoffColor !== "white" &&
+                <View style={ styles.pillButtonNotSelected }>
+                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> Drop-Off </Text>
+                </View>                
+              }
             </TouchableOpacity>
           </View>
 
@@ -374,7 +392,35 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
   },
+
   //Button container
+  pillButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 10,
+
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 30,
+  },
+  // Selected pill (if selected, this will should draw over, but doesn't FIXME)
+  pillButtonSelected: {
+    padding: 2,
+
+    borderColor: "#024935",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderRadius: 30,    
+  },
+  // Deselected pill
+  pillButtonNotSelected: {
+    padding: 2,
+
+    borderColor: "transparent",
+    borderWidth: 1,
+    borderRadius: 30,
+  },
+
   pillButtons: {
     flexDirection: "row",
     justifyContent: "center",
@@ -400,10 +446,13 @@ const styles = StyleSheet.create({
   },
   pillText: {
     color: "white",
+    //color: "black",
     fontWeight: 400,
     fontFamily: "Bebas Neue",
-    fontSize: 33,
+    fontSize: 30,
     textAlign: "center",
+    //padding: 4,
+    paddingHorizontal: 16,
   },
 
   buttonRow: {
