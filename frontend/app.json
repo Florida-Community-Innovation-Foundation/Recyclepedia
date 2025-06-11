@@ -6,7 +6,6 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
-      "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
       "expo-router",
       [
