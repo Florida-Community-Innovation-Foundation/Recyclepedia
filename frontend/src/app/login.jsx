@@ -8,14 +8,62 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
+  ActivityIndicator,
+  Platform,
 } from "react-native";
 import { AuthContext } from "~/utils/authContext";
 import Divider from "~/components/common/Divider";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function LoginScreen() {
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const handleEmailAuth = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter email and password");
+      return;
+    }
+
+    setLoading(true);
+    let result;
+
+    if (isLogin) {
+      result = await authContext.signInWithEmail(email, password);
+    } else {
+      result = await authContext.signUpWithEmail(email, password);
+    }
+
+    setLoading(false);
+
+    if (!result.success) {
+      Alert.alert("Authentication Error", result.error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const result = await authContext.signInWithGoogle();
+    setLoading(false);
+
+    if (!result.success) {
+      Alert.alert("Google Sign-In Error", result.error);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setLoading(true);
+    const result = await authContext.signInWithApple();
+    setLoading(false);
+
+    if (!result.success) {
+      Alert.alert("Apple Sign-In Error", result.error);
+    }
+  };
 
   return (
     <View style={styles.screen}>
@@ -28,61 +76,97 @@ export default function LoginScreen() {
           />{" "}
           WITH
         </Text>
-        {/* Recyclepedia Logo */}
         <Image
           src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
           style={styles.mainLogo}
         />
       </View>
+
       <View style={styles.createAccountContainer}>
-        <Text style={styles.createAccountHeadingText}> CREATE AN ACCOUNT </Text>
-        <Text style={styles.createAccountInfoText}>
-          Enter your email to sign up for the on-the-go access to recycling
-          resources in our community
+        <Text style={styles.createAccountHeadingText}>
+          {isLogin ? "SIGN IN" : "CREATE ACCOUNT"}
         </Text>
+        <Text style={styles.createAccountInfoText}>
+          {isLogin
+            ? "Enter your email and password to sign in"
+            : "Enter your email to sign up for on-the-go access to recycling resources"}
+        </Text>
+
         <TextInput
           placeholder="domain@example.com"
           placeholderTextColor="gray"
           value={email}
-          onChange={setEmail}
+          onChangeText={setEmail}
           style={styles.textInput}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
+
         <TextInput
+          placeholder="Password"
+          placeholderTextColor="gray"
           value={password}
-          onChange={setPassword}
+          onChangeText={setPassword}
           style={styles.textInput}
-          autoComplete="new-password"
+          secureTextEntry
+          autoComplete="password"
         />
-        <Pressable style={styles.signupButton}>
-          <Text style={styles.signupText} onPress={() => authContext.login()}>
-            CONTINUE
+
+        <Pressable
+          style={[styles.signupButton, loading && styles.disabledButton]}
+          onPress={handleEmailAuth}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <Text style={styles.signupText}>
+              {isLogin ? "SIGN IN" : "SIGN UP"}
+            </Text>
+          )}
+        </Pressable>
+
+        <Pressable
+          onPress={() => setIsLogin(!isLogin)}
+          style={styles.toggleButton}
+        >
+          <Text style={styles.toggleText}>
+            {isLogin
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Sign in"}
           </Text>
         </Pressable>
+
         <Divider />
+
         <Pressable
-          style={styles.loginButton}
-          onPress={() => authContext.login()}
+          style={[styles.loginButton, loading && styles.disabledButton]}
+          onPress={handleGoogleSignIn}
+          disabled={loading}
         >
           <FontAwesome5
             name="google"
-            size={20}
+            size={13}
             color="black"
             style={styles.icon}
           />
-          <Text style={styles.loginText}> Continue with Google </Text>
+          <Text style={styles.loginText}>Continue with Google</Text>
         </Pressable>
-        <Pressable
-          style={styles.loginButton}
-          onPress={() => authContext.login()}
-        >
-          <FontAwesome5
-            name="apple"
-            size={20}
-            color="black"
-            style={styles.icon}
+
+        {Platform.OS === "ios" && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={8}
+            style={styles.appleButton}
+            onPress={handleAppleSignIn}
           />
-          <Text style={styles.loginText}> Continue with Apple </Text>
-        </Pressable>
+        )}
+
         <Text style={styles.noticeText}>
           By clicking continue, you agree to our{" "}
           <Link href="https://recyclepedia.vercel.app/terms-of-service">
@@ -119,7 +203,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontFamily: "Bebas Neue",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 32,
     textAlign: "center",
     textAlignVertical: "center",
@@ -133,7 +217,7 @@ const styles = StyleSheet.create({
   },
   createAccountHeadingText: {
     fontFamily: "Bebas Neue",
-    fontWeight: 500,
+    fontWeight: "500",
     fontSize: 24,
     textAlign: "center",
     color: "#024935",
@@ -141,7 +225,7 @@ const styles = StyleSheet.create({
   },
   createAccountInfoText: {
     fontFamily: "Titillium Web",
-    fontWeight: 300,
+    fontWeight: "300",
     fontSize: 14,
     textAlign: "center",
     marginTop: 10,
@@ -169,14 +253,21 @@ const styles = StyleSheet.create({
     marginLeft: 32,
     marginRight: 16,
     marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   signupText: {
-    width: 330,
-    height: 40,
-    borderRadius: 8,
     color: "#FFFFFF",
     textAlign: "center",
+    fontWeight: "500",
+  },
+  toggleButton: {
     marginTop: 10,
+    alignItems: "center",
+  },
+  toggleText: {
+    color: "#024935",
+    fontSize: 14,
   },
   loginButton: {
     width: 314,
@@ -186,21 +277,25 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 5,
     marginLeft: 32,
-    marginRight: 32,
-    paddingLeft: 60,
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   loginText: {
-    width: 330,
-    height: 40,
     color: "#024935",
-    marginTop: 10,
     marginLeft: 5,
+  },
+  appleButton: {
+    width: 314,
+    height: 40,
+    marginLeft: 32,
+    marginTop: 5,
+    marginBottom: 5,
   },
   noticeText: {
     fontFamily: "Inter",
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 11,
     textAlign: "center",
     color: "#00853F",
@@ -209,6 +304,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   icon: {
-    marginTop: 7,
+    marginTop: 0,
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });

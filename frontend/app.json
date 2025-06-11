@@ -6,6 +6,8 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
+      "@react-native-google-signin/google-signin",
+      "expo-apple-authentication",
       "expo-router",
       [
         "expo-camera",
@@ -47,6 +49,12 @@
       ]
     ],
     "android": {
+      "bundleIdentifier": "com.floridacommunityinnovation.Recyclepedia",
+      "config": {
+        "googleMaps": {
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+        }
+      },
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
@@ -62,43 +70,25 @@
         "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
-    "ios": {},
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "8041a99b-f7c9-41f1-8ca4-7067c7b4223f"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/8041a99b-f7c9-41f1-8ca4-7067c7b4223f"
-    }
-  },
-  "android": {
-    "config": {
-      "googleMaps": {
-        "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
-      }
-    },
     "ios": {
+      "bundleIdentifier": "com.floridacommunityinnovation.Recyclepedia",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
-      },
-      "bundleIdentifier": "com.aadit.kamat.Recyclepedia"
+      }
     },
     "extra": {
+      "router": {},
       "eas": {
         "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
       }
     },
-    "owner": "aadit.kamat",
+    "owner": "floridacommunityinnovation",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
+      "url": "https://u.expo.dev/590ccc4f-8748-4498-862f-7d1b9e1d49e6"
     }
   }
 }
