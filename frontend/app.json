@@ -6,6 +6,7 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
+      "expo-apple-authentication",
       "expo-router",
       [
         "expo-camera",
@@ -47,7 +48,7 @@
       ]
     ],
     "android": {
-      "bundleIdentifier": "com.aadit.kamat.Recyclepedia",
+      "bundleIdentifier": "com.floridacommunityinnovation.Recyclepedia",
       "config": {
         "googleMaps": {
           "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
@@ -69,10 +70,11 @@
       ]
     },
     "ios": {
+      "bundleIdentifier": "com.floridacommunityinnovation.Recyclepedia",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
-      },
-      "bundleIdentifier": "com.aadit.kamat.Recyclepedia"
+      }
     },
     "extra": {
       "router": {},

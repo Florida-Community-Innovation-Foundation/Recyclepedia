@@ -1,9 +1,4 @@
-import * as Network from "expo-network";
-
-async function getBaseURL() {
-  const ipAddress = await Network.getIpAddressAsync();
-  return `http://${ipAddress}:${process.env.EXPO_PUBLIC_BACKEND_PORT}`;
-}
+import getBaseURL from "./url";
 
 export async function getCurbsideData() {
   const baseURL = await getBaseURL();
