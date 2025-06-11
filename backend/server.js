@@ -27,12 +27,12 @@ const main = async () => {
     }
     // Initialize request-based logger with project Id
     initLogCorrelation(project);
-
-    // Start server listening on PORT env var
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
   } catch (err) {
     logger.error(err.message);
+  } finally {
+    // Start server listening on PORT env var
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
   }
 };
 

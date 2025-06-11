@@ -20,7 +20,7 @@ import cartons from "~/assets/cartons.png";
 
 import { useNavigation } from "@react-navigation/native";
 
-export default function UserAccount() {
+export default function UserProfile() {
   const [profilePicture, setProfilePicture] = useState(naturePicture);
   const [itemsRecycled, setItemsRecycled] = useState(32);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
@@ -89,7 +89,9 @@ export default function UserAccount() {
       <View style={styles.screen}>
         <View style={styles.profileBackground}>
           <Pressable style={styles.settings}>
-            <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
+            <Link href="/settings">
+              <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
+            </Link>
           </Pressable>
           {/* Profile Picture */}
           <Image source={profilePicture} style={styles.profilePicture} />

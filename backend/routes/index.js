@@ -70,7 +70,7 @@ function getDropoffLocations(data) {
     .value();
 }
 
-router.get("/curbsideData", async (req, res) => {
+router.get("/curbsideData", async (_, res) => {
   const workbook = await readBaselineData();
   const sheets = [
     workbook.Sheets["Curbside"],
@@ -83,19 +83,24 @@ router.get("/curbsideData", async (req, res) => {
   return res.json(curbsideData);
 });
 
-router.get("/itemsData", async (req, res) => {
+router.get("/itemsData", async (_, res) => {
   const workbook = await readBaselineData();
   const sheet = workbook.Sheets["Items"];
   const itemsData = xlsx.utils.sheet_to_json(sheet);
   return res.json(await getItemDetails(itemsData));
 });
 
-router.get("/dropOffData", async (req, res) => {
+router.get("/dropOffData", async (_, res) => {
   const workbook = await readBaselineData();
   const sheet = workbook.Sheets["Items"];
   const itemsData = xlsx.utils.sheet_to_json(sheet);
   const dropOffLocations = getDropoffLocations(itemsData);
   return res.json(dropOffLocations);
+});
+
+router.post("/recyclingIdentifier", (req, res) => {
+  req.pipe(fs.createWriteStream("./uploads/image" + Date.now() + ".png"));
+  res.send("OK");
 });
 
 export default router;

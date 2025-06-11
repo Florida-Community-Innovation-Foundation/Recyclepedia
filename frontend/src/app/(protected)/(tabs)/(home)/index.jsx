@@ -22,8 +22,10 @@ import {
 import DropdownSelector from "~/components/curbside/DropdownSelector";
 import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
+import { useNavigation } from "@react-navigation/native";
 
-const CurbsideDropoff = ({ navigation }) => {
+const CurbsideDropoff = () => {
+  const navigation = useNavigation();
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },

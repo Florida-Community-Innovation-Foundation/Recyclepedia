@@ -1,5 +1,5 @@
-import LearnGame from "../components/games/LearnGame";
-import BackButton from "../components/common/BackButton";
+import LearnGame from "~/components/games/LearnGame";
+import BackButton from "~/components/common/BackButton";
 import { useLocalSearchParams } from "expo-router";
 import { View, StyleSheet } from "react-native";
 
@@ -7,7 +7,7 @@ export default function LearnGameScreen() {
   const { image, title, color, url } = useLocalSearchParams();
   return (
     <View style={styles.screen}>
-      <BackButton />
+      <BackButton color="#FFFFFF" />
       <View style={styles.learnGameContainer}>
         <LearnGame image={image} title={title} color={color} url={url} />
       </View>

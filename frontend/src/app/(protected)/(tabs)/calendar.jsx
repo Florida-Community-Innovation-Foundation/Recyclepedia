@@ -8,7 +8,7 @@ import { MonthDisplay } from "~/components/events/MonthDisplay";
 import SubmitEventModal from "~/components/events/SubmitEventModal";
 import { getCalendarEvents } from "~/utils/calendarEvents.js";
 
-export default function Home({ navigation }) {
+export default function Home() {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [calendarEvents, setCalendarEvents] = useState(getCalendarEvents());
   const [dayDisplaysPressed, setDayDisplaysPressed] = useState(

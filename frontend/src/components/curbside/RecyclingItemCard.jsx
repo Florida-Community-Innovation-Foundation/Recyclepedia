@@ -62,7 +62,6 @@ const RecyclingItemCard = ({ item }) => {
               >
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
-              {console.log(item.imageURL)}
               <Image
                 source={item.imageURL || "https://placehold.co/250"} // Larger view of the image
                 style={styles.modalImage}
