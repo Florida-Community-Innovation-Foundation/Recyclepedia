@@ -42,8 +42,7 @@ export default function BottomTabsLayout() {
         }}
       />
       <Tabs.Screen
-        //name="profile" // to use, put profile.jsx in (tabs) directory
-        name="prof"
+        name="profile"
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialCommunityIcons name="account" size={size} color={color} />
