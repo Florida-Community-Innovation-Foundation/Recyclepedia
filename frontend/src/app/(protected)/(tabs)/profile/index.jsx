@@ -88,9 +88,11 @@ export default function UserAccount() {
     >
       <View style={styles.screen}>
         <View style={styles.profileBackground}>
-          <Pressable style={styles.settings}>
-            <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
-          </Pressable>
+            <Pressable style={styles.settings}>
+              <Link href="/(tabs)/profile/settings">
+                <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
+              </Link>
+            </Pressable>
           {/* Profile Picture */}
           <Image source={profilePicture} style={styles.profilePicture} />
           <Pressable
