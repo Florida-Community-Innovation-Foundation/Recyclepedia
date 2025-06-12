@@ -33,4 +33,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-firestore-upload/serviceAccountKey.json
+
+# Firebasr
+GoogleService-Info.plist
