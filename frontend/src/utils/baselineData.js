@@ -9,11 +9,6 @@ export async function getCurbsideData() {
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/curbsideData`);
   const curbsideData = await response.json();
-
-  // debug, doesn't work
-  console.log("Hello World");
-  console.log(curbsideData);
-
   return curbsideData;
 }
 

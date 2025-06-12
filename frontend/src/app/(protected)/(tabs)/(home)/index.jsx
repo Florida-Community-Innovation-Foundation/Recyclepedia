@@ -24,8 +24,6 @@ import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 
 const CurbsideDropoff = ({ navigation }) => {
-  //console.log("Hello!");
-
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
