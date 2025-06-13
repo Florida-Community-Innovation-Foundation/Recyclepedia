@@ -21,7 +21,7 @@ import { fetchProjectId } from "./utils/metadata.js";
  */
 const main = async () => {
   try {
-    let project = process.env.GOOGLE_CLOUD_PROJECT;
+    let project = process.env.FIREBASE_PROJECT_ID;
     if (!project) {
       project = await fetchProjectId();
     }

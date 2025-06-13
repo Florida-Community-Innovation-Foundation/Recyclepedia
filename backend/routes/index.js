@@ -1,9 +1,16 @@
+import axios from "axios";
 import express from "express";
+import multer from "multer";
+import FormData from "form-data";
 import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
 
 const router = express.Router();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
 async function readBaselineData() {
   const file = await getBaselineData();
@@ -98,9 +105,30 @@ router.get("/dropOffData", async (_, res) => {
   return res.json(dropOffLocations);
 });
 
-router.post("/recyclingIdentifier", (req, res) => {
-  req.pipe(fs.createWriteStream("./uploads/image" + Date.now() + ".png"));
-  res.send("OK");
-});
+router.post(
+  "/recyclingIdentifier",
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const form = new FormData();
+      form.append("data", req.file.buffer, req.file.originalname);
+
+      const options = {
+        method: "POST",
+        url: "https://www.nyckel.com/v1/functions/recycling-identifier/invoke",
+        headers: {
+          Authorization: `Bearer ${process.env.NYCKEL_API_KEY}`,
+          "Content-Type":
+            "multipart/form-data; boundary=---011000010111000001101001",
+        },
+        data: "[form]",
+      };
+      const response = await axios.request(options);
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
 
 export default router;
