@@ -17,15 +17,13 @@ export default function ItemScan() {
       getBaseURL().then((baseURL) => {
         FileSystem.uploadAsync(`${baseURL}/recyclingIdentifier`, imageUri, {
           fieldName: "image",
+          mimeType: "image/jpeg",
           httpMethod: "POST",
-          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
         })
           .then((response) => {
-            console.log("Successfully sent to recyclingIdentifier API");
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
+            console.log(JSON.parse(response.body));
+            return JSON.parse(response.body);
           })
           .catch((error) => {
             console.error(error);
