@@ -89,7 +89,7 @@ export default function UserProfile() {
       <View style={styles.screen}>
         <View style={styles.profileBackground}>
           <Pressable style={styles.settings}>
-            <Link href="/settings">
+            <Link href="/(tabs)/profile/settings">
               <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
             </Link>
           </Pressable>
