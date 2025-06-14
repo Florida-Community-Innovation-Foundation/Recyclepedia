@@ -1,18 +1,40 @@
 import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
+import getBaseURL from "~/utils/url";
 
 export default function ItemScan() {
   const navigation = useNavigation();
-  const [image, setImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
+
+  useEffect(() => {
+    if (imageUri) {
+      getBaseURL().then((baseURL) => {
+        FileSystem.uploadAsync(`${baseURL}/recyclingIdentifier`, imageUri, {
+          fieldName: "image",
+          mimeType: "image/jpeg",
+          httpMethod: "POST",
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        })
+          .then((response) => {
+            console.log(JSON.parse(response.body));
+            return JSON.parse(response.body);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    }
+  }, [imageUri]);
 
   useEffect(() => {
     navigation.addListener("tabPress", () => {
-      setImage(null);
+      setImageUri(null);
     });
   }, [navigation]);
 
@@ -25,7 +47,7 @@ export default function ItemScan() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setImageUri(result.assets[0].uri);
     }
   };
 
@@ -36,10 +58,10 @@ export default function ItemScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-        {!image && <CameraScan setImage={setImage} />}
-        {image && (
+        {!imageUri && <CameraScan setImageUri={setImageUri} />}
+        {imageUri && (
           <Image
-            source={{ uri: image }}
+            source={{ uri: imageUri }}
             style={styles.cameraContainer}
             contentFit="cover"
             enableLiveTextInteraction={true}
@@ -60,7 +82,7 @@ export default function ItemScan() {
           <Text style={styles.uploadPhotoText}>UPLOAD A PHOTO</Text>
         </Pressable>
         {/* Section showing instructions after scanning or uploading a photo */}
-        <ItemScanInstructions itemChecked={image} itemAccepted={false} />
+        <ItemScanInstructions itemChecked={imageUri} itemAccepted={false} />
       </View>
     </View>
   );

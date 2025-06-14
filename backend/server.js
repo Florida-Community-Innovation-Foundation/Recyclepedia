@@ -21,18 +21,18 @@ import { fetchProjectId } from "./utils/metadata.js";
  */
 const main = async () => {
   try {
-    let project = process.env.GOOGLE_CLOUD_PROJECT;
+    let project = process.env.FIREBASE_PROJECT_ID;
     if (!project) {
       project = await fetchProjectId();
     }
     // Initialize request-based logger with project Id
     initLogCorrelation(project);
-
-    // Start server listening on PORT env var
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
   } catch (err) {
     logger.error(err.message);
+  } finally {
+    // Start server listening on PORT env var
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
   }
 };
 

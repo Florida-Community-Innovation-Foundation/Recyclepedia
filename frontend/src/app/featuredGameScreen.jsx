@@ -5,7 +5,7 @@ import BackButton from "../components/common/BackButton";
 export default function FeaturedGameScreen() {
   return (
     <View style={styles.screen}>
-      <BackButton />
+      <BackButton color="#FFFFFF" />
       <View style={styles.featuredGameContainer}>
         <FeaturedGame />
       </View>
