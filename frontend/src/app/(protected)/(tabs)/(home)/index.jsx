@@ -22,6 +22,7 @@ import {
 import DropdownSelector from "~/components/curbside/DropdownSelector";
 import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
+import { normalize } from "~/utils/normalize";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -267,7 +268,7 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         )}
 
-        {/* Map */}
+        {/* Map 
         <MapView
           region={_.chain(curbsideData)
             .filter((row) => _.keys(row)[0] === "Miami")
@@ -292,7 +293,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 title={place.name}
               />
             ))}
-        </MapView>
+        </MapView>*/}
 
         {/* Show recycling information */}
         {city && (
@@ -383,23 +384,23 @@ const CurbsideDropoff = ({ navigation }) => {
 const styles = StyleSheet.create({
   // General Containers
   container: {
-    flex: 1,
+    flex: normalize(1),
     backgroundColor: "#024935",
   },
   contentContainer: {
-    marginHorizontal: 10,
-    marginVertical: 10,
+    marginHorizontal: normalize(10, "width"),
+    marginVertical: normalize(10, "height"),
   },
 
   //Button container
   pillButtonsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 10,
+    marginBottom: normalize(10, "height"),
 
     borderColor: "white",
-    borderWidth: 1,
-    borderRadius: 30,
+    borderWidth: normalize(1, "width"),
+    borderRadius: normalize(30),
   },
   // Selected pill (if selected, this will should draw over, but doesn't FIXME)
   pillButtonSelected: {
@@ -407,39 +408,39 @@ const styles = StyleSheet.create({
 
     borderColor: "#024935",
     backgroundColor: "white",
-    borderWidth: 1,
-    borderRadius: 30,    
+    borderWidth: normalize(1, "width"),
+    borderRadius: normalize(30),
   },
   // Deselected pill
   pillButtonNotSelected: {
     padding: 2,
 
     borderColor: "transparent",
-    borderWidth: 1,
-    borderRadius: 30,
+    borderWidth: normalize(1, "width"),
+    borderRadius: normalize(30),
   },
 
   pillButtons: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 10,
+    marginBottom: normalize(10, "height"),
   },
   curbsidePill: {
     backgroundColor: "",
     paddingVertical: 2,
     paddingHorizontal: 22,
-    borderRadius: 30,
+    borderRadius: normalize(30),
     marginHorizontal: -10,
-    borderWidth: 1,
+    borderWidth: normalize(1, "width"),
     borderColor: "white",
   },
   dropOffPill: {
     backgroundColor: "green",
-    paddingVertical: 2,
-    paddingHorizontal: 22,
-    borderRadius: 30,
-    marginHorizontal: -10,
-    borderWidth: 1,
+    paddingVertical: normalize(2, "height"),
+    paddingHorizontal: normalize(22, "width"),
+    borderRadius: normalize(30),
+    marginHorizontal: normalize(-10, "width"),
+    borderWidth: normalize(1, "width"),
     borderColor: "white",
   },
   pillText: {
@@ -447,181 +448,181 @@ const styles = StyleSheet.create({
     //color: "black",
     fontWeight: 400,
     fontFamily: "Bebas Neue",
-    fontSize: 30,
+    fontSize: normalize(30),
     textAlign: "center",
     //padding: 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: normalize(16, "width"),
   },
 
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 35,
+    paddingHorizontal: normalize(10, "width"),
+    paddingVertical: normalize(35, "height"),
   },
 
   // Header Styles
   headerContainer: {
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: normalize(10, "height"),
   },
   title: {
-    fontSize: 28,
+    fontSize: normalize(28),
     color: "#6ad04b",
-    marginBottom: 10,
+    marginBottom: normalize(10, "height"),
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: normalize(20),
     fontFamily: "Bebas Neue",
     fontWeight: 400,
     textAlign: "center",
-    marginTop: 5,
+    marginTop: normalize(5, "height"),
   },
 
   // City Picker Styles
   cityPickerContainer: {
-    borderRadius: 20,
-    padding: 15,
-    marginHorizontal: 20,
+    borderRadius: normalize(20),
+    padding: normalize(15),
+    marginHorizontal: normalize(20),
   },
   input: {
-    height: 50,
-    fontSize: 16,
+    height: normalize(50, "height"),
+    fontSize: normalize(16),
     color: "#828282",
   },
   cityPickerLabel: {
-    fontSize: 22,
+    fontSize: normalize(22),
     fontFamily: "Bebas Neue",
     fontWeight: 400,
     color: "white",
-    marginBottom: 10,
-    marginTop: -10,
+    marginBottom: normalize(10, "height"),
+    marginTop: normalize(-10, "height"),
   },
   pickerWrapper: {
     backgroundColor: "white",
-    borderWidth: 1,
+    borderWidth: normalize(1, "width"),
     borderColor: "#ddd",
-    borderRadius: 10,
-    height: 50,
-    marginTop: 10,
-    paddingLeft: 10,
+    borderRadius: normalize(10),
+    height: normalize(50, "height"),
+    marginTop: normalize(10, "height"),
+    paddingLeft: normalize(10, "width"),
   },
   pickerText: {
     color: "#828282",
-    height: 50,
+    height: normalize(50, "height"),
   },
   // Location select Styles
   selectCurrentLocation: {
     display: "flex",
     flexDirection: "row",
-    marginLeft: 185,
+    marginLeft: normalize(185, "width"),
   },
   selectCurrentLocationText: {
     textAlign: "right",
     color: "#828282",
     textDecorationLine: "underline",
-    marginLeft: 5,
+    marginLeft: normalize(5, "width"),
     fontFamily: "Titillium Web",
-    fontSize: 14,
+    fontSize: normalize(14),
     fontWeight: 400,
   },
 
   //Submit Button Styles
   submitButton: {
     backgroundColor: "#24A0ED",
-    width: 150,
-    height: 40,
-    borderRadius: 8,
-    marginBottom: 5,
-    marginTop: 15,
-    marginLeft: 32,
-    marginRight: 32,
-    marginLeft: 200,
+    width: normalize(150, "width"),
+    height: normalize(40, "height"),
+    borderRadius: normalize(8),
+    marginBottom: normalize(5, "height"),
+    marginTop: normalize(15, "height"),
+    marginLeft: normalize(32, "width"),
+    marginRight: normalize(32, "width"),
+    marginLeft: normalize(200, "width"),
   },
   submitButtonText: {
     color: "#FFFFFF",
-    marginTop: 10,
+    marginTop: normalize(10, "height"),
     textAlign: "center",
   },
   //Map Styles
   map: {
-    width: 340,
-    height: 300,
-    marginHorizontal: 32,
-    borderRadius: 11,
+    width: normalize(340, "width"),
+    height: normalize(300, "height"),
+    marginHorizontal: normalize(32, "width"),
+    borderRadius: normalize(11),
   },
   callout: {
     backgroundColor: "white",
-    padding: 10,
+    padding: normalize(10),
   },
   // Search Styles
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
-    borderRadius: 15,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    marginHorizontal: 16,
+    borderRadius: normalize(15),
+    paddingHorizontal: normalize(15),
+    marginBottom: normalize(15),
+    marginHorizontal: normalize(16),
   },
   searchInput: {
     flex: 1,
-    height: 50,
-    fontSize: 16,
+    height: normalize(50, "height"),
+    fontSize: normalize(16),
   },
   searchIcon: {
-    width: 20,
-    height: 20,
+    width: normalize(20, "width"),
+    height: normalize(20, "height"),
   },
 
   // Alternative Section Styles
   alternativeContainer: {
     backgroundColor: "white",
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 50,
-    marginHorizontal: 16,
+    borderRadius: normalize(15),
+    padding: normalize(15),
+    marginBottom: normalize(50),
+    marginHorizontal: normalize(16),
     alignItems: "center",
   },
   alternativeText: {
-    fontSize: 18,
+    fontSize: normalize(18),
     color: "#666",
-    marginBottom: 15,
+    marginBottom: normalize(15),
   },
   alternativeButton: {
     backgroundColor: "#234E13",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 15,
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(12),
+    borderRadius: normalize(15),
   },
   alternativeButtonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: normalize(16),
     textAlign: "center",
   },
 
   // Item Section Styles
   itemSection: {
     backgroundColor: "#f9f9f9",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
+    borderRadius: normalize(10),
+    padding: normalize(15),
+    marginBottom: normalize(10),
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3, // For Android shadow
   },
   itemTitle: {
-    fontSize: 18,
+    fontSize: normalize(18),
     fontWeight: "bold",
     color: "#234E13",
-    marginBottom: 5,
+    marginBottom: normalize(5),
   },
   itemDescription: {
-    fontSize: 14,
+    fontSize: normalize(14),
     color: "#666",
-    lineHeight: 20,
+    lineHeight: normalize(20),
   },
 });
 
