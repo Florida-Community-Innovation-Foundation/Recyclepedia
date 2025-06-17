@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
+import { normalize } from "~/utils/normalize";
 
 export default function ItemScan() {
   const navigation = useNavigation();
@@ -72,9 +73,9 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   container: {
-    marginTop: 70,
-    marginLeft: 32,
-    marginRight: 16,
+    marginTop: normalize(70, "height"),
+    marginLeft: normalize(32, "width"),
+    marginRight: normalize(16, "width"),
   },
   h1: {
     fontWeight: 400,
@@ -94,22 +95,22 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   permissionContainer: {
-    width: 300,
+    width: normalize(300, "width"),
   },
   cameraContainer: {
-    width: 311,
-    height: 300,
+    width: normalize(311, "width"),
+    height: normalize(300, "height"),
   },
   divider: {
-    marginTop: 10,
+    marginTop: normalize(10, "height"),
     display: "flex",
     flexDirection: "row",
   },
   dividerLine: {
     backgroundColor: "#FFFFFF",
-    height: 1,
+    height: normalize(1, "height"),
     width: "42%",
-    marginTop: 8,
+    marginTop: normalize(8, "height"),
   },
   dividerText: {
     fontWeight: 400,
@@ -120,15 +121,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#828282",
-    marginLeft: 75,
-    width: 155,
+    marginLeft: normalize(75, "width"),
+    width: normalize(155, "width"),
     backgroundColor: "#FFFFFF",
-    height: 43,
-    marginTop: 10,
+    height: normalize(43, "height"),
+    marginTop: normalize(10, "height"),
   },
   uploadPhotoText: {
     textAlign: "center",
-    marginTop: 10,
+    marginTop: normalize(10, "height"),
     fontSize: 22,
     fontFamily: "Bebas Neue",
     color: "#024935",

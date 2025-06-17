@@ -7,6 +7,7 @@ import { EventsListDisplay } from "~/components/events/EventsListDisplay";
 import { MonthDisplay } from "~/components/events/MonthDisplay";
 import SubmitEventModal from "~/components/events/SubmitEventModal";
 import { getCalendarEvents } from "~/utils/calendarEvents.js";
+import { normalize } from "~/utils/normalize";
 
 export default function Home({ navigation }) {
   const [currentDate, setCurrentDate] = useState(dayjs());
@@ -72,14 +73,14 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   scrollContainer: {
-    paddingBottom: 20,
-    marginLeft: 16,
-    marginRight: 16,
+    paddingBottom: normalize(20, "height"),
+    marginLeft: normalize(16, "width"),
+    marginRight: normalize(16, "width"),  
   },
   adSpaceContainer: {
-    marginTop: 50,
+    marginTop: normalize(50, "height"),
     backgroundColor: "#16513D",
-    height: 56,
+    height: normalize(56, "height"),
     justifyContent: "center",
     alignItems: "center",
   },
@@ -89,27 +90,27 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     flexDirection: "row",
-    marginTop: 52,
+    marginTop: normalize(52, "height"),
     backgroundColor: "#fff",
     borderRadius: 8,
   },
   searchBarIconContainer: {
     flex: 1,
     justifyContent: "center",
-    paddingLeft: 8,
+    paddingLeft: normalize(8, "width"),
   },
   monthViewContainer: {
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 10,
+    marginLeft: normalize(5, "width"),
+    marginRight: normalize(5, "width"),
+    marginTop: normalize(10, "height"),
   },
   eventsViewContainer: {
-    marginTop: 20,
+    marginTop: normalize(20, "height"),
   },
   submitEventViewContainer: {
     position: "absolute",
     top: 640,
-    height: 120,
+    height: normalize(120, "height"),
     backgroundColor: "#024935",
     textAlign: "center",
     justifyContent: "center",
@@ -124,8 +125,8 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     height: "50%",
     justifyContent: "center",
-    marginTop: 25,
-    padding: 10,
+    marginTop: normalize(25, "height"),
+    padding: normalize(10),
   },
   submitEventButtonText: {
     color: "#fff",

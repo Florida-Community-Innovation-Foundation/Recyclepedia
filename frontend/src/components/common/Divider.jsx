@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 32,
     marginRight: 16,
+    alignSelf: "center",
   },
   dividerLine: {
     backgroundColor: "#024935",
