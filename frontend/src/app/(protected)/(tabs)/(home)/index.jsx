@@ -14,14 +14,14 @@ import {
   View,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import DoAndDontSection from "~/components/curbside/DoAndDontSection";
+import DropdownSelector from "~/components/curbside/DropdownSelector";
+import RecyclingList from "~/components/curbside/RecyclingList";
 import {
   getCurbsideData,
   getDropoffData,
   getItemsData,
 } from "~/utils/baselineData.js";
-import DropdownSelector from "~/components/curbside/DropdownSelector";
-import RecyclingList from "~/components/curbside/RecyclingList";
-import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import { normalize } from "~/utils/normalize";
 
 const CurbsideDropoff = ({ navigation }) => {
@@ -134,7 +134,7 @@ const CurbsideDropoff = ({ navigation }) => {
           {/*Curbside and drop off pill buttons*/}
 
           {/* Curbside button */}
-          <View style={ styles.pillButtonsContainer }>
+          <View style={styles.pillButtonsContainer}>
             <TouchableOpacity
               onPress={() => {
                 setSubtitle(
@@ -146,22 +146,39 @@ const CurbsideDropoff = ({ navigation }) => {
               }}
             >
               {/* Curbside selected */}
-              {
-                curbsideColor === "white" &&
-                <View style={ styles.pillButtonSelected }>
-                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
+              {curbsideColor === "white" && (
+                <View style={styles.pillButtonSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      {
+                        color: curbsideColor === "white" ? "#024935" : "white",
+                      },
+                    ]}
+                  >
+                    {" "}
+                    Curbside{" "}
+                  </Text>
                 </View>
-                
-              }
+              )}
               {/* Curbside not selected */}
-              {
-                curbsideColor !== "white" &&
-                <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
-                </View>                
-              }              
-            </TouchableOpacity>            
-            
+              {curbsideColor !== "white" && (
+                <View style={styles.pillButtonNotSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      {
+                        color: curbsideColor === "white" ? "#024935" : "white",
+                      },
+                    ]}
+                  >
+                    {" "}
+                    Curbside{" "}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
             {/* Drop-Off Button */}
             <TouchableOpacity
               onPress={() => {
@@ -175,21 +192,34 @@ const CurbsideDropoff = ({ navigation }) => {
               }}
             >
               {/* Drop-off selected */}
-              {
-                dropoffColor === "white" &&
-                <View style={ styles.pillButtonSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : white } ]}> Drop-Off </Text>
+              {dropoffColor === "white" && (
+                <View style={styles.pillButtonSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      { color: dropoffColor === "white" ? "#024935" : white },
+                    ]}
+                  >
+                    {" "}
+                    Drop-Off{" "}
+                  </Text>
                 </View>
-                
-              }
+              )}
 
               {/* Drop-off not selected */}
-              {
-                dropoffColor !== "white" &&
-                <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> Drop-Off </Text>
-                </View>                
-              }
+              {dropoffColor !== "white" && (
+                <View style={styles.pillButtonNotSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      { color: dropoffColor === "white" ? "#024935" : "white" },
+                    ]}
+                  >
+                    {" "}
+                    Drop-Off{" "}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -268,7 +298,7 @@ const CurbsideDropoff = ({ navigation }) => {
           </Text>
         )}
 
-        {/* Map 
+        {/* Map */}
         <MapView
           region={_.chain(curbsideData)
             .filter((row) => _.keys(row)[0] === "Miami")
@@ -293,7 +323,7 @@ const CurbsideDropoff = ({ navigation }) => {
                 title={place.name}
               />
             ))}
-        </MapView>*/}
+        </MapView>
 
         {/* Show recycling information */}
         {city && (
@@ -384,7 +414,7 @@ const CurbsideDropoff = ({ navigation }) => {
 const styles = StyleSheet.create({
   // General Containers
   container: {
-    flex: normalize(1),
+    flex: 1,
     backgroundColor: "#024935",
   },
   contentContainer: {
@@ -536,9 +566,8 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8),
     marginBottom: normalize(5, "height"),
     marginTop: normalize(15, "height"),
-    marginLeft: normalize(32, "width"),
+    marginLeft: normalize(185, "width"),
     marginRight: normalize(32, "width"),
-    marginLeft: normalize(200, "width"),
   },
   submitButtonText: {
     color: "#FFFFFF",
