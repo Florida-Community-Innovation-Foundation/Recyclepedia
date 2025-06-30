@@ -12,70 +12,97 @@ import {
 import { AuthContext } from "~/utils/authContext";
 import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
+//import Loginsetup  from "./loginsetup";
 import {useRouter} from "expo-router"
 
-export default function LoginScreen() {
-  const authContext = useContext(AuthContext);
+export default function Loginsetup() {
+      const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
+
   return (
     <View style={styles.screen}>
-      <View style={styles.headingContainer}>
-        <Text style={styles.headingText}>
-          RECYCLE RIGHT IN{" "}
-          <Image
-            src="https://www.miamidade.gov/resources/global/images/md-logo-color.png"
-            style={styles.secondaryLogo}
-          />{" "}
-          WITH
+    <View style={styles.createAccountContainer}>
+      <Text style={[styles.createAccountHeadingText, {marginTop: 45} ]}> LOGIN </Text>
+        <Text style={styles.createAccountInfoText}>
+          EMAIL
         </Text>
-        {/* Recyclepedia Logo */}
-        <Image
-          src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
-          style={styles.mainLogo}
+        <TextInput
+          placeholder="domain@example.com"
+          placeholderTextColor="gray"
+          value={email}
+          onChange={setEmail}
+          style={styles.textInput}
         />
-      </View>
-      <View style={styles.createAccountContainer}>
-
-          {/*add on */}
-        <Pressable style={[styles.signupButton, { marginTop: normalize(125, "height") }]}>
-          <Text style={styles.signupText} onPress={() => router.push("/loginsetup")}>
-            LOGIN
-          </Text>
-        </Pressable>
-
-        <Pressable style={[styles.signupButton, { marginTop: normalize(40, "height") }]}>
-          <Text style={styles.signupText} onPress={() => router.push("/signupsetup")}>
-            REGISTER
-          </Text>
-        </Pressable>
-
-        <Pressable style={[styles.signupButton, {backgroundColor:'grey'}, { marginTop: normalize(40, "height") }]}>
-          <Text style={styles.signupText} onPress={() => authContext.login()}>
-            CONTINUE AS GUEST
-          </Text>
-        </Pressable>
-        <Text style={styles.noticeText}>
-          By clicking continue, you agree to our{" "}
-          <Link href="https://recyclepedia.vercel.app/terms-of-service">
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href="https://recyclepedia.vercel.app/privacy-policy">
-            Privacy Policy
-          </Link>
+        <Text style={[styles.createAccountInfoText]}>
+          PASSWORD
         </Text>
-      </View>
-    </View>
-  );
-}
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor="gray"
+          value={password}
+          onChange={setPassword}
+          style={styles.textInput}
+          autoComplete="new-password"
+        />
+        <Pressable style={[styles.signupButton, {marginTop:40}]}>
+          <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+            SUBMIT
+          </Text>
+        </Pressable>
 
-const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: "#024935",
-  },
+
+    <View style={[styles.divider, {marginTop: 45}]}>
+      <View style={styles.dividerLine}></View>
+      <Text style={styles.dividerText}> Or login with </Text>
+      <View style={styles.dividerLine}></View>
+    </View>
+    
+  
+
+
+        <Pressable
+          style={[styles.loginButton, {marginTop:45}]}
+          onPress={() => authContext.login()}
+        >
+          <FontAwesome5
+            name="google"
+            size={20}
+            color="black"
+            style={styles.icon}
+          />
+          <Text style={styles.loginText}> Continue with Google </Text>
+        </Pressable>
+        <Pressable
+          style={[styles.loginButton, {marginTop: 15}]}
+          onPress={() => authContext.login()}
+        >
+          <FontAwesome5
+            name="apple"
+            size={20}
+            color="black"
+            style={styles.icon}
+          />
+          <Text style={styles.loginText}> Continue with Apple </Text>
+        </Pressable>
+        <Text style={[styles.noticeText, {marginTop: 40}]}>
+          Don't have an account?{" "}
+          <Text onPress={() => router.push("/signupsetup")}>
+            Sign Up
+          </Text>
+        </Text>
+        </View>
+      </View>
+    );
+  } 
+
+  const styles = StyleSheet.create({
+screen: {
+  flex: 1,
+  backgroundColor: "#024935",
+},
   mainLogo: {
     height: normalize(70, "height"),
     width: normalize(340, "width"),
@@ -102,14 +129,14 @@ const styles = StyleSheet.create({
   },
   createAccountContainer: {
     backgroundColor: "#FFFFFF",
-    marginTop: normalize(50, "height"),
+    marginTop: normalize(120, "height"),
     borderRadius: normalize(60),
     height: "100%",
   },
   createAccountHeadingText: {
     fontFamily: "Bebas Neue",
     fontWeight: 500,
-    fontSize: normalize(24),
+    fontSize: normalize(30),
     textAlign: "center",
     color: "#024935",
     marginTop: normalize(40, "height"),
@@ -118,12 +145,12 @@ const styles = StyleSheet.create({
     fontFamily: "Titillium Web",
     fontWeight: 300,
     fontSize: normalize(14),
-    textAlign: "center",
-    marginTop: normalize(10, "height"),
+    textAlign: "left",
+    marginTop: normalize(20, "height"),
     color: "#024935",
-    marginBottom: normalize(20, "height"),
-    marginLeft: normalize(16, "width"),
-    marginRight: normalize(32, "width"),
+    marginLeft: normalize(32, "width"),
+    marginRight: normalize(16, "width"),
+    paddingLeft: normalize(10, "width"),
   },
   textInput: {
     width: normalize(314, "width"),
@@ -184,10 +211,29 @@ const styles = StyleSheet.create({
     color: "#00853F",
     marginLeft: normalize(30, "width"),
     marginRight: normalize(32, "width"),
-    marginTop: normalize(150, "height"),
+    marginTop: normalize(10, "height"),
     alignSelf: "center",
   },
   icon: {
     marginTop: normalize(7, "height"),
-  }
+  },
+   divider: {
+    marginTop: 10,
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: 32,
+    marginRight: 16,
+    alignSelf: "center",
+  },
+  dividerLine: {
+    backgroundColor: "#024935",
+    height: 1,
+    width: "43%",
+    marginTop: 8,
+  },
+  dividerText: {
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#024935",
+  },
 });
