@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
@@ -12,10 +12,11 @@ async function readBaselineData() {
 
 function mapCityToCategories(data) {
   const cities = _.chain(data[0]).keys().slice(2).value();
+  
   return _.chain(cities)
     .map((city) => {
       return {
-        [city]: {
+        [String(city)]: {
           items: _.chain(data)
             .filter((row) => {
               return row[city] === "Yes";
@@ -76,11 +77,15 @@ router.get("/curbsideData", async (req, res) => {
     workbook.Sheets["Curbside"],
     workbook.Sheets["Data Collection"],
   ];
+
+  // loads items, item categories, and which area they can be recycled
   const curbsideItemCategories = xlsx.utils.sheet_to_json(sheets[0]);
   let curbsideData = mapCityToCategories(curbsideItemCategories);
   const cityLocations = xlsx.utils.sheet_to_json(sheets[1]);
   curbsideData = mapLocationToCity(curbsideData, cityLocations);
-  return res.json(curbsideData);
+
+  res.send(curbsideData).status(200);
+  //return res.json(curbsideData);
 });
 
 router.get("/itemsData", async (req, res) => {

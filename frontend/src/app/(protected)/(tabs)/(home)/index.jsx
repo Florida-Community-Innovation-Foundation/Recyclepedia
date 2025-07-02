@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
+import { useEffect } from "react";
 import { useState } from "react";
 import {
   Pressable,
@@ -51,19 +52,49 @@ const CurbsideDropoff = ({ navigation }) => {
   const [dropoffColor, setDropoffColor] = useState("#024935");
   const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
   const [city, setCity] = useState(null);
-  const [places, setPlaces] = useState(
-    _.map(curbsideData, (row) => {
+  const [places, setPlaces] = useState([]);
+
+  // update places once curbside data loads
+  useEffect(() => {
+    const newPlaces = _.map(curbsideData, (row) => {
       const location = _.chain(row)
         .values()
         .head()
         .pick(["latitude", "longitude"])
         .value();
-      return {
-        name: _.keys(row)[0],
-        location: location,
-      };
-    }),
-  );
+
+        return {
+          name: _.keys(row)[0],
+          location: location,
+        };
+    });
+
+    setPlaces(newPlaces);
+  }, [curbsideData]);
+
+  // use hardcoded miami coordinates as default, replaced with whatever's loaded in curbside data
+  const [region, setRegion] = useState({
+    latitude: 25.7617,
+    longitude: -80.1918,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  // update the region when curbside data's places finishes loading
+  useEffect(() => {
+    if (places.length > 0) {
+      const miami = places.find((place) => place.name === "Miami");
+
+      if (miami && miami.location) {
+        setRegion({
+          latitude: miami.location.latitude,
+          longitude: miami.location.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      }
+    }
+  }, [places]);
 
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
@@ -132,7 +163,6 @@ const CurbsideDropoff = ({ navigation }) => {
       <ScrollView>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
-
           {/* Curbside button */}
           <View style={styles.pillButtonsContainer}>
             <TouchableOpacity
@@ -300,13 +330,7 @@ const CurbsideDropoff = ({ navigation }) => {
 
         {/* Map */}
         <MapView
-          region={_.chain(curbsideData)
-            .filter((row) => _.keys(row)[0] === "Miami")
-            .head()
-            .values()
-            .head()
-            .pick(["latitude", "longitude"])
-            .value()}
+          region={region}
           style={
             curbsideColor === "white"
               ? [styles.map, { marginTop: 30 }]
