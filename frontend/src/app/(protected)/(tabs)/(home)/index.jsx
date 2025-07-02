@@ -2,8 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   SafeAreaView,

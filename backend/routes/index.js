@@ -75,7 +75,7 @@ function getDropoffLocations(data) {
 
 Exceptions:
 
-Glass: Hialeah, Key Biscayne, Hialeah Gardens, 
+Glass: Hialeah, Key Biscayne, Hialeah Gardens,
 
 Cardboard: Golden Beach, Hialeah Gardens, North Miami, North Miami Beach
 
@@ -185,7 +185,7 @@ async function parseLabel(data) {
 
   // check if label has Aluminum, Cardboard, or Glass
   for (const warningLabel of warningLabels) {
-    // if it does cross check 
+    // if it does cross check
     if (label.includes(warningLabel)) {
       if (crossCheck(warningLabel, testingLocation)) {
         //console.log("Cross check with ", testingLocation, " was good!"); // debug
@@ -196,7 +196,7 @@ async function parseLabel(data) {
       return "This item is not recyclable in ", testingLocation, "!";
     }
   }
-  
+
 
   // if doesn't have either, recyclable
   //console.log("Item was found to be recyclable"); // debug
