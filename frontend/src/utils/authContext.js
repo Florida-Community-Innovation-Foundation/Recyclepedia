@@ -8,14 +8,17 @@ const authStorageKey = "auth-key";
 
 export const AuthContext = createContext({
   isLoggedIn: false,
+  isSignedUp: false,
   isReady: false,
   login: () => {},
+  signup: () => {},
   logout: () => {},
 });
 
 export function AuthProvider({ children }) {
   const [isReady, setIsReady] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignedUp, setIsSignedUp] = useState(false);
   const router = useRouter();
 
   const storeAuthState = async (newState) => {
@@ -30,6 +33,12 @@ export function AuthProvider({ children }) {
   const login = () => {
     setIsLoggedIn(true);
     storeAuthState({ isLoggedIn: true });
+    router.replace("/");
+  };
+
+  const signup = (password, confirmPassword) => {
+    setIsSignedUp(true);
+    storeAuthState({ isSignedUp: true });
     router.replace("/");
   };
 
@@ -69,6 +78,7 @@ export function AuthProvider({ children }) {
         isReady,
         isLoggedIn,
         login,
+        signup,
         logout,
       }}
     >
