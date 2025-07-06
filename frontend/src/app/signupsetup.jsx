@@ -1,8 +1,8 @@
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import {
-  Image,
+  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -10,25 +10,22 @@ import {
   View,
 } from "react-native";
 import { AuthContext } from "~/utils/authContext";
-import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
-//import Loginsetup  from "./loginsetup";
-import {useRouter} from "expo-router"
 
 export default function Signinsetup() {
-      const authContext = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
-
 
   return (
     <View style={styles.screen}>
-    <View style={styles.createAccountContainer}>
-      <Text style={[styles.createAccountHeadingText, {marginTop: 45} ]}> SIGN UP </Text>
-        <Text style={styles.createAccountInfoText}>
-          EMAIL
+      <View style={styles.createAccountContainer}>
+        <Text style={[styles.createAccountHeadingText, { marginTop: 45 }]}>
+          SIGN UP
         </Text>
+        <Text style={styles.createAccountInfoText}>EMAIL</Text>
         <TextInput
           placeholder="domain@example.com"
           placeholderTextColor="gray"
@@ -36,50 +33,63 @@ export default function Signinsetup() {
           onChange={setEmail}
           style={styles.textInput}
         />
-        <Text style={[styles.createAccountInfoText]}>
-          PASSWORD
-        </Text>
+        <Text style={[styles.createAccountInfoText]}>PASSWORD</Text>
         <TextInput
           placeholder="Password"
           placeholderTextColor="gray"
           value={password}
           onChange={setPassword}
           style={styles.textInput}
+          secureTextEntry={true}
           autoComplete="new-password"
         />
-        <Text style={[styles.createAccountInfoText]}>
-          CONFIRM PASSWORD
-        </Text>
+        <Text style={[styles.createAccountInfoText]}>CONFIRM PASSWORD</Text>
         <TextInput
           placeholder="Confirm Password"
           placeholderTextColor="gray"
-          value={password}
-          onChange={setPassword}
+          value={confirmPassword}
+          onChange={setConfirmPassword}
           style={styles.textInput}
+          secureTextEntry={true}
           autoComplete="new-password"
         />
-
-
-
-
-        <Pressable style={[styles.signupButton, {marginTop:40}]}>
-          <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+        <Pressable style={[styles.signupButton, { marginTop: 40 }]}>
+          <Text
+            style={[styles.signupText]}
+            onPress={() => {
+              if (password !== confirmPassword) {
+                console.log(password, confirmPassword);
+                Alert.alert(
+                  "Password mismatch",
+                  "The two passwords entered do not match",
+                  [
+                    {
+                      text: "Ask me later",
+                    },
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    { text: "OK" },
+                  ],
+                );
+              } else {
+                authContext.signup();
+              }
+            }}
+          >
             SUBMIT
           </Text>
         </Pressable>
 
-
-    <View style={[styles.divider, {marginTop: 45}]}>
-      <View style={styles.dividerLine}></View>
-      <Text style={styles.dividerText}> Or Sign Up with </Text>
-      <View style={styles.dividerLine}></View>
-    </View>
-    
-  
-
+        <View style={[styles.divider, { marginTop: 45 }]}>
+          <View style={styles.dividerLine}></View>
+          <Text style={styles.dividerText}> Or Sign Up with </Text>
+          <View style={styles.dividerLine}></View>
+        </View>
 
         <Pressable
-          style={[styles.loginButton, {marginTop:45}]}
+          style={[styles.loginButton, { marginTop: 45 }]}
           onPress={() => authContext.login()}
         >
           <FontAwesome5
@@ -91,7 +101,7 @@ export default function Signinsetup() {
           <Text style={styles.loginText}> Continue with Google </Text>
         </Pressable>
         <Pressable
-          style={[styles.loginButton, {marginTop: 15}]}
+          style={[styles.loginButton, { marginTop: 15 }]}
           onPress={() => authContext.login()}
         >
           <FontAwesome5
@@ -102,22 +112,20 @@ export default function Signinsetup() {
           />
           <Text style={styles.loginText}> Continue with Apple </Text>
         </Pressable>
-        <Text style={[styles.noticeText, {marginTop: 40}]}>
-          Already have an account?{" "}
-          <Text onPress={() => router.push("/loginsetup")}>
-            Login
-          </Text>
+        <Text style={[styles.noticeText, { marginTop: 40 }]}>
+          Already have an account?
+          <Text onPress={() => router.push("/loginsetup")}>Login</Text>
         </Text>
-        </View>
       </View>
-    );
-  } 
+    </View>
+  );
+}
 
-  const styles = StyleSheet.create({
-screen: {
-  flex: 1,
-  backgroundColor: "#024935",
-},
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "#024935",
+  },
   mainLogo: {
     height: normalize(70, "height"),
     width: normalize(340, "width"),
@@ -232,7 +240,7 @@ screen: {
   icon: {
     marginTop: normalize(7, "height"),
   },
-   divider: {
+  divider: {
     marginTop: 10,
     display: "flex",
     flexDirection: "row",
