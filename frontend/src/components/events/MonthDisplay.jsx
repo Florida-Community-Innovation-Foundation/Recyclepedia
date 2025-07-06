@@ -1,0 +1,131 @@
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import dayjs from "dayjs";
+import _ from "lodash";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { DayDisplay } from "./DayDisplay";
+
+function getMonthDisplayData(date) {
+  return _.map(_.range(1, dayjs(date).daysInMonth() + 1), (dayNum) => {
+    return {
+      dayOfWeek: dayjs(date).day(),
+      dayNum: dayNum,
+    };
+  });
+}
+
+export function MonthDisplay({
+  currentDate,
+  setCurrentDate,
+  dayDisplaysPressed,
+  setDayDisplaysPressed,
+}) {
+  const dayDisplayHandlePress = (index) => {
+    setDayDisplaysPressed(
+      _.map(dayDisplaysPressed, (dayDisplayPressed, idx) => {
+        if (idx === index) {
+          return true;
+        }
+        return false;
+      }),
+    );
+  };
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        key={index}
+        onPress={() => dayDisplayHandlePress(index)}
+      >
+        <DayDisplay
+          dayOfWeek={item.dayOfWeek}
+          dayNum={item.dayNum}
+          hasEvents={item.hasEvents}
+          isPressed={dayDisplaysPressed[index]}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const resetDayDisplays = () => {
+    setDayDisplaysPressed(
+      _.map(_.range(0, dayjs(currentDate).daysInMonth()), (dayNum) => false),
+    );
+  };
+
+  const handleLeftButtonPress = () => {
+    resetDayDisplays();
+    setCurrentDate(currentDate.subtract(1, "month"));
+  };
+
+  const handleRightButtonPress = () => {
+    resetDayDisplays();
+    setCurrentDate(currentDate.add(1, "month"));
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.monthToggle}>
+        <View style={styles.monthTextContainer}>
+          <Text style={styles.monthText}>
+            {currentDate.format("MMMM YYYY")}
+          </Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLeftButtonPress}
+          >
+            <EvilIcons name="arrow-left" size={32} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleRightButtonPress}
+          >
+            <EvilIcons name="arrow-right" size={32} color="white" />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View>
+        <FlatList
+          horizontal={true}
+          data={getMonthDisplayData(currentDate)}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.dayNum}
+        />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {},
+  monthTextContainer: {
+    flex: 12,
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: 27,
+    height: 27,
+  },
+  monthText: {
+    fontWeight: 400,
+    fontSize: 32,
+    color: "#fff",
+  },
+  monthToggle: {
+    flex: 1,
+    flexDirection: "row",
+    marginRight: 21,
+  },
+});

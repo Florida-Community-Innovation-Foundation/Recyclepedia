@@ -1,0 +1,65 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Tabs } from "expo-router";
+import Custombar from "~/components/navigation/Custombar";
+
+export default function BottomTabsLayout() {
+  return (
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <Custombar {...props} />}
+      backBehavior="order"
+    >
+      <Tabs.Screen
+        name="(home)"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="home" size={size} color={color} />
+          ),
+          tabBarLabel: "Home",
+        }}
+      />
+      <Tabs.Screen
+        name="camera"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialCommunityIcons
+              name="camera-image"
+              size={size}
+              color={color}
+            />
+          ),
+          tabBarLabel: "ItemScan",
+        }}
+      />
+      <Tabs.Screen
+        name="calendar"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="calendar-month" size={size} color={color} />
+          ),
+          tabBarLabel: "CurbsideDropoff",
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialCommunityIcons name="account" size={size} color={color} />
+          ),
+          tabBarLabel: "UserProfile",
+        }}
+      />
+
+      <Tabs.Screen
+        name="about"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="contact-support" size={size} color={color} />
+          ),
+          tabBarLabel: "About",
+        }}
+      />
+    </Tabs>
+  );
+}

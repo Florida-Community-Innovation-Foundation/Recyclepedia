@@ -1,27 +1,91 @@
 {
   "expo": {
-    "name": "DiG",
-    "slug": "DiG",
+    "name": "Recyclepedia",
+    "slug": "Recyclepedia",
+    "scheme": "recyclepedia",
     "version": "1.0.0",
     "newArchEnabled": true,
     "plugins": [
-      "expo-font"
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Recyclepedia to access your camera."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Recyclepedia to access your photos to scan items for recycleability."
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Allow Recyclepedia to access your calendar."
+        }
+      ],
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Recyclepedia to use your location."
+        }
+      ],
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": "true",
+          "locationPermission": "Allow Recyclepedia to use your location."
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Allow Recyclepedia to access your calendar."
+        }
+      ]
     ],
+    "android": {
+      "bundleIdentifier": "com.aadit.kamat.Recyclepedia",
+      "config": {
+        "googleMaps": {
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+        }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
     "ios": {
-      "bundleIdentifier": "com.aadit.kamat.DiG"
+      "config": {
+        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
+      },
+      "bundleIdentifier": "com.aadit.kamat.Recyclepedia"
     },
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "06c6a2cb-76dc-43ec-83bb-827a7072a931"
+        "projectId": "590ccc4f-8748-4498-862f-7d1b9e1d49e6"
       }
     },
-    "owner": "aadit.kamat",
+    "owner": "floridacommunityinnovation",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/06c6a2cb-76dc-43ec-83bb-827a7072a931"
-    },
-    "android": {}
+      "url": "https://u.expo.dev/590ccc4f-8748-4498-862f-7d1b9e1d49e6"
+    }
   }
 }
