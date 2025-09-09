@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
-import _ from "lodash";
+import _, { set } from "lodash";
 import { useState } from "react";
 import {
   Pressable,
@@ -19,12 +19,23 @@ import {
   getDropoffData,
   getItemsData,
 } from "~/utils/baselineData.js";
+import { useNavigation } from "@react-navigation/native";
 import DropdownSelector from "~/components/curbside/DropdownSelector";
 import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import { normalize } from "~/utils/normalize";
+import { useRecycling } from "~/utils/recyclingContext";
 
-const CurbsideDropoff = ({ navigation }) => {
+const CurbsideDropoff = () => {
+  const navigation = useNavigation();
+  const{
+    itemsRecycled,
+    setItemsRecycled,
+    carbonOffset,
+    setCarbonOffset,
+    chosenItem,
+    setChosenItem
+  } = useRecycling();
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
@@ -45,11 +56,11 @@ const CurbsideDropoff = ({ navigation }) => {
   const [category, setCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [subtitle, setSubtitle] = useState(
-    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
   );
   const [curbsideColor, setCurbsideColor] = useState("white");
   const [dropoffColor, setDropoffColor] = useState("#024935");
-  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
+  const [selectText, setSelectText] = useState("SELECT YOUR TOWN");
   const [city, setCity] = useState(null);
   const [places, setPlaces] = useState(
     _.map(curbsideData, (row) => {
@@ -69,7 +80,30 @@ const CurbsideDropoff = ({ navigation }) => {
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
   const handleSubmit = async () => {
+   const materials = new Map([
+    //used to calculate carbon offset
+    ["plastic", 1.02], // kg CO2 saved per kg of plastic
+    ["paper", 0.46],
+    ["glass", 0.31],
+    ["metals", 5.86],
+    ["scrap metals", 3.57],
+    ["aluminum", 8.14],
+    ["steel", 0.86],
+    ["copper", 2.66],
+    ["textiles", 3.37],
+  ]);
+
+
+    /*test
+    const offset = materials.get("paper");
+    setChosenItem("paper");
+    setCarbonOffset(prev=> prev + offset);
+    console.log("Material:", chosenItem + ", Total Carbon offset:", carbonOffset);*/
     if (category) {
+        setItemsRecycled(itemsRecycled + 1);
+        setChosenItem(category);
+        setCarbonOffset(prev=> prev + materials.get(category));
+
       setPlaces(
         _.chain(dropOffData)
           .filter((dropOffLocation) => dropOffLocation["Category"] === category)
@@ -138,11 +172,11 @@ const CurbsideDropoff = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 setSubtitle(
-                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
                 );
                 setCurbsideColor("white");
                 setDropoffColor("#024935");
-                setSelectText("SELECT YOUR MUNICIPALITY:");
+                setSelectText("SELECT YOUR TOWN:");
               }}
             >
               {/* Curbside selected */}
@@ -157,8 +191,8 @@ const CurbsideDropoff = ({ navigation }) => {
               {
                 curbsideColor !== "white" &&
                 <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
-                </View>                
+                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Cubside </Text>
+                </View>
               }              
             </TouchableOpacity>            
             
@@ -178,7 +212,7 @@ const CurbsideDropoff = ({ navigation }) => {
               {
                 dropoffColor === "white" &&
                 <View style={ styles.pillButtonSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : white } ]}> Drop-Off </Text>
+                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> DROP-OFF</Text>
                 </View>
                 
               }
@@ -187,7 +221,7 @@ const CurbsideDropoff = ({ navigation }) => {
               {
                 dropoffColor !== "white" &&
                 <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> Drop-Off </Text>
+                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> DROP-OFF </Text>
                 </View>                
               }
             </TouchableOpacity>

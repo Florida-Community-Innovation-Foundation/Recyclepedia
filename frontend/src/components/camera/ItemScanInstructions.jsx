@@ -1,13 +1,29 @@
 import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRecycling } from "~/utils/recyclingContext";
+import { useEffect} from "react";
+
 
 export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
+  const{
+    itemsRecycled,
+    setItemsRecycled,
+    carbonOffset,
+    setCarbonOffset,
+  } = useRecycling();
+
   const navigation = useNavigation();
 
   const itemAcceptedButtonPress = () => {
     navigation.navigate("Curbside Dropoff");
   };
+
+  useEffect(() => {
+    if (itemChecked) {
+      setItemsRecycled(itemsRecycled + 1);
+      }
+      }, [itemChecked]);
 
   return (
     <View

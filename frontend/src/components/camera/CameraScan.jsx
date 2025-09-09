@@ -2,13 +2,13 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function CameraScan({ setImage }) {
+export default function CameraScan({ setImageUri }) {
   const cameraRef = useRef(null);
   const [permission, requestPermission] = useCameraPermissions();
 
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync();
-    setImage(photo?.uri);
+    setImageUri(photo?.uri);
   };
 
   if (!permission) {
