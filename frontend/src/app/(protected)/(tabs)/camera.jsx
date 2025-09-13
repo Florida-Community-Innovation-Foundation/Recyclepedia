@@ -6,16 +6,90 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 import { normalize } from "~/utils/normalize";
+import * as Location from 'expo-location';
+import { getBaseURL } from "../../../utils/baselineData";
 
 export default function ItemScan() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
+  const [accepted, setAccepted] = useState(false);
+  // default location is Miami
+  const [location, setLocation] = useState({ latitude: 25.7617, longitude: -80.1918 });
+  const [exText, setExText] = useState("booyah");
 
+  // this only fires the first time a user goes to item scan
   useEffect(() => {
     navigation.addListener("tabPress", () => {
       setImage(null);
     });
+
+    // create async function to use await in useEffect (is this good practice?)
+    const getLocation = async () => {
+      // get location
+      try {
+        // [note]: this can cause an error that the device has unsatisfied settings if improve location accuracy isn't on
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        // default to Miami
+        if (status !== "granted") {
+          alert("Permission to access location was denied. Recyclepedia is defaulting to Miami.");
+          return;
+        }
+
+        const position = await Location.getCurrentPositionAsync({});
+        const currentLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+
+        setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    getLocation();
   }, [navigation]);
+
+  // // when the image is updated (uploaded or taken), send to backend
+  useEffect(() => {
+    const getItemAccepted = async () => {
+      const baseURL = await getBaseURL();
+      const response = await fetch(`${baseURL}/itemData`, { 
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ location, image }),
+      });
+
+      if (!response.ok) {
+        console.error("Res not ok");
+      }
+
+      const data = await response.json();
+      setExText(data.text);
+      console.log("Data: ", data);
+    };
+
+    if (image != null) {
+      getItemAccepted();
+    }
+  }, [image]);
+
+  const handleCameraPhotoPress = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   const handleUploadPhotoPress = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -23,10 +97,11 @@ export default function ItemScan() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setImage(result.assets[0]);
     }
   };
 
@@ -37,10 +112,19 @@ export default function ItemScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-        {!image && <CameraScan setImage={setImage} />}
+        {
+          !image &&
+          <Pressable
+            style={styles.uploadPhotoButton}
+            onPress={handleCameraPhotoPress}
+            >
+              <Text style={styles.uploadPhotoText}>TAKE A PICTURE</Text>
+            </Pressable>
+        }
+        {/* {!image && <CameraScan setImage={setImage} />} */}
         {image && (
           <Image
-            source={{ uri: image }}
+            source={{ uri: image.uri }}
             style={styles.cameraContainer}
             contentFit="cover"
             enableLiveTextInteraction={true}
@@ -53,6 +137,7 @@ export default function ItemScan() {
           <Text style={styles.dividerText}> or </Text>
           <View style={styles.dividerLine}></View>
         </View>
+
         {/* Upload photo button */}
         <Pressable
           style={styles.uploadPhotoButton}
@@ -60,8 +145,12 @@ export default function ItemScan() {
         >
           <Text style={styles.uploadPhotoText}>UPLOAD A PHOTO</Text>
         </Pressable>
+
         {/* Section showing instructions after scanning or uploading a photo */}
-        <ItemScanInstructions itemChecked={image} itemAccepted={false} />
+        {/* Also takes in a location to check w/ "db" */}
+        {/* don't think this is good rn */}
+        <ItemScanInstructions itemChecked={image} itemAccepted={accepted} exampleText={exText} />
+        {/* <ItemScanInstructions itemChecked={image} itemAccepted={true} /> */}
       </View>
     </View>
   );

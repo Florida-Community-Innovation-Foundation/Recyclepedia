@@ -1,6 +1,6 @@
 import * as Network from "expo-network";
 
-async function getBaseURL() {
+export async function getBaseURL() {
   const ipAddress = await Network.getIpAddressAsync(); 
   const port = 3000;
 

@@ -8,6 +8,7 @@ export default function CameraScan({ setImage }) {
 
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync();
+    console.log("Take Picture; Photo: ", photo?.uri);
     setImage(photo?.uri);
   };
 

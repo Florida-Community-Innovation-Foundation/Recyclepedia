@@ -160,7 +160,7 @@ const CurbsideDropoff = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={ styles.scrollviewstyle }>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
           {/* Curbside button */}
@@ -436,6 +436,11 @@ const CurbsideDropoff = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  // testing
+  scrollviewstyle: {
+    flexGrow: 1,
+  },
+
   // General Containers
   container: {
     flex: 1,

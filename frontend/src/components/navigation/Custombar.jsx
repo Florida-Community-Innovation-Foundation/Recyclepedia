@@ -13,9 +13,14 @@ const calcFont = (percent) => {
 export default function Custombar({ state, descriptors, navigation }) {
   const router = useRouter();
 
+  // filters the calendar route from available
+  // calendar.jsx is still used, but don't want it to be a route
+  const filteredRoutes = state.routes.filter(route => route.name !== "calendar");
+
   return (
     <View style={styles.bar}>
-      {state.routes.map((route, index) => {
+      {/* {state.routes.map((route, index) => { */}
+      {filteredRoutes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
