@@ -15,7 +15,7 @@ export default function ItemScan() {
   const [accepted, setAccepted] = useState(false);
   // default location is Miami
   const [location, setLocation] = useState({ latitude: 25.7617, longitude: -80.1918 });
-  const [exText, setExText] = useState("booyah");
+  const [exText, setExText] = useState("");
 
   // this only fires the first time a user goes to item scan
   useEffect(() => {

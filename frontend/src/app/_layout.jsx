@@ -5,7 +5,7 @@ import { AuthProvider } from "~/utils/authContext";
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <StatusBar style="light" />
+      {/* <StatusBar style="light" /> */}
       <Stack screenOptions={{ headerShown: false, animation: "none", }}>
         <Stack.Screen name="(protected)" />
         <Stack.Screen name="login" />

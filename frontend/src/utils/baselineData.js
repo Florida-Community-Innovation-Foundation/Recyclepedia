@@ -1,10 +1,13 @@
 import * as Network from "expo-network";
 
 export async function getBaseURL() {
-  const ipAddress = await Network.getIpAddressAsync(); 
+  // for production and testing on a phone (slack me if you want to test on a phone, I have to start a server)
+  //return "http://ec2-18-222-58-160.us-east-2.compute.amazonaws.com:80";
+
+  // const ipAddress = await Network.getIpAddressAsync(); 
   const port = 3000;
 
-  // ANDROID
+  // ANDROID EMULATOR
   // 10.0.2.2 connects to local host on host machine for android emulators
   // this lets the emulator connect to backend running on host at a port
   // [note]: PORT in backend's .env should be the same as port variable here
@@ -16,6 +19,7 @@ export async function getBaseURL() {
 }
 
 export async function getCurbsideData() {
+  console.log("curbside");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/curbsideData`);
 
@@ -30,13 +34,24 @@ export async function getCurbsideData() {
 }
 
 export async function getDropoffData() {
+  console.log("dropoff");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/dropOffData`);
+
+  if (!response.ok) {
+    console.error("Failed");
+    return
+  }
+
   const dropOffData = await response.json();
+
+  //console.log("Dropoff data: ", dropOffData);
+
   return dropOffData;
 }
 
 export async function getItemsData() {
+  console.log("items");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/itemsData`);
   const itemsData = await response.json();

@@ -67,41 +67,168 @@ async function getItemDetails(data) {
 
 function getDropoffLocations(data) {
   return _.chain(data)
-    .map((row) => _.pick(row, ["Latitude", "Longitude", "Category"]))
+    .map((row) => _.pick(row, ["Latitude", "Longitude", "Category", "Name", "Street"]))
     .value();
 }
 
-async function testN(img, token) {
-  console.log("Image: ", img);
+/*
 
+Exceptions:
+
+Glass: Hialeah, Key Biscayne, Hialeah Gardens, 
+
+Cardboard: Golden Beach, Hialeah Gardens, North Miami, North Miami Beach
+
+Aluminum Foil: Golden Beach, Hialeah, Hialeah Gardens, Homestead, Miami, Miami Shores, North Miami Beach, Sweetwater, Virginia Gardens, El Portal, Miami Beach, Miami Springs, Opa-locka, South Miami, Indian Creek, Bal Harbour, Medley, Aventura, Sunny Isles, Miami Lakes, Palmetto Bay, Doral, Miami Gardens, Culter Bay, Florida City, North Bay Village
+
+*/
+
+// this should probably check Curbside sheet, but that's for later
+// checks for category exceptions in location
+// [note]: category is not the same as category in Baseline Data excel, it's arbitrary
+function crossCheck(category, location) {
+  if (category === "glass") {
+    switch (location) {
+      case "Hialeah":
+      case "Key Biscayne":
+      case "Hialeah Gardens":
+        //console.log("Glass fail at ", location); // debug
+        return false;
+
+      default:
+        return true;
+    }
+  }
+
+  if (category === "cardboard") {
+    switch (location) {
+      case "Golden Beach":
+      case "Hialeah Gardens":
+      case "North Miami":
+      case "North Miami Beach":
+        //console.log("Cardboard fail at ", location); // debug
+        return false;
+
+      default:
+        return true;
+    }
+  }
+
+  // a lot of places don't take aluminum foil, however, cans are aluminum and tagged as such so this needs to be fixed
+  if (category === "aluminum") {
+    switch (location) {
+      case "Golden Beach":
+      case "Hialeah":
+      case "Hialeah Gardens":
+      case "Homestead":
+      case "Miami":
+      case "Miami Shores":
+      case "North Miami Beach":
+      case "Sweetwater":
+      case "Virginia Gardens":
+      case "El Portal":
+      case "Miami Beach":
+      case "Miami Springs":
+      case "Opa-locka":
+      case "South Miami":
+      case "Indian Creek":
+      case "Bal Harbour":
+      case "Medley":
+      case "Aventura":
+      case "Sunny Isles":
+      case "Miami Lakes":
+      case "Palmetto Bay":
+      case "Doral":
+      case "Miami Gardens":
+      case "Culter Bay":
+      case "Florida City":
+      case "North Bay Village":
+        //console.log("Aluminum fail at ", location); // debug
+        return false;
+
+      default:
+        return true;
+    }
+  }
+
+  // when in doubt, no
+  return false;
+}
+
+// analyzes label to see if item is recyclable
+// most of nyckel's labels are accurate except some locations have exceptions
+async function parseLabel(data) {
+  const label = data.labelName.toString().toLowerCase();
+  //console.log("Label: ", label);  // debug
+
+  // the order of the labels is precedence for messages
+  // (ewaste label has the word trash in it, but we want to return a special message for batteries so much check ewaste first)
+  const badLabels = [ "ewaste", "trash", "non-recyclable", "not recyclable", "special drop-off" ];
+  const warningLabels = ["aluminum", "cardboard", "glass"];
+
+  // check if label has Trash, Non-Recyclable, Not recyclable, or Special drop-off
+  // if it does, not recyclable
+  for (const badlabel of badLabels) {
+    if (label.includes(badlabel)) {
+      if (badlabel === "ewaste") {
+        //console.log("Item had ewaste label"); // debug
+        return "This item is not recyclable! Check the Drop-Off tab to find a Collection Center!";
+      }
+
+      //console.log("Item had bad label, ", badlabel); // debug
+      return "This item is not recyclable!";
+    }
+  }
+
+  // this is for testing, location should be passed to this func as well as label
+  const testingLocation = "Miami";
+
+  // check if label has Aluminum, Cardboard, or Glass
+  for (const warningLabel of warningLabels) {
+    // if it does cross check 
+    if (label.includes(warningLabel)) {
+      if (crossCheck(warningLabel, testingLocation)) {
+        //console.log("Cross check with ", testingLocation, " was good!"); // debug
+        return "This item is recyclable!";
+      }
+
+      //console.log("Cross check with ", testingLocation, " was not good."); // debug
+      return "This item is not recyclable in ", testingLocation, "!";
+    }
+  }
+  
+
+  // if doesn't have either, recyclable
+  //console.log("Item was found to be recyclable"); // debug
+  return "This item is recyclable!";
+}
+
+async function testN(img, token) {
+  //console.log("Image: ", img);
+
+  // [note]: this needs to be fixed
   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
     method: 'POST',
     headers: {
-      //'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzU2NzgyODkxLCJpYXQiOjE3NTY3ODI4OTEsImV4cCI6MTc1Njc4NjQ5MSwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOTQ4MkJDQkU3QjQwM0E2NEFCRTVGNEQwQ0E5OUE1QjQifQ.VVGWceKWb4UpiG8Oi53ESOVPJDoiLcc7oloI0NUp4hKzUcyG2LIIASRBodQDNhwIVFamnDzwQJgp5drkf_dDR2xYxSe4tZeNQN7MBeP7UYFNSvrGnUn0wK_PrMK1_UgkCuA2131oLBfiZ9hRltuLsPl8zswB6R3WmkD3ZfXQXvFYaZtJhMaIUPhPLzPa_9PhQx2ayHqdB-5VX2QJs1onfOVaS_s3VjzA2DvHYDmNHrHgytrGKlvptbl1DkBm9ZhfOFjgP8DhPuOjMNTIl0I8WgKnTYPJbJazYOn8Rmrl24mlGYf62DZ1YcOCfTjU0jX5CASvo_veF-QU3a4ctj0NwA',
-      'Authorization': 'Bearer ' + token,
+      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzU5MzU0MTE3LCJpYXQiOjE3NTkzNTQxMTcsImV4cCI6MTc1OTM1NzcxNywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiQzU3N0QxQjIzN0M5RjBGMTJFNDQ2QjQwODVDQTQ1RjQifQ.j7_5840XvVSJCrr8nz5SJzhMHHmzKfPB4LU1abI9n2iWExttMhM5CThIKAGGCjs7A54VWHQZBZPUHtFcdPglItElP9KdxMWKWGh5oKEkRbY67BtaaOc2qHWrxS4jNStzIkKgM_AMenkM9c1ZdLrPI3n6NSDFEfAgzKQneKLtJcJRDNvQprpmGPymIhVDFHbgBkkNlYXW6w2gJNAw0c_nCbppNRaUodv59PuKzVfKSOmiBWAPJV417TcKf2kxVxJhLtGO70MmxC7tpoWV1pmyvv9-C9gWFJygiLK2JX5LwzrSBuPRdm2n2jUh5Rb_fhktBGxf2OtAsPoP5g-Ebu9wIw',
+      // this should use token passed in for auth, but not working rn
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(
-      { "data": "https://www.nyckel.com/assets/example.jpg" }
+      { "data": "https://pakoro.com/wp-content/uploads/2025/02/A-person-unpacking-a-large-pizza-box-1024x576.webp" }  // testing
+
+      //{ "data": img } // actual
     )
   });
 
-
-  //   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
-  //     method: 'POST',
-  //     headers: {
-  //         'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzU2MTUyODEzLCJpYXQiOjE3NTYxNTI4MTMsImV4cCI6MTc1NjE1NjQxMywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiNkQ5QUJGRjIwMjdDRjBCQzE1RTU2MzBENzFEN0MyOEMifQ.alx7ZwB7FArOwEbyHcYbK9z8YtVBmU96DfTQe9VglpmKbdGzIWqTSmZA_n-swg3qoiwgWOEqeNRkcApRodlKOv-0-5tl_FNJVBnMd7ru45Pb4SpbrPrOon-c02OL3eXejy11OtcI5Ah_fdqElSQcHBT2nLohpp4d_BOSVJl4GLQV21TfulDg4pUyU8fUos659_WEIHcxVSImKaIDZFYwrFO3Q19L53D_mQrcNMFXYH38hEpfQ2ZJAkXsBQaI-rkj69HU-4J7KbhaKnqtQrnJvBQH5r5iW4RjXj9MA-VC_tYKUg5kMRAqSL2xhar1PPpQGd-NDDK1DoVjuMK3m8wHMA',
-  //         'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(
-  //         //{"data":"https://www.nyckel.com/assets/example.jpg"}
-  //         {"data":img}
-  //     )
-  // });
-
   const data = await response.json();
-  console.log("Data: ", data);
-  return data.labelName;
+  //console.log("Data: ", data);
+
+  // this should pass location as well
+  const result = await parseLabel(data);
+  //console.log("Result: ", result);
+
+  return result;
 }
 
 router.get("/curbsideData", async (req, res) => {
@@ -136,14 +263,15 @@ router.get("/dropOffData", async (req, res) => {
   return res.json(dropOffLocations);
 });
 
-// gets image and location from frontend and uses nyckel
+// gets image and location from frontend and uses nyckel to decide recyclability
 router.post("/itemData", async (req, res) => {
-  console.log("req body: ", req.body);
+  //console.log("req body: ", req.body);
 
   const base64String = req.body.image.base64;
   const mediaType = 'image/jpeg';
   const imageURI = `data:${mediaType};base64,${base64String}`;
 
+  // location from frontend should be passed to testN as well
   const response = await testN(imageURI, req.accesstoken);
 
   const r = { text: response };

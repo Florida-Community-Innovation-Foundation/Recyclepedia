@@ -24,6 +24,8 @@ import {
   getItemsData,
 } from "~/utils/baselineData.js";
 import { normalize } from "~/utils/normalize";
+import LocationList from "../../../../components/curbside/LocationList";
+import CityRules from "../../../../components/curbside/CityRules";
 
 const CurbsideDropoff = ({ navigation }) => {
   const { data, pending } = useQueries({
@@ -53,6 +55,7 @@ const CurbsideDropoff = ({ navigation }) => {
   const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
   const [city, setCity] = useState(null);
   const [places, setPlaces] = useState([]);
+  const [testing, setTesting] = useState(false);
 
   // update places once curbside data loads
   useEffect(() => {
@@ -63,14 +66,19 @@ const CurbsideDropoff = ({ navigation }) => {
         .pick(["latitude", "longitude"])
         .value();
 
-        return {
-          name: _.keys(row)[0],
-          location: location,
-        };
+      return {
+        name: _.keys(row)[0],
+        location: location,
+      };
     });
 
     setPlaces(newPlaces);
   }, [curbsideData]);
+
+  // testing
+  // useEffect(() => {
+  //   console.log("City: ", city);
+  // }, [city]);
 
   // use hardcoded miami coordinates as default, replaced with whatever's loaded in curbside data
   const [region, setRegion] = useState({
@@ -106,13 +114,22 @@ const CurbsideDropoff = ({ navigation }) => {
           .filter((dropOffLocation) => dropOffLocation["Category"] === category)
           .map((dropOffLocation) => {
             return {
-              latitude: dropOffLocation["Latitude"],
-              longitude: dropOffLocation["Longitude"],
+              name: dropOffLocation["Name"],
+              location: {
+                // latitude: dropOffLocation["Latitude"],
+                // longitude: dropOffLocation["Longitude"],
+                latitude: parseFloat(dropOffLocation["Latitude"]) || 0,
+                longitude: parseFloat(dropOffLocation["Longitude"]) || 0,
+              },
+              street: dropOffLocation["Street"],
             };
           })
-          .uniq()
+          .uniqBy((location) => `${String(location.name).toLowerCase().trim()}_${location.latitude}_${location.longitude}`) // this is just in testing
+          //.uniq()
           .value(),
       );
+
+      setTesting(true);
     }
   };
 
@@ -160,7 +177,7 @@ const CurbsideDropoff = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={ styles.scrollviewstyle }>
+      <ScrollView style={styles.scrollviewstyle}>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
           {/* Curbside button */}
@@ -266,6 +283,7 @@ const CurbsideDropoff = ({ navigation }) => {
               <DropdownSelector
                 setItem={setCity}
                 cities={getCities(curbsideData)}
+                key="curbsideCityDropdown"
               />
             </View>
           </View>
@@ -283,11 +301,13 @@ const CurbsideDropoff = ({ navigation }) => {
                     .map((item) => item.category)
                     .uniq()
                     .value()}
+                  key="dropoffCategoryDropdown"
                 />
                 <DropdownSelector
                   itemType="city"
                   setItem={setCity}
                   cities={getCities(curbsideData)}
+                  key="dropoffCityDropdown"
                 />
               </>
             </View>
@@ -339,15 +359,32 @@ const CurbsideDropoff = ({ navigation }) => {
           scrollDuringRotateOrZoomEnabled={false}
           provider={PROVIDER_GOOGLE}
         >
+          {/* {testing && */}
+          {/* {dropoffColor === "white" && */}
           {places &&
             places.map((place, index) => (
               <Marker
                 key={index}
+                //coordinate={{ latitude: place.location.latitude, longitude: place.location.longitude }}
                 coordinate={place.location}
                 title={place.name}
+                //description="test"
+                description={place.street}
               />
             ))}
         </MapView>
+
+        {/* Show list of recycling locations */}
+        {dropoffColor === "white" &&
+          <LocationList locations={places} />
+        }
+        {
+          curbsideColor === "white" && city != null &&
+          <CityRules location={city} />
+        }
+        {/* {curbsideColor === "white" && (
+          <LocationList locations={places} />
+        )} */}
 
         {/* Show recycling information */}
         {city && (
@@ -365,7 +402,7 @@ const CurbsideDropoff = ({ navigation }) => {
               <RecyclingList items={_.sortBy(filterItems(), "category")} />
             )}
             <DoAndDontSection />
-            <View style={styles.alternativeContainer}>
+            {/* <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
                 Can't find what you're looking for?
               </Text>
@@ -427,7 +464,7 @@ const CurbsideDropoff = ({ navigation }) => {
                   Find Alternative Recycling Options
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         )}
       </ScrollView>
