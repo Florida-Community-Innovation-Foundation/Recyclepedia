@@ -80,17 +80,17 @@ export default function CityRules({ location }) {
     default:
       return (
         <View style={styles.container}>
-            // city name
+          {/* city name */}
           <Text style={styles.itemTitle}>
             {location}
           </Text>
 
-            // header
+          {/* header */}
           <Text style={styles.alternativeText}>
             Recyclable Items:
           </Text>
 
-            // list of recyclable items
+          {/* list of recyclable items */}
           <Text style={styles.alternativeText}> Data not yet available for {location}! </Text>
 
         </View>
