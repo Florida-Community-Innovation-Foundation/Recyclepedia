@@ -244,7 +244,7 @@ router.get("/curbsideData", async (req, res) => {
   const cityLocations = xlsx.utils.sheet_to_json(sheets[1]);
   curbsideData = mapLocationToCity(curbsideData, cityLocations);
 
-  res.send(curbsideData).status(200);
+  res.status(200).send(curbsideData);
   //return res.json(curbsideData);
 });
 
