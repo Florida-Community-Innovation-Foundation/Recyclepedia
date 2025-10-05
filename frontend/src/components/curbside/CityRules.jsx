@@ -6,7 +6,7 @@ import { normalize } from "~/utils/normalize";
 // note: finish this off, should be easy, just takes a while
 
 export default function CityRules({ location }) {
-  // console.log("Locatoin: ", location);
+  // console.log("Location: ", location);
   switch (location) {
     case "Aventura":
     case "Cutler Bay":
