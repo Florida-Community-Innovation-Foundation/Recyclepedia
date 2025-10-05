@@ -278,7 +278,7 @@ const CurbsideDropoff = () => {
                   <Text
                     style={[
                       styles.pillText,
-                      { color: dropoffColor === "white" ? "#024935" : white },
+                      { color: dropoffColor === "white" ? "#024935" : "white" },
                     ]}
                   >
                     {" "}
