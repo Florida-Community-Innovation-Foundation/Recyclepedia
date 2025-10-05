@@ -6,7 +6,7 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import Entypo from '@expo/vector-icons/Entypo';
 import { normalize } from "~/utils/normalize";
-
+import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
 
  // this should load/save the user's settings from the profile stuff
  // update this when that is added to the project

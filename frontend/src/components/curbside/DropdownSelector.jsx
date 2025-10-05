@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 export default function DropdownSelector({ setItem, cities, categories }) {
-  const [value, setValue] = useState("");
+  const [selected, setSelected] = useState("");
 
   return (
     <Dropdown
@@ -19,6 +19,10 @@ export default function DropdownSelector({ setItem, cities, categories }) {
               return { label: category, value: category };
             })
       }
+      search
+      searchPlaceholder="Search..."
+      labelField="label"
+      valueField="value"
       renderItem={(item) => (
         <View>
           <Text style={styles.itemTextStyle}>{item.label}</Text>
@@ -28,9 +32,9 @@ export default function DropdownSelector({ setItem, cities, categories }) {
       placeholder={
         cities ? "Select municipality" : "What do you want to recycle?"
       }
-      value={value}
+      value={selected}
       onChange={(item) => {
-        setValue(item.value);
+        setSelected(item.value);
         setItem(item.value);
       }}
       renderRightIcon={() => (
@@ -56,7 +60,8 @@ const styles = {
   itemTextStyle: {
     color: "#494B4A",
     fontFamily: "Titillium Web",
-    fontSize: 16,
+    fontSize: 18,
+    padding: 5,
   },
   selectedItem: {
     backgroundColor: "#CCDED6",

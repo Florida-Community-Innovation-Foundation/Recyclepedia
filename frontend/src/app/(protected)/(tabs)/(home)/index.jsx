@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _, { set } from "lodash";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   SafeAreaView,
@@ -24,6 +24,8 @@ import DropdownSelector from "~/components/curbside/DropdownSelector";
 import RecyclingList from "~/components/curbside/RecyclingList";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import { normalize } from "~/utils/normalize";
+import LocationList from "~/components/curbside/LocationList";
+import CityRules from "~/components/curbside/CityRules";
 import { useRecycling } from "~/utils/recyclingContext";
 
 const CurbsideDropoff = () => {
@@ -62,19 +64,55 @@ const CurbsideDropoff = () => {
   const [dropoffColor, setDropoffColor] = useState("#024935");
   const [selectText, setSelectText] = useState("SELECT YOUR TOWN");
   const [city, setCity] = useState(null);
-  const [places, setPlaces] = useState(
-    _.map(curbsideData, (row) => {
+  const [places, setPlaces] = useState([]);
+  const [testing, setTesting] = useState(false);
+
+  // update places once curbside data loads
+  useEffect(() => {
+    const newPlaces = _.map(curbsideData, (row) => {
       const location = _.chain(row)
         .values()
         .head()
         .pick(["latitude", "longitude"])
         .value();
+
       return {
         name: _.keys(row)[0],
         location: location,
       };
-    }),
-  );
+    });
+
+    setPlaces(newPlaces);
+  }, [curbsideData]);
+
+  // testing
+  // useEffect(() => {
+  //   console.log("City: ", city);
+  // }, [city]);
+
+  // use hardcoded miami coordinates as default, replaced with whatever's loaded in curbside data
+  const [region, setRegion] = useState({
+    latitude: 25.7617,
+    longitude: -80.1918,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  // update the region when curbside data's places finishes loading
+  useEffect(() => {
+    if (places.length > 0) {
+      const miami = places.find((place) => place.name === "Miami");
+
+      if (miami && miami.location) {
+        setRegion({
+          latitude: miami.location.latitude,
+          longitude: miami.location.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      }
+    }
+  }, [places]);
 
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
@@ -100,22 +138,30 @@ const CurbsideDropoff = () => {
     setCarbonOffset(prev=> prev + offset);
     console.log("Material:", chosenItem + ", Total Carbon offset:", carbonOffset);*/
     if (category) {
-        setItemsRecycled(itemsRecycled + 1);
-        setChosenItem(category);
-        setCarbonOffset(prev=> prev + materials.get(category));
-
+      setItemsRecycled(itemsRecycled + 1);
+      setChosenItem(category);
+      setCarbonOffset(prev=> prev + materials.get(category));
       setPlaces(
         _.chain(dropOffData)
           .filter((dropOffLocation) => dropOffLocation["Category"] === category)
           .map((dropOffLocation) => {
             return {
-              latitude: dropOffLocation["Latitude"],
-              longitude: dropOffLocation["Longitude"],
+              name: dropOffLocation["Name"],
+              location: {
+                // latitude: dropOffLocation["Latitude"],
+                // longitude: dropOffLocation["Longitude"],
+                latitude: parseFloat(dropOffLocation["Latitude"]) || 0,
+                longitude: parseFloat(dropOffLocation["Longitude"]) || 0,
+              },
+              street: dropOffLocation["Street"],
             };
           })
-          .uniq()
+          .uniqBy((location) => `${String(location.name).toLowerCase().trim()}_${location.latitude}_${location.longitude}`) // this is just in testing
+          //.uniq()
           .value(),
       );
+
+      setTesting(true);
     }
   };
 
@@ -163,11 +209,11 @@ const CurbsideDropoff = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={styles.scrollviewstyle}>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
 
-          {/* Curbside button */}
+        {/* Curbside button */}
           <View style={ styles.pillButtonsContainer }>
             <TouchableOpacity
               onPress={() => {
@@ -180,22 +226,40 @@ const CurbsideDropoff = () => {
               }}
             >
               {/* Curbside selected */}
-              {
-                curbsideColor === "white" &&
-                <View style={ styles.pillButtonSelected }>
-                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Curbside </Text>
+              {curbsideColor === "white" && (
+                <View style={styles.pillButtonSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      {
+                        color: curbsideColor === "white" ? "#024935" : "white",
+                      },
+                    ]}
+                  >
+                    {" "}
+                    Curbside{" "}
+                  </Text>
                 </View>
-                
-              }
+              )}
+
               {/* Curbside not selected */}
-              {
-                curbsideColor !== "white" &&
-                <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: curbsideColor === "white" ? "#024935" : "white" } ]}> Cubside </Text>
+              {curbsideColor !== "white" && (
+                <View style={styles.pillButtonNotSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      {
+                        color: curbsideColor === "white" ? "#024935" : "white",
+                      },
+                    ]}
+                  >
+                    {" "}
+                    Curbside{" "}
+                  </Text>
                 </View>
-              }              
-            </TouchableOpacity>            
-            
+              )}
+            </TouchableOpacity>
+
             {/* Drop-Off Button */}
             <TouchableOpacity
               onPress={() => {
@@ -209,21 +273,34 @@ const CurbsideDropoff = () => {
               }}
             >
               {/* Drop-off selected */}
-              {
-                dropoffColor === "white" &&
-                <View style={ styles.pillButtonSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> DROP-OFF</Text>
+              {dropoffColor === "white" && (
+                <View style={styles.pillButtonSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      { color: dropoffColor === "white" ? "#024935" : "white" },
+                    ]}
+                  >
+                    {" "}
+                    Drop-Off{" "}
+                  </Text>
                 </View>
-                
-              }
+              )}
 
               {/* Drop-off not selected */}
-              {
-                dropoffColor !== "white" &&
-                <View style={ styles.pillButtonNotSelected }>
-                  <Text style={[ styles.pillText, { color: dropoffColor === "white" ? "#024935" : "white" } ]}> DROP-OFF </Text>
-                </View>                
-              }
+              {dropoffColor !== "white" && (
+                <View style={styles.pillButtonNotSelected}>
+                  <Text
+                    style={[
+                      styles.pillText,
+                      { color: dropoffColor === "white" ? "#024935" : "white" },
+                    ]}
+                  >
+                    {" "}
+                    Drop-Off{" "}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -240,6 +317,7 @@ const CurbsideDropoff = () => {
               <DropdownSelector
                 setItem={setCity}
                 cities={getCities(curbsideData)}
+                key="curbsideCityDropdown"
               />
             </View>
           </View>
@@ -257,11 +335,13 @@ const CurbsideDropoff = () => {
                     .map((item) => item.category)
                     .uniq()
                     .value()}
+                  key="dropoffCategoryDropdown"
                 />
                 <DropdownSelector
                   itemType="city"
                   setItem={setCity}
                   cities={getCities(curbsideData)}
+                  key="dropoffCityDropdown"
                 />
               </>
             </View>
@@ -302,15 +382,9 @@ const CurbsideDropoff = () => {
           </Text>
         )}
 
-        {/* Map 
+        {/* Map */}
         <MapView
-          region={_.chain(curbsideData)
-            .filter((row) => _.keys(row)[0] === "Miami")
-            .head()
-            .values()
-            .head()
-            .pick(["latitude", "longitude"])
-            .value()}
+          region={region}
           style={
             curbsideColor === "white"
               ? [styles.map, { marginTop: 30 }]
@@ -319,15 +393,30 @@ const CurbsideDropoff = () => {
           scrollDuringRotateOrZoomEnabled={false}
           provider={PROVIDER_GOOGLE}
         >
+          {/* {testing && */}
+          {/* {dropoffColor === "white" && */}
           {places &&
             places.map((place, index) => (
               <Marker
                 key={index}
                 coordinate={place.location}
                 title={place.name}
+                description={place.street}
               />
             ))}
-        </MapView>*/}
+        </MapView>
+
+        {/* Show list of recycling locations */}
+        {dropoffColor === "white" &&
+          <LocationList locations={places} />
+        }
+        {
+          curbsideColor === "white" && city != null &&
+          <CityRules location={city} />
+        }
+        {/* {curbsideColor === "white" && (
+          <LocationList locations={places} />
+        )} */}
 
         {/* Show recycling information */}
         {city && (
@@ -345,7 +434,7 @@ const CurbsideDropoff = () => {
               <RecyclingList items={_.sortBy(filterItems(), "category")} />
             )}
             <DoAndDontSection />
-            <View style={styles.alternativeContainer}>
+            {/* <View style={styles.alternativeContainer}>
               <Text style={styles.alternativeText}>
                 Can't find what you're looking for?
               </Text>
@@ -407,7 +496,7 @@ const CurbsideDropoff = () => {
                   Find Alternative Recycling Options
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         )}
       </ScrollView>
@@ -416,9 +505,14 @@ const CurbsideDropoff = () => {
 };
 
 const styles = StyleSheet.create({
+  // testing
+  scrollviewstyle: {
+    flexGrow: 1,
+  },
+
   // General Containers
   container: {
-    flex: normalize(1),
+    flex: 1,
     backgroundColor: "#024935",
   },
   contentContainer: {
@@ -570,9 +664,8 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8),
     marginBottom: normalize(5, "height"),
     marginTop: normalize(15, "height"),
-    marginLeft: normalize(32, "width"),
+    marginLeft: normalize(185, "width"),
     marginRight: normalize(32, "width"),
-    marginLeft: normalize(200, "width"),
   },
   submitButtonText: {
     color: "#FFFFFF",

@@ -12,6 +12,8 @@ private/
 
 # Firestore
 firestore-upload/serviceAccountKey.json
+serviceAccountKey.json
 
 # Environment variables
+.env
 .env/
