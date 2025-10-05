@@ -98,10 +98,10 @@ export default function ItemScan() {
       console.log("Data: ", data);
     };
 
-    if (image != null) {
+    if (imageUri != null) {
       getItemAccepted();
     }
-  }, [image]);
+  }, [imageUri]);
 
   const handleCameraPhotoPress = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -113,7 +113,7 @@ export default function ItemScan() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0]);
+      setImageUri(result.assets[0]);
     }
   };
 
