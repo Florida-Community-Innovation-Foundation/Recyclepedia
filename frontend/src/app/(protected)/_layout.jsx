@@ -2,6 +2,7 @@ import { Redirect, Stack } from "expo-router";
 import { useContext, useMemo } from "react";
 import { AuthContext } from "~/utils/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { setStatusBarStyle } from "expo-status-bar";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)", // anchor
@@ -21,7 +22,7 @@ export default function ProtectedLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, statusBarStyle: "inverted", }}>
         <Stack.Screen name="(tabs)" />
       </Stack>
     </QueryClientProvider>

@@ -28,4 +28,4 @@ RUN npm ci --only=production
 COPY . ./
 
 # Run the web service on container startup.
-ENTRYPOINT [ "node", "server.js" ]
+ENTRYPOINT [ "npm", "start" ]

@@ -16,6 +16,7 @@ import app from "./app.js";
 import { initLogCorrelation, logger } from "./utils/logging.js";
 import { fetchProjectId } from "./utils/metadata.js";
 
+
 /**
  * Initialize app and start Express server
  */
@@ -23,9 +24,8 @@ const main = async () => {
   try {
     let project = process.env.GOOGLE_CLOUD_PROJECT;
     if (!project) {
-      project = await fetchProjectId();
+      project = fetchProjectId();
     }
-    // Initialize request-based logger with project Id
     initLogCorrelation(project);
 
     // Start server listening on PORT env var
@@ -35,6 +35,18 @@ const main = async () => {
     logger.error(err.message);
   }
 };
+
+export const middleware = async (req, _) => {
+  console.log("Time: ", Date.now());
+  let res = await fetch('https://www.nyckel.com/connect/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `grant_type=client_credentials&client_id=${process.env.NYCKEL_CLIENT_ID}&client_secret=${process.env.NYCKEL_CLIENT_SECRET}`
+  });
+  return await res.json();
+}
 
 /**
  * Listen for termination signal

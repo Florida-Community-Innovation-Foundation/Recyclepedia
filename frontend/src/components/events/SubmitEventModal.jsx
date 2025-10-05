@@ -126,7 +126,8 @@ export default function SubmitEventModal({
         transparent={true}
         animationType="slide"
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        <TouchableOpacity onPress={ Keyboard.dismiss }>
           <SafeAreaView style={styles.CalendarmodalBackground}>
             <KeyboardAvoidingView style={styles.CalendareventModalContent}>
               {/* Wrap all text inside <Text> */}
@@ -180,7 +181,8 @@ export default function SubmitEventModal({
               </TouchableOpacity>
             </KeyboardAvoidingView>
           </SafeAreaView>
-        </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
+        </TouchableOpacity>
       </Modal>
     </View>
   );

@@ -6,7 +6,7 @@ import Custombar from "~/components/navigation/Custombar";
 export default function BottomTabsLayout() {
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, statusBarStyle: "inverted", }}
       tabBar={(props) => <Custombar {...props} />}
       backBehavior="order"
     >

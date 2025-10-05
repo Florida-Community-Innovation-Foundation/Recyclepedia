@@ -3,6 +3,10 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AboutCalendar } from "./calendar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
+
 const baseDimension = { baseHeight: 675, baseWidth: 375 };
 
 const width = Dimensions.get("window").width;
@@ -21,6 +25,7 @@ function calcWidth(size) {
 }
 
 export default function About() {
+  const bottomTabBarHeight = useBottomTabBarHeight();
   const [num, setNum] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,112 +36,129 @@ export default function About() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.boxTop}>
-        <Text style={styles.textTop}>Our Story</Text>
-        <Text style={styles.paragraphText}>
-          Since 2006, Dream in Green (DIG) has empowered individuals,
-          particularly youth, to lead the response to climate change and
-          environmental challenges in South Florida. Through partnerships with
-          schools, households, local governments, and businesses, we focus on
-          reducing environmental footprints. By developing and overseeing
-          educational programs and workshops, we promote sustainable behaviors
-          across all age groups, with a special emphasis on K-12 students.
-        </Text>
-        <View style={styles.socialIconContainer}>
-          <Link href="https://www.linkedin.com/company/dream-in-green/">
-            <Entypo
-              style={styles.socialIcons}
-              name="linkedin"
-              size={24}
-              color="#234E13"
-            />
-          </Link>
-          <Link href="https://www.facebook.com/dreamingreen">
-            <Entypo
-              style={styles.socialIcons}
-              name="facebook"
-              size={24}
-              color="#234E13"
-            />
-          </Link>
-          <Link href="https://www.instagram.com/dreamingreenmia/">
-            <Entypo
-              style={styles.socialIcons}
-              name="instagram"
-              size={24}
-              color="#234E13"
-            />
-          </Link>
-          <Link href="https://www.youtube.com/channel/UCn5Z3T2ejG4dYEJhe9ezLww">
-            <Entypo
-              style={styles.socialIcons}
-              name="youtube"
-              size={24}
-              color="#234E13"
-            />
-          </Link>
-          <Link href="https://x.com/Dream_in_Green">
-            <FontAwesome6 name="x-twitter" size={24} color="#234E13" />
-          </Link>
-        </View>
-      </View>
-
-      <View style={styles.boxMiddle}>
-        <Text style={styles.textTop}>Our Mission</Text>
-        <Text style={styles.paragraphText}>
-          One of the major obstacles to effective recycling is
-          contamination—when non-recyclable items are mistakenly placed into
-          recycling systems. Our mission is to provide residents with clear,
-          accessible, and up-to-date recycling information tailored to their
-          specific community. By reducing contamination, we aim to improve
-          recycling rates and help transform waste into valuable resources.
-        </Text>
-
-        <View style={styles.funFactRow}>
-          <Text style={styles.funFactNum}>{num}</Text>
-          <Text style={{ fontStyle: "italic" }}>tons of waste</Text>
+    <SafeAreaView style={styles.saviewContainer}>
+      <ScrollView contentContainerStyle={{...styles.scrollViewContent, paddingBottom: bottomTabBarHeight}}>
+        {/* About Our Story */}
+        <View style={styles.boxTop}>
+          <Text style={styles.textTop}>Our Story</Text>
+          <Text style={styles.paragraphText}>
+            Since 2006, Dream in Green (DIG) has empowered individuals,
+            particularly youth, to lead the response to climate change and
+            environmental challenges in South Florida. Through partnerships with
+            schools, households, local governments, and businesses, we focus on
+            reducing environmental footprints. By developing and overseeing
+            educational programs and workshops, we promote sustainable behaviors
+            across all age groups, with a special emphasis on K-12 students.
+          </Text>
+          <View style={styles.socialIconContainer}>
+            <Link href="https://www.linkedin.com/company/dream-in-green/">
+              <Entypo
+                style={styles.socialIcons}
+                name="linkedin"
+                size={24}
+                color="#234E13"
+              />
+            </Link>
+            <Link href="https://www.facebook.com/dreamingreen">
+              <Entypo
+                style={styles.socialIcons}
+                name="facebook"
+                size={24}
+                color="#234E13"
+              />
+            </Link>
+            <Link href="https://www.instagram.com/dreamingreenmia/">
+              <Entypo
+                style={styles.socialIcons}
+                name="instagram"
+                size={24}
+                color="#234E13"
+              />
+            </Link>
+            <Link href="https://www.youtube.com/channel/UCn5Z3T2ejG4dYEJhe9ezLww">
+              <Entypo
+                style={styles.socialIcons}
+                name="youtube"
+                size={24}
+                color="#234E13"
+              />
+            </Link>
+            <Link href="https://x.com/Dream_in_Green">
+              <FontAwesome6 name="x-twitter" size={24} color="#234E13" />
+            </Link>
+          </View>
         </View>
 
-        <Text style={styles.funFact}>
-          Note: "Did you know the world generates over 2.01 billion tons of
-          waste each year? That is 318.5 tons of waste every 5 seconds."
-        </Text>
-      </View>
+        {/* About Our Mission */}
+        <View style={styles.boxMiddle}>
+          <Text style={styles.textTop}>Our Mission</Text>
+          <Text style={styles.paragraphText}>
+            One of the major obstacles to effective recycling is
+            contamination—when non-recyclable items are mistakenly placed into
+            recycling systems. Our mission is to provide residents with clear,
+            accessible, and up-to-date recycling information tailored to their
+            specific community. By reducing contamination, we aim to improve
+            recycling rates and help transform waste into valuable resources.
+          </Text>
 
-      <View style={styles.boxMiddle}>
-        <Text style={styles.textTop}>Our Solution</Text>
-        <Text style={styles.paragraphText}>
-          Recyclepedia is designed to simplify access to accurate recycling
-          information for Miami-Dade County residents. By providing
-          comprehensive guidance on what can and cannot be recycled,
-          Recyclepedia helps reduce contamination and improve recycling success.
-          The platform offers alternatives for disposing of non-recyclable
-          items, directing users to appropriate drop-off locations. By
-          increasing recycling rates, we can reduce pollution and enhance the
-          overall health of our communities.
-        </Text>
-        <Link href="https://dreamingreen.org/about-us/">
-          <Text style={styles.buttonText2}>Learn More</Text>
-        </Link>
-      </View>
-    </ScrollView>
+          <View style={styles.funFactRow}>
+            <Text style={styles.funFactNum}>{num}</Text>
+            <Text style={{ fontStyle: "italic" }}>tons of waste</Text>
+          </View>
+
+          <Text style={styles.funFact}>
+            Note: "Did you know the world generates over 2.01 billion tons of
+            waste each year? That is 318.5 tons of waste every 5 seconds."
+          </Text>
+        </View>
+
+        {/* About Our Solution */}
+        <View style={styles.boxMiddle}>
+          <Text style={styles.textTop}>Our Solution</Text>
+          <Text style={styles.paragraphText}>
+            Recyclepedia is designed to simplify access to accurate recycling
+            information for Miami-Dade County residents. By providing
+            comprehensive guidance on what can and cannot be recycled,
+            Recyclepedia helps reduce contamination and improve recycling success.
+            The platform offers alternatives for disposing of non-recyclable
+            items, directing users to appropriate drop-off locations. By
+            increasing recycling rates, we can reduce pollution and enhance the
+            overall health of our communities.
+          </Text>
+          <Link href="https://dreamingreen.org/about-us/">
+            <Text style={styles.buttonText2}>Learn More</Text>
+          </Link>
+        </View>
+
+        {/* Event Calendar, same as calendar.jsx but able to be used in the about section */}
+        <AboutCalendar />
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  saviewContainer: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1
+  },
+
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: calcHeight(20),
+    flex: 1,
+    paddingBottom: calcHeight(80),
     backgroundColor: "#FFFFFF",
   },
   socialIconContainer: {
     flexDirection: "row",
-    justifyContent: "center", // Centers the social icons horizontally
+    //justifyContent: "center", // Centers the social icons horizontally
     marginTop: calcHeight(20),
   },
   socialIcons: {
-    marginHorizontal: calcWidth(15),
+    marginHorizontal: calcWidth(200),
   },
   boxTop: {
     backgroundColor: "#FFFFFF",
@@ -145,7 +167,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: calcWidth(1),
     borderBottomColor: "#a9def9",
     paddingHorizontal: calcWidth(10),
-    paddingTop: calcHeight(110),
+    paddingTop: calcHeight(20),
     paddingBottom: calcHeight(20),
   },
   boxMiddle: {
