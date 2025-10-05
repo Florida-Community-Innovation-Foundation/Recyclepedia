@@ -193,7 +193,7 @@ async function parseLabel(data) {
       }
 
       //console.log("Cross check with ", testingLocation, " was not good."); // debug
-      return "This item is not recyclable in ", testingLocation, "!";
+      return `This item is not recyclable in ${testingLocation}!`;
     }
   }
 
