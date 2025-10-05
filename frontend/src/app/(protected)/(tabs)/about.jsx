@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AboutCalendar } from "./calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
+
 const baseDimension = { baseHeight: 675, baseWidth: 375 };
 
 const width = Dimensions.get("window").width;
@@ -23,6 +25,7 @@ function calcWidth(size) {
 }
 
 export default function About() {
+  const bottomTabBarHeight = useBottomTabBarHeight();
   const [num, setNum] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,7 +37,7 @@ export default function About() {
 
   return (
     <SafeAreaView style={styles.saviewContainer}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView contentContainerStyle={{...styles.scrollViewContent, paddingBottom: bottomTabBarHeight}}>
         {/* About Our Story */}
         <View style={styles.boxTop}>
           <Text style={styles.textTop}>Our Story</Text>
@@ -140,8 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContent: {
-    flexGrow: 1,
-    paddingBottom: "17%", // use this so the content isn't cut off by the tab bar, not sure about a better way
+    flexGrow: 1
   },
 
   scrollContainer: {

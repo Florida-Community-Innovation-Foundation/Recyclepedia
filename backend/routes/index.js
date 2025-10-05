@@ -1,4 +1,4 @@
-import express, { json } from "express";
+import express from "express";
 import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
@@ -92,7 +92,6 @@ function crossCheck(category, location) {
       case "Hialeah":
       case "Key Biscayne":
       case "Hialeah Gardens":
-        //console.log("Glass fail at ", location); // debug
         return false;
 
       default:
@@ -140,10 +139,9 @@ function crossCheck(category, location) {
       case "Palmetto Bay":
       case "Doral":
       case "Miami Gardens":
-      case "Culter Bay":
+      case "Cutler Bay":
       case "Florida City":
       case "North Bay Village":
-        //console.log("Aluminum fail at ", location); // debug
         return false;
 
       default:
@@ -159,8 +157,6 @@ function crossCheck(category, location) {
 // most of nyckel's labels are accurate except some locations have exceptions
 async function parseLabel(data) {
   const label = data.labelName.toString().toLowerCase();
-  //console.log("Label: ", label);  // debug
-
   // the order of the labels is precedence for messages
   // (ewaste label has the word trash in it, but we want to return a special message for batteries so much check ewaste first)
   const badLabels = [ "ewaste", "trash", "non-recyclable", "not recyclable", "special drop-off" ];
@@ -171,11 +167,8 @@ async function parseLabel(data) {
   for (const badlabel of badLabels) {
     if (label.includes(badlabel)) {
       if (badlabel === "ewaste") {
-        //console.log("Item had ewaste label"); // debug
         return "This item is not recyclable! Check the Drop-Off tab to find a Collection Center!";
       }
-
-      //console.log("Item had bad label, ", badlabel); // debug
       return "This item is not recyclable!";
     }
   }
@@ -188,47 +181,33 @@ async function parseLabel(data) {
     // if it does cross check
     if (label.includes(warningLabel)) {
       if (crossCheck(warningLabel, testingLocation)) {
-        //console.log("Cross check with ", testingLocation, " was good!"); // debug
         return "This item is recyclable!";
       }
-
-      //console.log("Cross check with ", testingLocation, " was not good."); // debug
       return `This item is not recyclable in ${testingLocation}!`;
     }
   }
 
 
   // if doesn't have either, recyclable
-  //console.log("Item was found to be recyclable"); // debug
   return "This item is recyclable!";
 }
 
 async function testN(img, token) {
-  //console.log("Image: ", img);
-
-  // [note]: this needs to be fixed
+  // TODO: this needs to be fixed
   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzU5MzU0MTE3LCJpYXQiOjE3NTkzNTQxMTcsImV4cCI6MTc1OTM1NzcxNywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiQzU3N0QxQjIzN0M5RjBGMTJFNDQ2QjQwODVDQTQ1RjQifQ.j7_5840XvVSJCrr8nz5SJzhMHHmzKfPB4LU1abI9n2iWExttMhM5CThIKAGGCjs7A54VWHQZBZPUHtFcdPglItElP9KdxMWKWGh5oKEkRbY67BtaaOc2qHWrxS4jNStzIkKgM_AMenkM9c1ZdLrPI3n6NSDFEfAgzKQneKLtJcJRDNvQprpmGPymIhVDFHbgBkkNlYXW6w2gJNAw0c_nCbppNRaUodv59PuKzVfKSOmiBWAPJV417TcKf2kxVxJhLtGO70MmxC7tpoWV1pmyvv9-C9gWFJygiLK2JX5LwzrSBuPRdm2n2jUh5Rb_fhktBGxf2OtAsPoP5g-Ebu9wIw',
-      // this should use token passed in for auth, but not working rn
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(
       { "data": "https://pakoro.com/wp-content/uploads/2025/02/A-person-unpacking-a-large-pizza-box-1024x576.webp" }  // testing
-
-      //{ "data": img } // actual
     )
   });
 
   const data = await response.json();
-  //console.log("Data: ", data);
 
   // this should pass location as well
-  const result = await parseLabel(data);
-  //console.log("Result: ", result);
-
-  return result;
+  return await parseLabel(data);
 }
 
 router.get("/curbsideData", async (req, res) => {
@@ -245,7 +224,7 @@ router.get("/curbsideData", async (req, res) => {
   curbsideData = mapLocationToCity(curbsideData, cityLocations);
 
   res.status(200).send(curbsideData);
-  //return res.json(curbsideData);
+  return res.json(curbsideData);
 });
 
 router.get("/itemsData", async (req, res) => {
@@ -265,8 +244,6 @@ router.get("/dropOffData", async (req, res) => {
 
 // gets image and location from frontend and uses nyckel to decide recyclability
 router.post("/itemData", async (req, res) => {
-  //console.log("req body: ", req.body);
-
   const base64String = req.body.image.base64;
   const mediaType = 'image/jpeg';
   const imageURI = `data:${mediaType};base64,${base64String}`;

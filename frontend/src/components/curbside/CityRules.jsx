@@ -1,12 +1,11 @@
 import { Text, View, StyleSheet } from "react-native";
 import { normalize } from "~/utils/normalize";
 
-// knot ideal but we need something for saturday
+// not ideal but we need something for saturday
 // print list of city recycling rules based on location
 // note: finish this off, should be easy, just takes a while
 
 export default function CityRules({ location }) {
-  // console.log("Location: ", location);
   switch (location) {
     case "Aventura":
     case "Cutler Bay":

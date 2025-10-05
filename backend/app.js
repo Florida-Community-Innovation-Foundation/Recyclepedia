@@ -5,7 +5,7 @@ import cors from "cors";
 
 import indexRouter from "./routes/index.js";
 
-//import { middleware } from "./server.js";
+import { middleware } from "./server.js";
 
 var app = express();
 
@@ -18,20 +18,18 @@ app.set("view engine", "pug");
 
 app.use("/", indexRouter);
 
-//app.use(middleware);
-app.get('/itemData', (req, res, next) => {
+app.get('/itemData', async (req, res, next) => {
   console.log("Time: ", Date.now());
 
-  if (accesstoken) {
-    req.accesstoken = accesstoken.access_token;
+  let accessToken = await middleware(req);
 
+  if (accessToken) {
     console.log("Access Token acquired: ", accesstoken.access_token);
+    return next();
   }
   else {
     return res.status(500).json({ message: 'No access token' });
   }
-
-  next();
 })
 
 // catch 404 and forward to error handler
