@@ -37,7 +37,7 @@ export async function getDropoffData() {
 
   if (!response.ok) {
     console.error("Failed");
-    return
+    return;
   }
 
   const dropOffData = await response.json();
