@@ -70,21 +70,6 @@ const main = async () => {
   }
 };
 
-// export const middleware = (req, res, next) => {
-//   console.log("Time: ", Date.now());
-
-//   if (accesstoken) {
-//     req.accesstoken = accesstoken.access_token;
-
-//     console.log("Access Token acquired: ", accesstoken.access_token);
-//   }
-//   else {
-//     return res.status(500).json({ message: 'No access token' });
-//   }
-
-//   next();
-// }
-
 /**
  * Listen for termination signal
  */
