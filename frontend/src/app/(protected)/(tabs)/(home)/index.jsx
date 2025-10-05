@@ -65,7 +65,6 @@ const CurbsideDropoff = () => {
   const [selectText, setSelectText] = useState("SELECT YOUR TOWN");
   const [city, setCity] = useState(null);
   const [places, setPlaces] = useState([]);
-  const [testing, setTesting] = useState(false);
 
   // update places once curbside data loads
   useEffect(() => {
