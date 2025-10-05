@@ -28,7 +28,7 @@ export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
   return (
       <View
           style={
-            !itemChecked ? styles.container : { ...styles.container, height: 150 }
+            itemChecked ? { ...styles.container, height: 150 } : styles.container
           }
       >
         {!itemChecked && (
