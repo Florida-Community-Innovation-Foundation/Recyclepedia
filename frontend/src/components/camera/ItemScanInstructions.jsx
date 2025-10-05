@@ -2,7 +2,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRecycling } from "~/utils/recyclingContext";
-import { useEffect, useState} from "react";
+import { useEffect} from "react";
 
 
 export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
@@ -26,11 +26,45 @@ export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
   }, [itemChecked]);
 
   return (
-    <View style={ styles.container }>
-      <Text>
-        {exampleText}
-      </Text>
-    </View>
+      <View
+          style={
+            !itemChecked ? styles.container : { ...styles.container, height: 150 }
+          }
+      >
+        {!itemChecked && (
+            <View style={styles.instructionContainer}>
+              <Entypo name="warning" size={24} color="#024935" />
+              <Text style={styles.instructionText}>
+                SCAN AN ITEM TO VIEW RECYCLING INFORMATION.
+              </Text>
+            </View>
+        )}
+        {itemChecked && (
+            <>
+              <Text style={styles.instructionHeader}> Next Steps: </Text>
+              {itemAccepted && (
+                  <Text style={styles.itemAcceptanceStatus}>
+                    This item is accepted in your area! It should be rinsed off and
+                    placed in your recycling bin.
+                  </Text>
+              )}
+              {!itemAccepted && (
+                  <>
+                    <Text style={styles.itemAcceptanceStatus}>
+                      This item cannot go in your curbside bin. It must be disposed of
+                      in a special drop-off center.
+                    </Text>
+                    <Pressable
+                        style={styles.button}
+                        onPress={itemAcceptedButtonPress}
+                    >
+                      <Text style={styles.buttonText}>FIND ONE HERE!</Text>
+                    </Pressable>
+                  </>
+              )}
+            </>
+        )}
+      </View>
   );
 }
 
