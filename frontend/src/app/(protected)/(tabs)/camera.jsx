@@ -86,7 +86,7 @@ export default function ItemScan() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ location, image }),
+        body: JSON.stringify({ location, image: imageUri }),
       });
 
       if (!response.ok) {
