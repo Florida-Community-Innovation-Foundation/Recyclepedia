@@ -36,14 +36,16 @@ function mapLocationToCity(data, locations) {
       return {
         [city]: {
           items: row[city]["items"],
-          latitude: _.filter(
+          latitude: _.find(
             locations,
             (location) => location["City"] === city,
-          )[0]["Latitude"],
-          longitude: _.filter(
+              0
+          )["Latitude"],
+          longitude: _.find(
             locations,
             (location) => location["City"] === city,
-          )[0]["Longitude"],
+              0
+          )["Longitude"],
         },
       };
     })
@@ -105,7 +107,6 @@ function crossCheck(category, location) {
       case "Hialeah Gardens":
       case "North Miami":
       case "North Miami Beach":
-        //console.log("Cardboard fail at ", location); // debug
         return false;
 
       default:

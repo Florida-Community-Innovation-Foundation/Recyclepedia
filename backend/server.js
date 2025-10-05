@@ -43,7 +43,7 @@ export const middleware = async (req, _) => {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: `grant_type=client_credentials&client_id=${process.env.N_CLIENT_ID}&client_secret=${process.env.N_CLIENT_SECRET}`
+    body: `grant_type=client_credentials&client_id=${process.env.NYCKEL_CLIENT_ID}&client_secret=${process.env.NYCKEL_CLIENT_SECRET}`
   });
   return await res.json();
 }

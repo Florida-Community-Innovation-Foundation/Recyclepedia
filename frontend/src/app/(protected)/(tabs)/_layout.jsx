@@ -1,6 +1,5 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
 import Custombar from "~/components/navigation/Custombar";
 
@@ -33,7 +32,7 @@ export default function BottomTabsLayout() {
           tabBarLabel: "ItemScan",
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="calendar"
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -41,7 +40,7 @@ export default function BottomTabsLayout() {
           ),
           tabBarLabel: "CurbsideDropoff",
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="profile"
         options={{
