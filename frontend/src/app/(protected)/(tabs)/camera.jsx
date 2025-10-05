@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
@@ -7,20 +8,45 @@ import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 import { normalize } from "~/utils/normalize";
 import * as Location from 'expo-location';
-import { getBaseURL } from "../../../utils/baselineData";
+import { getBaseURL } from "~/utils/url";
 
 export default function ItemScan() {
   const navigation = useNavigation();
-  const [image, setImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
+  const [classification, setClassification] = useState(null);
   const [accepted, setAccepted] = useState(false);
   // default location is Miami
   const [location, setLocation] = useState({ latitude: 25.7617, longitude: -80.1918 });
   const [exText, setExText] = useState("");
 
+  useEffect(() => {
+    if (imageUri) {
+      getBaseURL().then((baseURL) => {
+        FileSystem.uploadAsync(`${baseURL}/recyclingIdentifier`, imageUri, {
+          fieldName: "image",
+          mimeType: "image/jpeg",
+          httpMethod: "POST",
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        })
+          .then((response) => {
+
+            console.log("TEST)");
+            console.log(JSON.parse(response.body));
+            console.log(classification);
+            setClassification(JSON.parse(response.body));
+            return JSON.parse(response.body);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    }
+  }, [imageUri]);
+
   // this only fires the first time a user goes to item scan
   useEffect(() => {
     navigation.addListener("tabPress", () => {
-      setImage(null);
+      setImageUri(null);
     });
 
     // create async function to use await in useEffect (is this good practice?)
@@ -55,8 +81,8 @@ export default function ItemScan() {
   useEffect(() => {
     const getItemAccepted = async () => {
       const baseURL = await getBaseURL();
-      const response = await fetch(`${baseURL}/itemData`, { 
-        method: "POST", 
+      const response = await fetch(`${baseURL}/itemData`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -101,7 +127,7 @@ export default function ItemScan() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0]);
+      setImageUri(result.assets[0].uri);
     }
   };
 
@@ -112,19 +138,10 @@ export default function ItemScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-        {
-          !image &&
-          <Pressable
-            style={styles.uploadPhotoButton}
-            onPress={handleCameraPhotoPress}
-            >
-              <Text style={styles.uploadPhotoText}>TAKE A PICTURE</Text>
-            </Pressable>
-        }
-        {/* {!image && <CameraScan setImage={setImage} />} */}
-        {image && (
+        {!imageUri && <CameraScan setImageUri={setImageUri} />}
+        {imageUri && (
           <Image
-            source={{ uri: image.uri }}
+            source={{ uri: imageUri }}
             style={styles.cameraContainer}
             contentFit="cover"
             enableLiveTextInteraction={true}
@@ -149,7 +166,7 @@ export default function ItemScan() {
         {/* Section showing instructions after scanning or uploading a photo */}
         {/* Also takes in a location to check w/ "db" */}
         {/* don't think this is good rn */}
-        <ItemScanInstructions itemChecked={image} itemAccepted={accepted} exampleText={exText} />
+        <ItemScanInstructions itemChecked={imageUri} itemAccepted={accepted} exampleText={exText} />
         {/* <ItemScanInstructions itemChecked={image} itemAccepted={true} /> */}
       </View>
     </View>

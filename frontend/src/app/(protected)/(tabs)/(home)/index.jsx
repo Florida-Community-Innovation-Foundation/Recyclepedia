@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
-import _ from "lodash";
+import _, { set } from "lodash";
 import { useEffect, useState } from "react";
 import {
   Pressable,
@@ -14,19 +14,30 @@ import {
   View,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import DoAndDontSection from "~/components/curbside/DoAndDontSection";
-import DropdownSelector from "~/components/curbside/DropdownSelector";
-import RecyclingList from "~/components/curbside/RecyclingList";
 import {
   getCurbsideData,
   getDropoffData,
   getItemsData,
 } from "~/utils/baselineData.js";
+import { useNavigation } from "@react-navigation/native";
+import DropdownSelector from "~/components/curbside/DropdownSelector";
+import RecyclingList from "~/components/curbside/RecyclingList";
+import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import { normalize } from "~/utils/normalize";
-import LocationList from "../../../../components/curbside/LocationList";
-import CityRules from "../../../../components/curbside/CityRules";
+import LocationList from "~/components/curbside/LocationList";
+import CityRules from "~/components/curbside/CityRules";
+import { useRecycling } from "~/utils/recyclingContext";
 
-const CurbsideDropoff = ({ navigation }) => {
+const CurbsideDropoff = () => {
+  const navigation = useNavigation();
+  const{
+    itemsRecycled,
+    setItemsRecycled,
+    carbonOffset,
+    setCarbonOffset,
+    chosenItem,
+    setChosenItem
+  } = useRecycling();
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
@@ -47,11 +58,11 @@ const CurbsideDropoff = ({ navigation }) => {
   const [category, setCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [subtitle, setSubtitle] = useState(
-    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
   );
   const [curbsideColor, setCurbsideColor] = useState("white");
   const [dropoffColor, setDropoffColor] = useState("#024935");
-  const [selectText, setSelectText] = useState("SELECT YOUR MUNICIPALITY");
+  const [selectText, setSelectText] = useState("SELECT YOUR TOWN");
   const [city, setCity] = useState(null);
   const [places, setPlaces] = useState([]);
   const [testing, setTesting] = useState(false);
@@ -107,7 +118,29 @@ const CurbsideDropoff = ({ navigation }) => {
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
   const handleSubmit = async () => {
+   const materials = new Map([
+    //used to calculate carbon offset
+    ["plastic", 1.02], // kg CO2 saved per kg of plastic
+    ["paper", 0.46],
+    ["glass", 0.31],
+    ["metals", 5.86],
+    ["scrap metals", 3.57],
+    ["aluminum", 8.14],
+    ["steel", 0.86],
+    ["copper", 2.66],
+    ["textiles", 3.37],
+  ]);
+
+
+    /*test
+    const offset = materials.get("paper");
+    setChosenItem("paper");
+    setCarbonOffset(prev=> prev + offset);
+    console.log("Material:", chosenItem + ", Total Carbon offset:", carbonOffset);*/
     if (category) {
+      setItemsRecycled(itemsRecycled + 1);
+      setChosenItem(category);
+      setCarbonOffset(prev=> prev + materials.get(category));
       setPlaces(
         _.chain(dropOffData)
           .filter((dropOffLocation) => dropOffLocation["Category"] === category)
@@ -179,16 +212,17 @@ const CurbsideDropoff = ({ navigation }) => {
       <ScrollView style={styles.scrollviewstyle}>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
-          {/* Curbside button */}
-          <View style={styles.pillButtonsContainer}>
+
+        {/* Curbside button */}
+          <View style={ styles.pillButtonsContainer }>
             <TouchableOpacity
               onPress={() => {
                 setSubtitle(
-                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nMUNICIPALITY.",
+                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
                 );
                 setCurbsideColor("white");
                 setDropoffColor("#024935");
-                setSelectText("SELECT YOUR MUNICIPALITY:");
+                setSelectText("SELECT YOUR TOWN:");
               }}
             >
               {/* Curbside selected */}
@@ -207,6 +241,7 @@ const CurbsideDropoff = ({ navigation }) => {
                   </Text>
                 </View>
               )}
+
               {/* Curbside not selected */}
               {curbsideColor !== "white" && (
                 <View style={styles.pillButtonNotSelected}>
@@ -364,10 +399,8 @@ const CurbsideDropoff = ({ navigation }) => {
             places.map((place, index) => (
               <Marker
                 key={index}
-                //coordinate={{ latitude: place.location.latitude, longitude: place.location.longitude }}
                 coordinate={place.location}
                 title={place.name}
-                //description="test"
                 description={place.street}
               />
             ))}
