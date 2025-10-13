@@ -45,8 +45,6 @@ export async function getDropoffData() {
 
   const dropOffData = await response.json();
 
-  //console.log("Dropoff data: ", dropOffData);
-
   return dropOffData;
 }
 
