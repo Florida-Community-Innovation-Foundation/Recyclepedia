@@ -2,12 +2,75 @@ import dayjs from "dayjs";
 import { BlurView } from "expo-blur";
 import _ from "lodash";
 import { useState } from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { EventsListDisplay } from "~/components/events/EventsListDisplay";
 import { MonthDisplay } from "~/components/events/MonthDisplay";
 import SubmitEventModal from "~/components/events/SubmitEventModal";
 import { getCalendarEvents } from "~/utils/calendarEvents.js";
 import { normalize } from "~/utils/normalize";
+
+export function AboutCalendar() {
+  // hooks for calendar data
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [calendarEvents, setCalendarEvents] = useState(getCalendarEvents());
+  const [dayDisplaysPressed, setDayDisplaysPressed] = useState(
+    _.map(_.range(0, dayjs(currentDate).daysInMonth()), () => false),
+  );
+
+  // bool draw submit event modal
+  const [isEventModalVisible, setIsEventModalVisible] = useState(false);
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+
+  const submitEventButtonHandlePress = () => {
+    setIsEventModalVisible(true);
+    setIsCalendarVisible(true);
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Ad space */}
+      <View style={styles.adSpaceContainer}>
+        <Text style={styles.adSpaceText}> AD SPACE </Text>
+      </View>
+
+      {/* Month view */}
+      <View style={styles.monthViewContainer}>
+        <MonthDisplay
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          dayDisplaysPressed={dayDisplaysPressed}
+          setDayDisplaysPressed={setDayDisplaysPressed}
+        />
+      </View>
+
+      {/* Events View */}
+      <View style={styles.eventsViewContainer}>
+        <EventsListDisplay
+          calendarEvents={calendarEvents}
+          dayDisplaysPressed={dayDisplaysPressed}
+          currentDate={currentDate}
+        />
+      </View>
+
+      {/* Submit Event Button */}
+      <TouchableOpacity 
+        onPress={ submitEventButtonHandlePress }
+        style={ styles.aboutSubmitEventButton }
+      >
+        <Text style={ styles.submitEventButtonText }>
+          SUBMIT AN EVENT
+        </Text>
+      </TouchableOpacity>
+
+      {/* Submit Event Modal */}
+      <SubmitEventModal
+        isEventModalVisible={isEventModalVisible}
+        setIsEventModalVisible={setIsEventModalVisible}
+        setCalendarEvents={setCalendarEvents}
+      />
+    </View>
+  );
+}
 
 export default function Home({ navigation }) {
   const [currentDate, setCurrentDate] = useState(dayjs());
@@ -70,15 +133,23 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#024935",
-    height: "100%",
+    //backgroundColor: "white",
+    //height: "100%",
+    //marginLeft: normalize(16, "width"),
+    //marginRight: normalize(16, "width"),
+
+    // this breaks the calendar tab, doesn't matter, meant for about calendar
+    paddingHorizontal: normalize(16, "width"),
+    paddingVertical: normalize(16, "height"),
   },
   scrollContainer: {
     paddingBottom: normalize(20, "height"),
+    //marginLeft: normalize(16, "width"),
     marginLeft: normalize(16, "width"),
-    marginRight: normalize(16, "width"),  
+    marginRight: normalize(16, "width"),
   },
   adSpaceContainer: {
-    marginTop: normalize(50, "height"),
+    //marginTop: normalize(50, "height"),
     backgroundColor: "#16513D",
     height: normalize(56, "height"),
     justifyContent: "center",
@@ -108,9 +179,9 @@ const styles = StyleSheet.create({
     marginTop: normalize(20, "height"),
   },
   submitEventViewContainer: {
-    position: "absolute",
-    top: 640,
-    height: normalize(120, "height"),
+    //position: "absolute",
+    //top: 640,
+    //height: normalize(120, "height"),
     backgroundColor: "#024935",
     textAlign: "center",
     justifyContent: "center",
@@ -130,7 +201,24 @@ const styles = StyleSheet.create({
   },
   submitEventButtonText: {
     color: "#fff",
+    fontWeight: "bold",
+
     justifyContent: "center",
-    textAlign: "center",
+    textAlign: "center",    
+  },
+
+  aboutSubmitEventButton: {
+    alignSelf: "center",
+    alignItems: "center",
+
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+
+    backgroundColor: "#024935",
+
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderRadius: 4,
   },
 });

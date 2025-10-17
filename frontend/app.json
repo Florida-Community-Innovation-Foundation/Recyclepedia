@@ -44,7 +44,8 @@
         {
           "calendarPermission": "Allow Recyclepedia to access your calendar."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "android": {
       "bundleIdentifier": "com.aadit.kamat.Recyclepedia",
@@ -66,7 +67,8 @@
         "android.permission.WRITE_CALENDAR",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "com.aadit.kamat.Recyclepedia"
     },
     "ios": {
       "config": {

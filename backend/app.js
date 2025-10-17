@@ -1,11 +1,15 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import createError from "http-errors";
+import cors from "cors";
 
 import indexRouter from "./routes/index.js";
 
+//import { middleware } from "./server.js";
+
 var app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -13,6 +17,22 @@ app.use(express.static("public"));
 app.set("view engine", "pug");
 
 app.use("/", indexRouter);
+
+//app.use(middleware);
+app.get('/itemData', (req, res, next) => {
+  console.log("Time: ", Date.now());
+
+  if (accesstoken) {
+    req.accesstoken = accesstoken.access_token;
+
+    console.log("Access Token acquired: ", accesstoken.access_token);
+  }
+  else {
+    return res.status(500).json({ message: 'No access token' });
+  }
+
+  next();
+})
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
