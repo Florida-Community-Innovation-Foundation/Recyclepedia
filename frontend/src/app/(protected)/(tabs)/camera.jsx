@@ -21,7 +21,8 @@ export default function ItemScan() {
   // this only fires the first time a user goes to item scan
   useEffect(() => {
     navigation.addListener("tabPress", () => {
-      setImageUri(null);
+      //setImageUri(null);
+      setImage(null);
     });
 
     // create async function to use await in useEffect (is this good practice?)
@@ -102,11 +103,8 @@ export default function ItemScan() {
     });
 
     if (!result.canceled) {
-<<<<<<< HEAD
-      setImageUri(result.assets[0].uri);
-=======
+      //setImageUri(result.assets[0].uri);
       setImage(result.assets[0]);
->>>>>>> mergeawsbranch
     }
   };
 
@@ -117,12 +115,6 @@ export default function ItemScan() {
         <Text style={styles.h2}>
           CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
         </Text>
-<<<<<<< HEAD
-        {!imageUri && <CameraScan setImageUri={setImageUri} />}
-        {imageUri && (
-          <Image
-            source={{ uri: imageUri }}
-=======
         {
           !image &&
           <Pressable
@@ -136,7 +128,6 @@ export default function ItemScan() {
         {image && (
           <Image
             source={{ uri: image.uri }}
->>>>>>> mergeawsbranch
             style={styles.cameraContainer}
             contentFit="cover"
             enableLiveTextInteraction={true}
@@ -159,14 +150,10 @@ export default function ItemScan() {
         </Pressable>
 
         {/* Section showing instructions after scanning or uploading a photo */}
-<<<<<<< HEAD
-        <ItemScanInstructions itemChecked={imageUri} itemAccepted={false} />
-=======
         {/* Also takes in a location to check w/ "db" */}
         {/* don't think this is good rn */}
         <ItemScanInstructions itemChecked={image} itemAccepted={accepted} exampleText={exText} />
         {/* <ItemScanInstructions itemChecked={image} itemAccepted={true} /> */}
->>>>>>> mergeawsbranch
       </View>
     </View>
   );

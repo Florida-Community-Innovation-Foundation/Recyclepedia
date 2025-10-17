@@ -2,6 +2,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
+import { useRecycling } from "../../utils/recyclingContext";
 
 // [NOTE]: this should take in the image, this is what will check whether the image is accepted or not
 
@@ -77,6 +78,13 @@ import { useEffect, useState } from "react";
 
 // old itemscan instructions
 export default function ItemScanInstructions({ itemChecked, itemAccepted, exampleText }) {
+  const {
+    itemsRecycled,
+    setItemsRecycled,
+    carbonOffset,
+    setCarbonOffset
+  } = useRecycling();
+  
   const navigation = useNavigation();
 
   const itemAcceptedButtonPress = () => {

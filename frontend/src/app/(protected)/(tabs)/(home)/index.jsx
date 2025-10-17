@@ -23,7 +23,9 @@ import {
   getDropoffData,
   getItemsData,
 } from "~/utils/baselineData.js";
+import { useNavigation } from "@react-navigation/native";
 import { normalize } from "~/utils/normalize";
+import { useRecycling } from "../../../../utils/recyclingContext";
 import LocationList from "../../../../components/curbside/LocationList";
 import CityRules from "../../../../components/curbside/CityRules";
 

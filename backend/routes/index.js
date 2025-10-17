@@ -210,7 +210,7 @@ async function testN(img, token) {
   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzU5MzU0MTE3LCJpYXQiOjE3NTkzNTQxMTcsImV4cCI6MTc1OTM1NzcxNywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiQzU3N0QxQjIzN0M5RjBGMTJFNDQ2QjQwODVDQTQ1RjQifQ.j7_5840XvVSJCrr8nz5SJzhMHHmzKfPB4LU1abI9n2iWExttMhM5CThIKAGGCjs7A54VWHQZBZPUHtFcdPglItElP9KdxMWKWGh5oKEkRbY67BtaaOc2qHWrxS4jNStzIkKgM_AMenkM9c1ZdLrPI3n6NSDFEfAgzKQneKLtJcJRDNvQprpmGPymIhVDFHbgBkkNlYXW6w2gJNAw0c_nCbppNRaUodv59PuKzVfKSOmiBWAPJV417TcKf2kxVxJhLtGO70MmxC7tpoWV1pmyvv9-C9gWFJygiLK2JX5LwzrSBuPRdm2n2jUh5Rb_fhktBGxf2OtAsPoP5g-Ebu9wIw',
+      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYwNzM3ODEyLCJpYXQiOjE3NjA3Mzc4MTIsImV4cCI6MTc2MDc0MTQxMiwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOEY5RkI0N0REQkMxNkZEOUM3REYwODBEMzk2QjFGOEEifQ.lH6IJutTzgH9P9hD31YBGCcBalusqFKZ_kTHl1TEkj-lE3_Dy_Bt3xllhLqCfPok1hoWqFl92Wi6WTNj4XjtUuK1YAVA102CElB0_0H81wEobLkhoFKsgMmF_vL3Lj57Xk512Z4XOtzNgDWj3qvN3j6Ce8aN2XrwuCCvfOuoSRqpLgOP11OoTUDLxWy5LRLe0cI4YD5Jb0cEPvUMgWxXPKdr6EJ_BJ6g7qB49FkPmj1hLZFZCqJLb1SdDKIHty0U2byP2znziz58NZyi-boTvh29EYWmdCvoVdCMsvUORfq8usACYonWtDy_Y6HGQ9fL3ZEck29PbRfBrcvGqxGLUA',
       // this should use token passed in for auth, but not working rn
       'Content-Type': 'application/json',
     },
@@ -222,7 +222,18 @@ async function testN(img, token) {
   });
 
   const data = await response.json();
-  //console.log("Data: ", data);
+  console.log("Data: ", data);
+
+  try {
+    if (data.message === 'Invalid bearer token') {
+      return "We are currently experiencing technical difficulties.";
+    }
+  }
+  catch (error) {
+    // don't use, error is thrown if response is ok
+  }
+  
+  
 
   // this should pass location as well
   const result = await parseLabel(data);
