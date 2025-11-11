@@ -4,9 +4,10 @@ import * as Location from "expo-location";
 import _ from "lodash";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useRef } from "react";
 import {
   Pressable,
-  SafeAreaView,
+  //SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import DropdownSelector from "~/components/curbside/DropdownSelector";
@@ -28,10 +30,11 @@ import { normalize } from "~/utils/normalize";
 import { useRecycling } from "../../../../utils/recyclingContext";
 import LocationList from "../../../../components/curbside/LocationList";
 import CityRules from "../../../../components/curbside/CityRules";
+import { Dropdown } from "react-native-element-dropdown";
 
 const CurbsideDropoff = () => {
   const navigation = useNavigation();
-  const{
+  const {
     itemsRecycled,
     setItemsRecycled,
     carbonOffset,
@@ -59,14 +62,15 @@ const CurbsideDropoff = () => {
   const [category, setCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [subtitle, setSubtitle] = useState(
-    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
+    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN OR CITY.",
   );
   const [curbsideColor, setCurbsideColor] = useState("white");
   const [dropoffColor, setDropoffColor] = useState("#024935");
-  const [selectText, setSelectText] = useState("SELECT YOUR TOWN");
+  const [selectText, setSelectText] = useState("SELECT YOUR TOWN OR CITY:");
   const [city, setCity] = useState(null);
   const [places, setPlaces] = useState([]);
   const [testing, setTesting] = useState(false);
+  const mapRef = useRef(null);
 
   // update places once curbside data loads
   useEffect(() => {
@@ -86,6 +90,49 @@ const CurbsideDropoff = () => {
     setPlaces(newPlaces);
   }, [curbsideData]);
 
+  // update when city changes
+  useEffect(() => {
+    if (city == null) {
+      return;
+    }
+
+    let loc = curbsideData.find(entry => entry[city]);
+
+    // if user selects a drop-off location, loc won't have anything
+    if (!loc) {
+      loc = places.find((place) => place.name === city);
+
+      // get city coords for map transition
+      const testCoord = {
+        latitude: loc.location.latitude,
+        longitude: loc.location.longitude,
+      };
+
+      // update map to zoom in on marker
+      mapRef.current.animateToRegion({
+        ...testCoord,
+        longitudeDelta: 0.0922,
+        latitudeDelta: 0.0421,
+      }, 500);
+
+      return;
+    }
+
+    // get city coords for map transition
+    const testCoord = {
+      latitude: loc[city].latitude,
+      longitude: loc[city].longitude,
+    }
+
+    // update map to zoom in on marker
+    mapRef.current.animateToRegion({
+      ...testCoord,
+      longitudeDelta: 0.0922,
+      latitudeDelta: 0.0421,
+    }, 500);
+
+  }, [city]);
+
   // testing
   // useEffect(() => {
   //   console.log("City: ", city);
@@ -95,8 +142,10 @@ const CurbsideDropoff = () => {
   const [region, setRegion] = useState({
     latitude: 25.7617,
     longitude: -80.1918,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    // latitudeDelta: 0.0922,
+    // longitudeDelta: 0.0421,
+    latitudeDelta: 0.5,
+    longitudeDelta: 0.5,
   });
 
   // update the region when curbside data's places finishes loading
@@ -119,18 +168,22 @@ const CurbsideDropoff = () => {
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
   const handleSubmit = async () => {
-   const materials = new Map([
-    //used to calculate carbon offset
-    ["plastic", 1.02], // kg CO2 saved per kg of plastic
-    ["paper", 0.46],
-    ["glass", 0.31],
-    ["metals", 5.86],
-    ["scrap metals", 3.57],
-    ["aluminum", 8.14],
-    ["steel", 0.86],
-    ["copper", 2.66],
-    ["textiles", 3.37],
-  ]);
+    // debug
+    console.log("City: ", city);
+    console.log("Places: ", places);
+
+    const materials = new Map([
+      //used to calculate carbon offset
+      ["plastic", 1.02], // kg CO2 saved per kg of plastic
+      ["paper", 0.46],
+      ["glass", 0.31],
+      ["metals", 5.86],
+      ["scrap metals", 3.57],
+      ["aluminum", 8.14],
+      ["steel", 0.86],
+      ["copper", 2.66],
+      ["textiles", 3.37],
+    ]);
 
 
     /*test
@@ -139,9 +192,9 @@ const CurbsideDropoff = () => {
     setCarbonOffset(prev=> prev + offset);
     console.log("Material:", chosenItem + ", Total Carbon offset:", carbonOffset);*/
     if (category) {
-        setItemsRecycled(itemsRecycled + 1);
-        setChosenItem(category);
-        setCarbonOffset(prev=> prev + materials.get(category));
+      setItemsRecycled(itemsRecycled + 1);
+      setChosenItem(category);
+      setCarbonOffset(prev => prev + materials.get(category));
 
       setPlaces(
         _.chain(dropOffData)
@@ -162,6 +215,8 @@ const CurbsideDropoff = () => {
           //.uniq()
           .value(),
       );
+
+      //setCity(places.at(0));
 
       setTesting(true);
     }
@@ -184,6 +239,19 @@ const CurbsideDropoff = () => {
     } catch (error) {
       console.error(error.message);
     }
+  };
+
+  // allow users to select municiplaity from map markers
+  const handleMapPoiClick = (marker) => {
+    if (marker) {
+      setCity(marker.name);
+    }
+
+    // console.log("Marker: ", marker);
+    // if (marker.name) {
+    //   setCity(marker.name);
+    // }
+    //setCity(marker.name);
   };
 
   const handleSearchChange = (text) => {
@@ -211,7 +279,7 @@ const CurbsideDropoff = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollviewstyle}>
+      <ScrollView style={styles.newScrollViewStyle}>
         <View style={styles.headerContainer}>
           {/*Curbside and drop off pill buttons*/}
           {/* Curbside button */}
@@ -219,11 +287,11 @@ const CurbsideDropoff = () => {
             <TouchableOpacity
               onPress={() => {
                 setSubtitle(
-                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN.",
+                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN OR CITY.",
                 );
                 setCurbsideColor("white");
                 setDropoffColor("#024935");
-                setSelectText("SELECT YOUR TOWN:");
+                setSelectText("SELECT YOUR TOWN OR CITY:");
               }}
             >
               {/* Curbside selected */}
@@ -314,11 +382,54 @@ const CurbsideDropoff = () => {
           <View>
             <View style={styles.cityPickerContainer}>
               <Text style={styles.cityPickerLabel}>{selectText}</Text>
-              <DropdownSelector
-                setItem={setCity}
-                cities={getCities(curbsideData)}
+              {/* <DropdownSelector
+                  setItem={setCity}
+                  cities={getCities(curbsideData)}
+                  key="curbsideCityDropdown"
+                /> */}
+
+              {/* Municipality dropdown */}
+              <Dropdown
+                style={styles.picker}
+                data={
+                  _.map(getCities(curbsideData), (city) => ({
+                    label: city,
+                    value: city,
+                  }))
+                }
+                search
+                searchPlaceholder="Search..."
+                labelField="label"
+                valueField="value"
+                renderItem={(item) => (
+                  <View>
+                    <Text style={styles.itemTextStyle}>{item.label}</Text>
+                  </View>
+                )}
+                selectedTextStyle={styles.selectedTextStyle}
+                placeholderStyle={styles.placeholderStyle}
+                placeholder={"Select town or city"}
+                value={city}
+                onChange={(item) => {
+                  setCity(item.value);
+                }}
+                renderRightIcon={() => (
+                  <FontAwesome name="caret-down" size={20} color="#024935" />
+                )}
                 key="curbsideCityDropdown"
               />
+
+
+              {/* Show "Use my current location" for users to populate location data automatically */}
+              <Pressable
+                style={styles.selectCurrentLocation}
+                onPress={handleCurrentLocationPress}
+              >
+                <FontAwesome name="location-arrow" size={18} color="#828282" />
+                <Text style={styles.selectCurrentLocationText}>
+                  Use my current location
+                </Text>
+              </Pressable>
             </View>
           </View>
         )}
@@ -337,27 +448,70 @@ const CurbsideDropoff = () => {
                     .value()}
                   key="dropoffCategoryDropdown"
                 />
-                <DropdownSelector
-                  itemType="city"
-                  setItem={setCity}
-                  cities={getCities(curbsideData)}
-                  key="dropoffCityDropdown"
+
+                <Dropdown
+                  style={styles.picker}
+                  data={
+                    _.map(getCities(curbsideData), (city) => ({
+                      label: city,
+                      value: city,
+                    }))
+                  }
+                  search
+                  searchPlaceholder="Search..."
+                  labelField="label"
+                  valueField="value"
+                  renderItem={(item) => (
+                    <View>
+                      <Text style={styles.itemTextStyle}>{item.label}</Text>
+                    </View>
+                  )}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  placeholderStyle={styles.placeholderStyle}
+                  placeholder={"Select town or city"}
+                  value={city}
+                  onChange={(item) => {
+                    setCity(item.value);
+                  }}
+                  renderRightIcon={() => (
+                    <FontAwesome name="caret-down" size={20} color="#024935" />
+                  )}
+                  key="curbsideCityDropdown"
                 />
+
+                {/* <DropdownSelector
+                    itemType="city"
+                    setItem={setCity}
+                    cities={getCities(curbsideData)}
+                    key="dropoffCityDropdown"
+                  /> */}
               </>
+
+
+              {/* Show "Use my current location" for users to populate location data automatically */}
+              <Pressable
+                style={styles.selectCurrentLocation}
+                onPress={handleCurrentLocationPress}
+              >
+                <FontAwesome name="location-arrow" size={18} color="#828282" />
+                <Text style={styles.selectCurrentLocationText}>
+                  Use my current location
+                </Text>
+              </Pressable>
             </View>
           </View>
         )}
 
         {/* Show "Use my current location" for users to populate location data automatically */}
-        <Pressable
-          style={styles.selectCurrentLocation}
-          onPress={handleCurrentLocationPress}
-        >
-          <FontAwesome name="location-arrow" size={18} color="#828282" />
-          <Text style={styles.selectCurrentLocationText}>
-            Use my current location
-          </Text>
-        </Pressable>
+        {/* <Pressable
+            style={styles.selectCurrentLocation}
+            onPress={handleCurrentLocationPress}
+          >
+            <FontAwesome name="location-arrow" size={18} color="#828282" />
+            <Text style={styles.selectCurrentLocationText}>
+              Use my current location
+            </Text>
+          </Pressable> */}
 
         {dropoffColor === "white" && (
           <Pressable style={styles.submitButton} onPress={handleSubmit}>
@@ -374,7 +528,7 @@ const CurbsideDropoff = () => {
                 marginBottom: 10,
                 color: "#FFFFFF",
                 textAlign: "left",
-                marginHorizontal: 32,
+                //marginHorizontal: 32,
               },
             ]}
           >
@@ -382,134 +536,88 @@ const CurbsideDropoff = () => {
           </Text>
         )}
 
-        {/* Map */}
-        <MapView
-          region={region}
-          style={
-            curbsideColor === "white"
-              ? [styles.map, { marginTop: 30 }]
-              : styles.map
+        <View style={styles.mapRulesContainer}>
+          {/* Map */}
+          <MapView
+            region={region}
+            style={
+              curbsideColor === "white"
+                ? [styles.map, { marginTop: 30 }]
+                : styles.map
+            }
+            scrollDuringRotateOrZoomEnabled={false}
+            provider={PROVIDER_GOOGLE}
+            ref={mapRef}
+          >
+            {places &&
+              places.map((place, index) => (
+                <Marker
+                  key={index}
+                  coordinate={place.location}
+                  title={place.name}
+                  description={place.street}
+                  titleVisibility="visible" // [note]: this is only on ios (so no android emulator)
+                  onPress={() => handleMapPoiClick(place)}
+                />
+              ))}
+          </MapView>
+
+          {/* Show list of recycling locations */}
+          {dropoffColor === "white" &&
+            <LocationList locations={places} />
           }
-          scrollDuringRotateOrZoomEnabled={false}
-          provider={PROVIDER_GOOGLE}
-        >
-          {/* {testing && */}
-          {/* {dropoffColor === "white" && */}
-          {places &&
-            places.map((place, index) => (
-              <Marker
-                key={index}
-                //coordinate={{ latitude: place.location.latitude, longitude: place.location.longitude }}
-                coordinate={place.location}
-                title={place.name}
-                //description="test"
-                description={place.street}
-              />
-            ))}
-        </MapView>
+          {
+            curbsideColor === "white" && city != null &&
+            <CityRules location={city} />
+          }
+        </View>
 
-        {/* Show list of recycling locations */}
-        {dropoffColor === "white" &&
-          <LocationList locations={places} />
-        }
-        {
-          curbsideColor === "white" && city != null &&
-          <CityRules location={city} />
-        }
-        {/* {curbsideColor === "white" && (
-          <LocationList locations={places} />
-        )} */}
 
-        {/* Show recycling information */}
-        {city && (
-          <View style={styles.contentContainer}>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.searchInput}
-                value={searchQuery}
-                onChangeText={handleSearchChange}
-                placeholder="Search for recycling items..."
-              />
-              <FontAwesome name="search" size={20} color="#024935" />
-            </View>
-            {city && (
-              <RecyclingList items={_.sortBy(filterItems(), "category")} />
-            )}
-            <DoAndDontSection />
-            {/* <View style={styles.alternativeContainer}>
-              <Text style={styles.alternativeText}>
-                Can't find what you're looking for?
-              </Text>
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Paper</Text>
-                <Text style={styles.itemDescription}>
-                  Clean and dry newspaper, magazines, catalogs, telephone books,
-                  printer paper, copier paper, mail, and all other office paper
-                  without wax liners.
-                </Text>
-              </View>
-
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Cardboard</Text>
-                <Text style={styles.itemDescription}>
-                  Packing boxes, cereal boxes, pizza boxes, gift boxes, and
-                  corrugated cardboard. Flatten all boxes before placing them in
-                  your cart.
-                </Text>
-              </View>
-
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Cans</Text>
-                <Text style={styles.itemDescription}>
-                  Steel and aluminum food and beverage cans. Aluminum bottles
-                  are also accepted.
-                </Text>
-              </View>
-
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Cartons</Text>
-                <Text style={styles.itemDescription}>
-                  Aseptic poly-coated drink boxes, juice cartons, and milk
-                  cartons.
-                </Text>
-              </View>
-
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Bottles (plastic & glass)</Text>
-                <Text style={styles.itemDescription}>
-                  Plastic bottles such as milk, water, detergent, soda, and
-                  shampoo bottles (flatten and replace the cap); glass bottles.
-                </Text>
-              </View>
-
-              <View style={styles.itemSection}>
-                <Text style={styles.itemTitle}>Plastic tubs and jugs</Text>
-                <Text style={styles.itemDescription}>
-                  Plastic tubs, such as butter or yogurt tubs, and plastic jugs,
-                  such as milk or detergent jugs.
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                style={styles.alternativeButton}
-                onPress={() => navigation.navigate("Items")}
-              >
-                <Text style={styles.alternativeButtonText}>
-                  Find Alternative Recycling Options
-                </Text>
-              </TouchableOpacity>
-            </View> */}
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  picker: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 5,
+    paddingHorizontal: 10,
+    //fontFamily: "Titillium Web",
+  },
+
+  placeholderStyle: {
+    fontSize: 18,
+    fontFamily: "Titillium Web",
+    color: "#828282",
+  },
+
+
+  itemTextStyle: {
+    color: "#494B4A",
+    fontFamily: "Titillium Web",
+    fontSize: 18,
+    padding: 5,
+  },
+
+  selectedTextStyle: {
+    fontFamily: "Titillium Web",
+    color: "#494B4A",
+    fontSize: 18,
+  },
+
   // testing
   scrollviewstyle: {
     flexGrow: 1,
+  },
+
+  newScrollViewStyle: {
+    flexGrow: 1,
+    paddingHorizontal: normalize(30),
   },
 
   // General Containers
@@ -613,8 +721,8 @@ const styles = StyleSheet.create({
   // City Picker Styles
   cityPickerContainer: {
     borderRadius: normalize(20),
-    padding: normalize(15),
-    marginHorizontal: normalize(20),
+    //padding: normalize(15),
+    //marginHorizontal: normalize(20),
   },
   input: {
     height: normalize(50, "height"),
@@ -646,7 +754,8 @@ const styles = StyleSheet.create({
   selectCurrentLocation: {
     display: "flex",
     flexDirection: "row",
-    marginLeft: normalize(185, "width"),
+    marginLeft: normalize(175, "width"),
+    marginTop: normalize(10, "height"),
   },
   selectCurrentLocationText: {
     textAlign: "right",
@@ -678,7 +787,7 @@ const styles = StyleSheet.create({
   map: {
     width: normalize(340, "width"),
     height: normalize(300, "height"),
-    marginHorizontal: normalize(32, "width"),
+    //marginHorizontal: normalize(32, "width"),
     borderRadius: normalize(11),
   },
   callout: {
@@ -703,6 +812,11 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: normalize(20, "width"),
     height: normalize(20, "height"),
+  },
+
+  // style for view containing map and rules for locations
+  mapRulesContainer: {
+    marginBottom: normalize(100),
   },
 
   // Alternative Section Styles

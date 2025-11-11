@@ -28,6 +28,7 @@ export default function DropdownSelector({ setItem, cities, categories }) {
           <Text style={styles.itemTextStyle}>{item.label}</Text>
         </View>
       )}
+      selectedTextStyle={styles.selectedTextStyle}
       placeholderStyle={styles.placeholderStyle}
       placeholder={
         cities ? "Select municipality" : "What do you want to recycle?"
@@ -66,8 +67,13 @@ const styles = {
   selectedItem: {
     backgroundColor: "#CCDED6",
   },
+  selectedTextStyle: {
+    fontFamily: "Titillium Web",
+    color: "#494B4A",
+    fontSize: 18,
+  },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Titillium Web",
     color: "#828282",
   },

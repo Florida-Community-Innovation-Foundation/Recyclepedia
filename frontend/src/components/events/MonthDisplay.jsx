@@ -12,8 +12,9 @@ import { DayDisplay } from "./DayDisplay";
 
 function getMonthDisplayData(date) {
   return _.map(_.range(1, dayjs(date).daysInMonth() + 1), (dayNum) => {
+    let dow = dayjs(date).date(dayNum).day();
     return {
-      dayOfWeek: dayjs(date).day(),
+      dayOfWeek: dow,
       dayNum: dayNum,
     };
   });

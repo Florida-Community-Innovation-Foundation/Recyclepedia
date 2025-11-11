@@ -99,7 +99,7 @@ export default function ItemScanInstructions({ itemChecked, itemAccepted, exampl
 
   return (
     <View style={ styles.container }>
-      <Text>
+      <Text style={ styles.instructions }>
         {exampleText}
       </Text>
     </View>
@@ -146,9 +146,17 @@ export default function ItemScanInstructions({ itemChecked, itemAccepted, exampl
 }
 
 const styles = StyleSheet.create({
+  instructions: {
+    padding: 16,
+    fontSize: 16,
+    fontWeight: 400,
+    color: "#024935",
+    fontFamily: "Bebas Neue",
+  },
   container: {
-    width: 310,
-    height: 90,
+    // width: 310,
+    // height: 90,
+    flexGrow: 1,
     backgroundColor: "#FFFFFF",
     borderRadius: 30,
     marginTop: 20,

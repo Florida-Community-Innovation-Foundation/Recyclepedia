@@ -8,25 +8,26 @@ import { normalize } from "~/utils/normalize";
 export default function CityRules({ location }) {
   // console.log("Locatoin: ", location);
   switch (location) {
-    case "Aventura":
-    case "Cutler Bay":
-    case "Doral":
-    case "Miami Gardens":
-    case "Miami Lakes":
-    case "Opa-locka":
-    case "Palmetto Bay":
-    case "Pinecrest":
-    case "Sunny Isles Beach":
-    case "Sweetwater":
-    case "El Portal":
-    case "Florida City":
-    case "Medley":
-    case "Miami Beach":
-    case "Miami Springs":
-    case "North Bay Village":
-    case "South Miami":
-    case "Virginia Gardens":
-    case "West Miami":
+    default:
+    // case "Aventura":
+    // case "Cutler Bay":
+    // case "Doral":
+    // case "Miami Gardens":
+    // case "Miami Lakes":
+    // case "Opa-locka":
+    // case "Palmetto Bay":
+    // case "Pinecrest":
+    // case "Sunny Isles Beach":
+    // case "Sweetwater":
+    // case "El Portal":
+    // case "Florida City":
+    // case "Medley":
+    // case "Miami Beach":
+    // case "Miami Springs":
+    // case "North Bay Village":
+    // case "South Miami":
+    // case "Virginia Gardens":
+    // case "West Miami":
       return (
         <View style={styles.container}>
           {/* city name */}
@@ -77,34 +78,35 @@ export default function CityRules({ location }) {
         </View>
       );
 
-    default:
-      return (
-        <View style={styles.container}>
-            // city name
-          <Text style={styles.itemTitle}>
-            {location}
-          </Text>
+    //default:
+      // return (
+      //   <View style={styles.container}>
+      //     {/* city name */}
+      //     <Text style={styles.itemTitle}>
+      //       {location}
+      //     </Text>
 
-            // header
-          <Text style={styles.alternativeText}>
-            Recyclable Items:
-          </Text>
+      //     {/* header */}
+      //     <Text style={styles.alternativeText}>
+      //       Recyclable Items:
+      //     </Text>
 
-            // list of recyclable items
-          <Text style={styles.alternativeText}> Data not yet available for {location}! </Text>
+      //     {/* list of recyclable items */}
+      //     <Text style={styles.alternativeText}> Data not yet available for {location}! </Text>
 
-        </View>
-      );
+      //   </View>
+      // );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: normalize(15),
     backgroundColor: "white",
     borderRadius: normalize(15),
     padding: normalize(15),
-    marginBottom: normalize(50),
-    marginHorizontal: normalize(16),
+    //marginBottom: normalize(50),
+    //marginHorizontal: normalize(16),
     alignItems: "center",
   },
 

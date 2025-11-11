@@ -41,8 +41,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: normalize(15),
     padding: normalize(15),
-    marginBottom: normalize(50),
-    marginHorizontal: normalize(16),
+    marginTop: normalize(15),
+    //marginBottom: normalize(50),
+    //marginHorizontal: normalize(16),
     alignItems: "center",
   },
 

@@ -210,14 +210,15 @@ async function testN(img, token) {
   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYwNzM3ODEyLCJpYXQiOjE3NjA3Mzc4MTIsImV4cCI6MTc2MDc0MTQxMiwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOEY5RkI0N0REQkMxNkZEOUM3REYwODBEMzk2QjFGOEEifQ.lH6IJutTzgH9P9hD31YBGCcBalusqFKZ_kTHl1TEkj-lE3_Dy_Bt3xllhLqCfPok1hoWqFl92Wi6WTNj4XjtUuK1YAVA102CElB0_0H81wEobLkhoFKsgMmF_vL3Lj57Xk512Z4XOtzNgDWj3qvN3j6Ce8aN2XrwuCCvfOuoSRqpLgOP11OoTUDLxWy5LRLe0cI4YD5Jb0cEPvUMgWxXPKdr6EJ_BJ6g7qB49FkPmj1hLZFZCqJLb1SdDKIHty0U2byP2znziz58NZyi-boTvh29EYWmdCvoVdCMsvUORfq8usACYonWtDy_Y6HGQ9fL3ZEck29PbRfBrcvGqxGLUA',
+      'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYyODczODUzLCJpYXQiOjE3NjI4NzM4NTMsImV4cCI6MTc2Mjg3NzQ1Mywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOTk2QTJCRUYzQTdGMkI0OTFERDUyNTVCQkRFN0E4OUQifQ.j3dZW1VM0ralXUlzuNNvhrE1Yg9S7-Fum-rQtvZTcgN-f2Zwwv5xq8p9J-npxDvmyXLXSoo23DhYXk25p-bAyjOFXqkXrMrJPkclKKIi3_YYUSKl2ocRj03Lu-MvJndzfWotsmAZvLEDvwOpyh0YUcA4Ue9uvUyeKVpy6B59_Yr0YcJX_GDfb3wSAqyWBP9zgeb7Cuya01bYmt2qAktuKzbUEVnFd-9BhkpZmO8njFEcQtLRwxEA23mCQ4LpAIi6fSH7RD9qhwyCZsQhMgQpNHHPpxz6-lzkn9Ss2KWukRLBbk1YSjM9d7IM5jtT0A54M_TIUSZP9S6kZZhzrKnnTA',
+      //'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYwODM4MzQ1LCJpYXQiOjE3NjA4MzgzNDUsImV4cCI6MTc2MDg0MTk0NSwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOTBDQTcyNkYyREI2ODc2Q0RERjMyQjFEOTAzMDc4MDYifQ.bnKB6QEVF6AchdXCGuQ7Au8nhUzEggdwtmCYdiRwt5U1uw3sVXetOxAK7Jc8fH7e28mhXKob8VPysgZ61AClqyorwZ_VBbuF419QptbOUCPcCC-mHMKN_obo_S05DV68ixReGqrR81urMBsDohu996UTGFoYYmyAR6b2YgeFf8LMx1n0uGuIUiBBsaIo4wTRuyROO2F2Dyh22S33gAuQTOUMZic5udZOsaNHOsJAvUfROC0am_HDgcB1llxjZnS56ul_G10-b5D_i3HqhYDzXhIZGrf-Wvswx-ttJCgIJ08r5HxdXOGzjDc8XannnAsHRxtGanuYUqZraLVpdrTWtw',
       // this should use token passed in for auth, but not working rn
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(
-      { "data": "https://pakoro.com/wp-content/uploads/2025/02/A-person-unpacking-a-large-pizza-box-1024x576.webp" }  // testing
+      //{ "data": "https://pakoro.com/wp-content/uploads/2025/02/A-person-unpacking-a-large-pizza-box-1024x576.webp" }  // testing
 
-      //{ "data": img } // actual
+      { "data": img } // actual
     )
   });
 

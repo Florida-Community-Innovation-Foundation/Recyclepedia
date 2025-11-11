@@ -212,11 +212,12 @@ const handleDeleteItem = (itemId) => {
 
       <View style={styles.screen}>
         <View style={styles.profileBackground}>
-            <Pressable style={styles.settings}>
+          {/* settings icon */}
+            {/* <Pressable style={styles.settings}>
               <Link href="/(tabs)/profile/settings">
                 <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
               </Link>
-            </Pressable>
+            </Pressable> */}
           {/* Profile Picture */}
           <Image source={profilePicture} style={styles.profilePicture} />
           <Pressable

@@ -18,7 +18,7 @@ export function DayDisplay({ dayOfWeek, dayNum, isPressed, hasEvents }) {
               : { ...styles.dayOfWeekText, color: "#fff" }
           }
         >
-          {dayjs(dayOfWeek).format("ddd").toUpperCase()}
+          {dayjs().day(dayOfWeek).format("ddd").toUpperCase()}
         </Text>
       </View>
       <View>

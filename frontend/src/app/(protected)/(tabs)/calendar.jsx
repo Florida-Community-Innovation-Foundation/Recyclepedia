@@ -29,9 +29,9 @@ export function AboutCalendar() {
   return (
     <View style={styles.container}>
       {/* Ad space */}
-      <View style={styles.adSpaceContainer}>
+      {/* <View style={styles.adSpaceContainer}>
         <Text style={styles.adSpaceText}> AD SPACE </Text>
-      </View>
+      </View> */}
 
       {/* Month view */}
       <View style={styles.monthViewContainer}>
@@ -53,14 +53,14 @@ export function AboutCalendar() {
       </View>
 
       {/* Submit Event Button */}
-      <TouchableOpacity 
+      {/* <TouchableOpacity 
         onPress={ submitEventButtonHandlePress }
         style={ styles.aboutSubmitEventButton }
       >
         <Text style={ styles.submitEventButtonText }>
           SUBMIT AN EVENT
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* Submit Event Modal */}
       <SubmitEventModal
@@ -111,8 +111,11 @@ export default function Home({ navigation }) {
           />
         </View>
       </ScrollView>
+
+      {/* Probably shouldn't be able to submit events for now */}
+
       {/* Submit Event View */}
-      <BlurView intensity={10} style={styles.submitEventViewContainer}>
+      {/* <BlurView intensity={10} style={styles.submitEventViewContainer}>
         <View style={styles.submitEventButton}>
           <Button
             title="SUBMIT AN EVENT"
@@ -125,7 +128,7 @@ export default function Home({ navigation }) {
         isEventModalVisible={isEventModalVisible}
         setIsEventModalVisible={setIsEventModalVisible}
         setCalendarEvents={setCalendarEvents}
-      />
+      /> */}
     </View>
   );
 }

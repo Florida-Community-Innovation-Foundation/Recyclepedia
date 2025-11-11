@@ -23,14 +23,17 @@ export default function LoginScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.headingContainer}>
-        <Text style={styles.headingText}>
+        <Text style={ styles.headingText }>
+          RECYCLE RIGHT WITH
+        </Text>
+        {/* <Text style={styles.headingText}>
           RECYCLE RIGHT IN{" "}
           <Image
             src="https://www.miamidade.gov/resources/global/images/md-logo-color.png"
             style={styles.secondaryLogo}
           />{" "}
           WITH
-        </Text>
+        </Text> */}
         {/* Recyclepedia Logo */}
         <Image
           src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
