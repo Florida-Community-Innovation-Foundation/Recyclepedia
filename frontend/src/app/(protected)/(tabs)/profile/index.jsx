@@ -411,7 +411,11 @@ const handleDeleteItem = (itemId) => {
               style={styles.interactiveGamesContainerScroll}
               contentContainerStyle={styles.interactiveGamesContainerContent}
             >
-              <Link style={styles.gameSlot} href="/featuredGameScreen">
+              {/*Integrate Unity Game */}
+              <Link style={styles.gameSlot} href="/unityGame">
+                <Image source={diggy} style={styles.featuredGameImg}></Image>
+              </Link>
+              {/* <Link style={styles.gameSlot} href="/featuredGameScreen">
                 <Image source={diggy} style={styles.featuredGameImg}></Image>
               </Link>
               {learningGames.map((game, index) => (
@@ -426,7 +430,7 @@ const handleDeleteItem = (itemId) => {
                     ></Image>
                   </Link>
                 </View>
-              ))}
+              ))} */}
             </ScrollView>
           </View>
         </ScrollView>
