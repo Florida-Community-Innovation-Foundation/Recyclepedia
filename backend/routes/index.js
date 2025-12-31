@@ -2,6 +2,7 @@ import express, { json } from "express";
 import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
+import getNyckelToken from "../middelware/tokenService.js";
 
 const router = express.Router();
 
@@ -157,9 +158,8 @@ function crossCheck(category, location) {
 
 // analyzes label to see if item is recyclable
 // most of nyckel's labels are accurate except some locations have exceptions
-async function parseLabel(data) {
+async function parseLabelMunicipality(data, municipality) {
   const label = data.labelName.toString().toLowerCase();
-  //console.log("Label: ", label);  // debug
 
   // the order of the labels is precedence for messages
   // (ewaste label has the word trash in it, but we want to return a special message for batteries so much check ewaste first)
@@ -171,75 +171,57 @@ async function parseLabel(data) {
   for (const badlabel of badLabels) {
     if (label.includes(badlabel)) {
       if (badlabel === "ewaste") {
-        //console.log("Item had ewaste label"); // debug
         return "This item is not recyclable! Check the Drop-Off tab to find a Collection Center!";
       }
 
-      //console.log("Item had bad label, ", badlabel); // debug
       return "This item is not recyclable!";
     }
   }
 
-  // this is for testing, location should be passed to this func as well as label
-  const testingLocation = "Miami";
+  const testingLocation = municipality;
 
   // check if label has Aluminum, Cardboard, or Glass
   for (const warningLabel of warningLabels) {
     // if it does cross check 
     if (label.includes(warningLabel)) {
       if (crossCheck(warningLabel, testingLocation)) {
-        //console.log("Cross check with ", testingLocation, " was good!"); // debug
         return "This item is recyclable!";
       }
 
-      //console.log("Cross check with ", testingLocation, " was not good."); // debug
       return "This item is not recyclable in ", testingLocation, "!";
     }
   }
   
-
   // if doesn't have either, recyclable
-  //console.log("Item was found to be recyclable"); // debug
   return "This item is recyclable!";
 }
 
-async function testN(img, token) {
-  //console.log("Image: ", img);
-
-  // [note]: this needs to be fixed
+// takes in the image uri to process, Nyckel acces token, and location
+// returns the text to display to the user
+async function processScan(image, token, municipality) {
+  // get image label from Nyckel
   const response = await fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYzNTk3NjY2LCJpYXQiOjE3NjM1OTc2NjYsImV4cCI6MTc2MzYwMTI2Niwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOUQ3M0I4RDQ3NkM5RkNDRjRDQkJFOTQwRkE0NUIwNEMifQ.CRxlFRwehYIGh-VL9RevhLWQV3dHbRJgEKq6VIiAWOetliuWtBI1pypNiKKCx6Ri7Un6zmi0PFRv2LqCD9wgWm93vtC4uIso0AZjpBdCKahKrBSKiqeurn_l6FRDbxDB5uaXz5TuZzhbJ0acnwJIT-f2pN9xeNjxfg7li05eXgb1QhX4Yt1eFdrfQheg5sdIqgwWE_xqTm8thtx_uQleTL83WGV9LAMvTbR5heYEwmijrdi4CDiVULpYPqyAO_wRmuJKrRDBDTCOVED1VU2TmtIPhqaoZAXBBZ_7Hs8Q6z2_LT5jss_fnHgYF6mXpbxoQyXXs0ba2-FQ02GDVrXTpg',
-      //'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYyODczODUzLCJpYXQiOjE3NjI4NzM4NTMsImV4cCI6MTc2Mjg3NzQ1Mywic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOTk2QTJCRUYzQTdGMkI0OTFERDUyNTVCQkRFN0E4OUQifQ.j3dZW1VM0ralXUlzuNNvhrE1Yg9S7-Fum-rQtvZTcgN-f2Zwwv5xq8p9J-npxDvmyXLXSoo23DhYXk25p-bAyjOFXqkXrMrJPkclKKIi3_YYUSKl2ocRj03Lu-MvJndzfWotsmAZvLEDvwOpyh0YUcA4Ue9uvUyeKVpy6B59_Yr0YcJX_GDfb3wSAqyWBP9zgeb7Cuya01bYmt2qAktuKzbUEVnFd-9BhkpZmO8njFEcQtLRwxEA23mCQ4LpAIi6fSH7RD9qhwyCZsQhMgQpNHHPpxz6-lzkn9Ss2KWukRLBbk1YSjM9d7IM5jtT0A54M_TIUSZP9S6kZZhzrKnnTA',
-      //'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzYwODM4MzQ1LCJpYXQiOjE3NjA4MzgzNDUsImV4cCI6MTc2MDg0MTk0NSwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiOTBDQTcyNkYyREI2ODc2Q0RERjMyQjFEOTAzMDc4MDYifQ.bnKB6QEVF6AchdXCGuQ7Au8nhUzEggdwtmCYdiRwt5U1uw3sVXetOxAK7Jc8fH7e28mhXKob8VPysgZ61AClqyorwZ_VBbuF419QptbOUCPcCC-mHMKN_obo_S05DV68ixReGqrR81urMBsDohu996UTGFoYYmyAR6b2YgeFf8LMx1n0uGuIUiBBsaIo4wTRuyROO2F2Dyh22S33gAuQTOUMZic5udZOsaNHOsJAvUfROC0am_HDgcB1llxjZnS56ul_G10-b5D_i3HqhYDzXhIZGrf-Wvswx-ttJCgIJ08r5HxdXOGzjDc8XannnAsHRxtGanuYUqZraLVpdrTWtw',
-      // this should use token passed in for auth, but not working rn
+      'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(
-      //{ "data": "https://pakoro.com/wp-content/uploads/2025/02/A-person-unpacking-a-large-pizza-box-1024x576.webp" }  // testing
-
-      { "data": img } // actual
+      { "data": image }
     )
   });
 
   const data = await response.json();
+
+  // log data for now to understand response formats
   console.log("Data: ", data);
 
-  try {
-    if (data.message === 'Invalid bearer token') {
-      return "We are currently experiencing technical difficulties.";
-    }
+  // Nyckel failed for some reason (use a better error detector)
+  if (data.message === 'Invalid bearer token') {
+    return "We are currently experiencing technical difficulties, Please try again later.";
   }
-  catch (error) {
-    // don't use, error is thrown if response is ok
-  }
-  
-  
 
-  // this should pass location as well
-  const result = await parseLabel(data);
-  //console.log("Result: ", result);
+  const result = await parseLabelMunicipality(data, municipality);
 
   return result;
 }
@@ -276,6 +258,12 @@ router.get("/dropOffData", async (req, res) => {
   return res.json(dropOffLocations);
 });
 
+// middleware to add Nyckel token to incoming requests
+router.use("/itemData", async (req, res, next) => {
+  req.nyckelAccessToken = await getNyckelToken();
+  next();
+});
+
 // gets image and location from frontend and uses nyckel to decide recyclability
 router.post("/itemData", async (req, res) => {
   //console.log("req body: ", req.body);
@@ -284,8 +272,8 @@ router.post("/itemData", async (req, res) => {
   const mediaType = 'image/jpeg';
   const imageURI = `data:${mediaType};base64,${base64String}`;
 
-  // location from frontend should be passed to testN as well
-  const response = await testN(imageURI, req.accesstoken);
+  // location from frontend should be passed to processScan as well
+  const response = await processScan(imageURI, req.nyckelAccessToken, req.body.city);
 
   const r = { text: response };
   return res.status(200).json(r);

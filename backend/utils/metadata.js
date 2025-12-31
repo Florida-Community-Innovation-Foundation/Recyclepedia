@@ -24,6 +24,7 @@ export async function fetchProjectId() {
   // Use the 'google-auth-library' to make a request to the metadata server or
   // default to Application Default Credentials in your local environment.
   return await auth.getProjectId();
+  //return await authLOL.getProjectId();
 }
 
 /**
@@ -47,6 +48,7 @@ export async function fetchServiceRegion() {
  */
 export async function authenticatedRequest(url, method) {
   const client = await auth.getIdTokenClient(url);
+  //const client = await authLOL.getIdTokenClient(url);
   const response = await client.request({ url, method });
   return response;
 }

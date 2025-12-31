@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#024935",
   },
   mainLogo: {
-    height: normalize(70, "height"),
-    width: normalize(340, "width"),
+    height: normalize(60, "height"),
+    width: normalize(320, "width"),
     backgroundColor: "#024935",
     marginTop: normalize(20),
     marginLeft: normalize(32),

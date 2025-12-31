@@ -13,19 +13,75 @@ import { AuthContext } from "~/utils/authContext";
 import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
 //import Loginsetup  from "./loginsetup";
-import {useRouter} from "expo-router"
+import { useRouter } from "expo-router"
+import { setDoc, doc } from "@firebase/firestore";
+
+// function emailPasswordSignUp(email, pass, confirmpass) {
+//   console.log("HERE");
+//   console.log("Email: ", email);
+//   console.log("Password: ", pass);
+//   console.log("Confirm password: ", confirmpass);
+//   // double check email
+//   if (email === "") {
+//     alert("Please enter an appropriate email address!")
+//     return;
+//   }
+
+//   // make sure passwords are same
+//   if (pass !== confirmpass) {
+//     alert("Passwords must match!");
+//     return;
+//   }  
+
+//   // create new user
+//   authContext.emailpasssignin(email, pass);
+// }
 
 export default function Signinsetup() {
-      const authContext = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
+
+  async function emailPasswordSignUp(email, pass, confirmpass) {
+    console.log("emailPasswordSignUp");
+    console.log("Email: ", email);
+    console.log("Password: ", pass);
+    console.log("Confirm password: ", confirmpass);
+
+    // double check email
+    if (email === "") {
+      alert("Please enter an appropriate email address!")
+      return;
+    }
+
+    // make sure passwords are same
+    if (pass !== confirmpass) {
+      alert("Passwords must match!");
+      return;
+    }
+
+    // create new user & navigate to home screen
+    let result = await authContext.createUserWithEmailPassword(email, pass);
+
+    // after this point only runs if above line failed
+    if (result) {
+      alert(result);
+    }
+
+    //console.log("Context: ", authContext);
+
+    // await setDoc(doc(authContext.firebaseDB, "users", email), {
+    //   info: "blank",
+    // });
+  }
 
 
   return (
     <View style={styles.screen}>
-    <View style={styles.createAccountContainer}>
-      <Text style={[styles.createAccountHeadingText, {marginTop: 45} ]}> SIGN UP </Text>
+      <View style={styles.createAccountContainer}>
+        <Text style={[styles.createAccountHeadingText, { marginTop: 45 }]}> SIGN UP </Text>
         <Text style={styles.createAccountInfoText}>
           EMAIL
         </Text>
@@ -33,7 +89,8 @@ export default function Signinsetup() {
           placeholder="domain@example.com"
           placeholderTextColor="gray"
           value={email}
-          onChange={setEmail}
+          // onChange={setEmail}
+          onChangeText={setEmail}
           style={styles.textInput}
         />
         <Text style={[styles.createAccountInfoText]}>
@@ -43,43 +100,62 @@ export default function Signinsetup() {
           placeholder="Password"
           placeholderTextColor="gray"
           value={password}
-          onChange={setPassword}
+          // onChange={setPassword}
+          onChangeText={setPassword}
           style={styles.textInput}
+          // autoComplete="off"
           autoComplete="new-password"
         />
         <Text style={[styles.createAccountInfoText]}>
           CONFIRM PASSWORD
         </Text>
-        <TextInput
+        {/* <TextInput
           placeholder="Confirm Password"
           placeholderTextColor="gray"
           value={password}
           onChange={setPassword}
           style={styles.textInput}
+          // autoComplete="new-password"
+          autoComplete="off"
+        /> */}
+        <TextInput
+          placeholder="Confirm Password"
+          placeholderTextColor="gray"
+          value={confirmPassword}
+          // onChange={setConfirmPassword}
+          onChangeText={setConfirmPassword}
+          style={styles.textInput}
           autoComplete="new-password"
+        // autoComplete="off"
         />
 
 
 
 
-        <Pressable style={[styles.signupButton, {marginTop:40}]}>
-          <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+        <Pressable style={[styles.signupButton, { marginTop: 40 }]}
+          onPress={() => emailPasswordSignUp(email, password, confirmPassword)}
+        >
+          {/* <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+            SUBMIT
+          </Text> */}
+          {/* <Text style={[styles.signupText]} onPress={() => emailPasswordSignUp(email, password, confirmPassword)}> */}
+          <Text style={[styles.signupText]}>
             SUBMIT
           </Text>
         </Pressable>
 
 
-    <View style={[styles.divider, {marginTop: 45}]}>
-      <View style={styles.dividerLine}></View>
-      <Text style={styles.dividerText}> Or Sign Up with </Text>
-      <View style={styles.dividerLine}></View>
-    </View>
-    
-  
+        {/* <View style={[styles.divider, { marginTop: 45 }]}>
+          <View style={styles.dividerLine}></View>
+          <Text style={styles.dividerText}> Or Sign Up with </Text>
+          <View style={styles.dividerLine}></View>
+        </View>
+
+
 
 
         <Pressable
-          style={[styles.loginButton, {marginTop:45}]}
+          style={[styles.loginButton, { marginTop: 45 }]}
           onPress={() => authContext.login()}
         >
           <FontAwesome5
@@ -91,7 +167,7 @@ export default function Signinsetup() {
           <Text style={styles.loginText}> Continue with Google </Text>
         </Pressable>
         <Pressable
-          style={[styles.loginButton, {marginTop: 15}]}
+          style={[styles.loginButton, { marginTop: 15 }]}
           onPress={() => authContext.login()}
         >
           <FontAwesome5
@@ -101,23 +177,24 @@ export default function Signinsetup() {
             style={styles.icon}
           />
           <Text style={styles.loginText}> Continue with Apple </Text>
-        </Pressable>
-        <Text style={[styles.noticeText, {marginTop: 40}]}>
+        </Pressable> */}
+
+        <Text style={[styles.noticeText, { marginTop: 40 }]}>
           Already have an account?{" "}
           <Text onPress={() => router.push("/loginsetup")}>
             Login
           </Text>
         </Text>
-        </View>
       </View>
-    );
-  } 
+    </View>
+  );
+}
 
-  const styles = StyleSheet.create({
-screen: {
-  flex: 1,
-  backgroundColor: "#024935",
-},
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "#024935",
+  },
   mainLogo: {
     height: normalize(70, "height"),
     width: normalize(340, "width"),
@@ -232,7 +309,7 @@ screen: {
   icon: {
     marginTop: normalize(7, "height"),
   },
-   divider: {
+  divider: {
     marginTop: 10,
     display: "flex",
     flexDirection: "row",

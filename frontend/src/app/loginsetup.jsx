@@ -21,6 +21,25 @@ export default function Loginsetup() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
+  async function emailPasswordLogin(email, pass) {
+    if (email === "") {
+      alert("Please enter an appropriate email address!")
+      return;
+    }
+
+    // make sure passwords are same
+    if (pass === "") {
+      alert("Please enter an appropriate email address!");
+      return;
+    }
+
+    let result = await authContext.loginUserWithEmailPassword(email, pass);
+
+    if (result) {
+      alert(result);
+    }
+  }
+
 
   return (
     <View style={styles.screen}>
@@ -33,7 +52,7 @@ export default function Loginsetup() {
           placeholder="domain@example.com"
           placeholderTextColor="gray"
           value={email}
-          onChange={setEmail}
+          onChangeText={setEmail}
           style={styles.textInput}
         />
         <Text style={[styles.createAccountInfoText]}>
@@ -43,18 +62,21 @@ export default function Loginsetup() {
           placeholder="Password"
           placeholderTextColor="gray"
           value={password}
-          onChange={setPassword}
+          onChangeText={setPassword}
           style={styles.textInput}
           autoComplete="new-password"
         />
-        <Pressable style={[styles.signupButton, {marginTop:40}]}>
-          <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+        <Pressable style={[styles.signupButton, {marginTop:40}]}
+          onPress={() => emailPasswordLogin(email, password)}
+        >
+          {/* <Text style={[styles.signupText]} onPress={() => authContext.loginUserWithEmailPassword()}> */}
+          <Text style={[styles.signupText]}>
             SUBMIT
           </Text>
         </Pressable>
 
 
-    <View style={[styles.divider, {marginTop: 45}]}>
+    {/* <View style={[styles.divider, {marginTop: 45}]}>
       <View style={styles.dividerLine}></View>
       <Text style={styles.dividerText}> Or login with </Text>
       <View style={styles.dividerLine}></View>
@@ -86,7 +108,8 @@ export default function Loginsetup() {
             style={styles.icon}
           />
           <Text style={styles.loginText}> Continue with Apple </Text>
-        </Pressable>
+        </Pressable> */}
+        
         <Text style={[styles.noticeText, {marginTop: 40}]}>
           Don't have an account?{" "}
           <Text onPress={() => router.push("/signupsetup")}>

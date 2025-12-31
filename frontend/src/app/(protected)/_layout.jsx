@@ -22,7 +22,8 @@ export default function ProtectedLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false, statusBarStyle: "inverted", }}>
+      {/* <Stack screenOptions={{ headerShown: false, statusBarStyle: "inverted", }}> */}
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
       </Stack>
     </QueryClientProvider>

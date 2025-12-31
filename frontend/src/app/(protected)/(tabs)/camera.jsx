@@ -22,7 +22,8 @@ export default function ItemScan() {
   // default location is Miami
   const [location, setLocation] = useState({ latitude: 25.7617, longitude: -80.1918 });
   const [exText, setExText] = useState("");
-  const [city, setCity] = useState(null);
+  //const [city, setCity] = useState(null);
+  const [city, setCity] = useState("Miami");
   const { data, pending } = useQueries({
     queries: [
       { queryKey: ["items"], queryFn: () => getItemsData() },
@@ -58,11 +59,24 @@ export default function ItemScan() {
 
         // default to Miami
         if (status !== "granted") {
-          alert("Permission to access location was denied. Recyclepedia is defaulting to Miami.");
+          alert("Permission to access location was denied! Recyclepedia is defaulting to Miami.");
+          return;
+        }
+
+        // if no location service enabled, use Miami
+        const servicesEnabled = await Location.hasServicesEnabledAsync();
+        if (!servicesEnabled) {
+          alert("Location services not enabled! Recyclepedia is defaulting to Miami.");
           return;
         }
 
         const position = await Location.getCurrentPositionAsync({});
+
+        if (!position) {
+          alert("Unabled to determine location! Recyclepedia is defaulting to Miami.");
+          return;
+        }
+
         const currentLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -200,6 +214,7 @@ export default function ItemScan() {
                 placeholder={"Select town or city"}
                 value={city}
                 onChange={(item) => {
+                  console.log("City: ", item.value);
                   setCity(item.value);
                 }}
                 renderRightIcon={() => (
