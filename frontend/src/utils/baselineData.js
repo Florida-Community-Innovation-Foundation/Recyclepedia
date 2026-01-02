@@ -5,17 +5,20 @@ export async function getBaseURL() {
   //return "http://ec2-18-222-58-160.us-east-2.compute.amazonaws.com:80";
 
   // const ipAddress = await Network.getIpAddressAsync(); 
-  const port = 3000;
+  const port = 80;
 
   // ANDROID EMULATOR
   // 10.0.2.2 connects to local host on host machine for android emulators
   // this lets the emulator connect to backend running on host at a port
   // [note]: PORT in backend's .env should be the same as port variable here
-  return `http://10.0.2.2:${port}`;
+  //return `http://10.0.2.2:${port}`;
 
   // IOS
   // use if running iOS emulator
   //return `http://${ipAddress}:8080`;
+
+  // AWS
+  return `http://ec2-18-219-236-103.us-east-2.compute.amazonaws.com:${port}`;
 }
 
 export async function getCurbsideData() {

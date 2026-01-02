@@ -17,6 +17,9 @@ import app from "./app.js";
 import { initLogCorrelation, logger } from "./utils/logging.js";
 import { fetchProjectId } from "./utils/metadata.js";
 
+// store reference to server for shutdowns
+let server;
+
 /**
  * Initialize app and start Express server
  */
@@ -61,19 +64,47 @@ const main = async () => {
 
     // Start server listening on PORT env var
     const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
+
+    server = app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
   } catch (err) {
     logger.error(err.message);
+    process.exit(1);
   }
 };
+
+const shutdown = async (signal) => {
+  logger.info(`Caught Signal: ${signal}. Shutting down...`);
+
+  if (server) {
+    // if HTTP server is running, close it
+    server.close(async () => {
+      logger.info("HTTP server closed.");
+      await logger.flush();
+      process.exit(0);
+    });
+  } else {
+    await logger.flush();
+    process.exit(0);
+  }
+
+  setTimeout(() => {
+    logger.error("Force shutdown after timeout");
+    process.exit(1);
+  }, 10_000);
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown); // CTRL + C
+
+// [note]: run npm stop (or sudo npm stop) if server was running when terminal disconnected, otherwise ctrl + c
 
 /**
  * Listen for termination signal
  */
-process.on("SIGTERM", () => {
-  // Clean up resources on shutdown
-  logger.info("Caught SIGTERM.");
-  logger.flush();
-});
+// process.on("SIGTERM", () => {
+//   // Clean up resources on shutdown
+//   logger.info("Caught SIGTERM.");
+//   logger.flush();
+// });
 
 main();
