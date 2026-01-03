@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static("public"));
 app.set("view engine", "pug");
-app.set('trust proxy', 1);
+app.set('trust proxy', 1);  // [note]: maybe delete if running backend locally?
 
 app.use("/", indexRouter);
 
