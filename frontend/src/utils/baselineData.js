@@ -5,7 +5,7 @@ export async function getBaseURL() {
   //return "http://ec2-18-222-58-160.us-east-2.compute.amazonaws.com:80";
 
   // const ipAddress = await Network.getIpAddressAsync(); 
-  const port = 80;
+  const port = 443;
 
   // ANDROID EMULATOR
   // 10.0.2.2 connects to local host on host machine for android emulators
