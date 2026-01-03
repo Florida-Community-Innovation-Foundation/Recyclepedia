@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static("public"));
 app.set("view engine", "pug");
+app.set('trust proxy', 1);
 
 app.use("/", indexRouter);
 
