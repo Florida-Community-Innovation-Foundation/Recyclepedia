@@ -879,7 +879,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 15,
     textAlign: "center",
-    marginLeft: normalize(165, "width"),
+    //marginLeft: normalize(165, "width"),
   },
   recyclingGoalBar: {
     backgroundColor: "#A5CCB7",

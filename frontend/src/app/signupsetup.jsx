@@ -15,6 +15,7 @@ import { normalize } from "~/utils/normalize";
 //import Loginsetup  from "./loginsetup";
 import { useRouter } from "expo-router"
 import { setDoc, doc } from "@firebase/firestore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // function emailPasswordSignUp(email, pass, confirmpass) {
 //   console.log("HERE");
@@ -79,116 +80,287 @@ export default function Signinsetup() {
 
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.createAccountContainer}>
-        <Text style={[styles.createAccountHeadingText, { marginTop: 45 }]}> SIGN UP </Text>
-        <Text style={styles.createAccountInfoText}>
-          EMAIL
-        </Text>
-        <TextInput
-          placeholder="domain@example.com"
-          placeholderTextColor="gray"
-          value={email}
-          // onChange={setEmail}
-          onChangeText={setEmail}
-          style={styles.textInput}
-        />
-        <Text style={[styles.createAccountInfoText]}>
-          PASSWORD
-        </Text>
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="gray"
-          value={password}
-          // onChange={setPassword}
-          onChangeText={setPassword}
-          style={styles.textInput}
-          // autoComplete="off"
-          autoComplete="new-password"
-        />
-        <Text style={[styles.createAccountInfoText]}>
-          CONFIRM PASSWORD
-        </Text>
-        {/* <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor="gray"
-          value={password}
-          onChange={setPassword}
-          style={styles.textInput}
-          // autoComplete="new-password"
-          autoComplete="off"
-        /> */}
-        <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor="gray"
-          value={confirmPassword}
-          // onChange={setConfirmPassword}
-          onChangeText={setConfirmPassword}
-          style={styles.textInput}
-          autoComplete="new-password"
-        // autoComplete="off"
-        />
-
-
-
-
-        <Pressable style={[styles.signupButton, { marginTop: 40 }]}
-          onPress={() => emailPasswordSignUp(email, password, confirmPassword)}
-        >
-          {/* <Text style={[styles.signupText]} onPress={() => authContext.login()}>
-            SUBMIT
-          </Text> */}
-          {/* <Text style={[styles.signupText]} onPress={() => emailPasswordSignUp(email, password, confirmPassword)}> */}
-          <Text style={[styles.signupText]}>
-            SUBMIT
+    <View style={nstyles.screen}>
+      <SafeAreaView style={nstyles.saview}>
+        {/* header view (1/3 screen) */}
+        <View style={nstyles.headerView}>
+          {/* Header */}
+          <Text style={nstyles.headerText}>
+            RECYCLE RIGHT WITH
           </Text>
-        </Pressable>
 
-
-        {/* <View style={[styles.divider, { marginTop: 45 }]}>
-          <View style={styles.dividerLine}></View>
-          <Text style={styles.dividerText}> Or Sign Up with </Text>
-          <View style={styles.dividerLine}></View>
+          {/* Recyclepedia Logo */}
+          <Image
+            src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
+            style={nstyles.headerLogo}
+          />
         </View>
 
-
-
-
-        <Pressable
-          style={[styles.loginButton, { marginTop: 45 }]}
-          onPress={() => authContext.login()}
-        >
-          <FontAwesome5
-            name="google"
-            size={20}
-            color="black"
-            style={styles.icon}
-          />
-          <Text style={styles.loginText}> Continue with Google </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.loginButton, { marginTop: 15 }]}
-          onPress={() => authContext.login()}
-        >
-          <FontAwesome5
-            name="apple"
-            size={20}
-            color="black"
-            style={styles.icon}
-          />
-          <Text style={styles.loginText}> Continue with Apple </Text>
-        </Pressable> */}
-
-        <Text style={[styles.noticeText, { marginTop: 40 }]}>
-          Already have an account?{" "}
-          <Text onPress={() => router.push("/loginsetup")}>
-            Login
+        {/* body view (2/3 screen) */}
+        <View style={nstyles.bodyView}>
+          <Text style={nstyles.loginText}>
+            SIGNUP
           </Text>
-        </Text>
-      </View>
+
+          <View style={nstyles.inputContainer}>
+            <Text style={nstyles.inputHeader}>
+              EMAIL
+            </Text>
+
+            <TextInput
+              placeholder="domain@example.com"
+              placeholderTextColor="gray"
+              value={email}
+              onChangeText={setEmail}
+              style={nstyles.textInput}
+            />
+          </View>
+
+          <View style={nstyles.inputContainer}>
+            <Text style={nstyles.inputHeader}>
+              PASSWORD
+            </Text>
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="gray"
+              value={password}
+              onChangeText={setPassword}
+              style={nstyles.textInput}
+              autoComplete="new-password"
+            />
+          </View>
+
+          <View style={nstyles.inputContainer}>
+            <Text style={nstyles.inputHeader}>
+              CONFIRM PASSWORD
+            </Text>
+            <TextInput
+              placeholder="Confirm Password"
+              placeholderTextColor="gray"
+              value={password}
+              onChangeText={setConfirmPassword}
+              style={nstyles.textInput}
+              autoComplete="new-password"
+            />
+          </View>
+
+          <Pressable style={nstyles.signUpButton}
+            onPress={() => emailPasswordSignUp(email, password, confirmPassword)}
+          >
+            {/* <Text style={[styles.signupText]} onPress={() => authContext.loginUserWithEmailPassword()}> */}
+            <Text style={nstyles.buttonText}>
+              SUBMIT
+            </Text>
+          </Pressable>
+
+          <Text style={nstyles.noticeText}>
+            Don't have an account?{" "}
+            <Text onPress={() => router.push("/loginsetup")}>
+              Login
+            </Text>
+          </Text>
+        </View>
+      </SafeAreaView>
     </View>
+
+    // <View style={styles.screen}>
+    //   <View style={styles.createAccountContainer}>
+    //     <Text style={[styles.createAccountHeadingText, { marginTop: 45 }]}> SIGN UP </Text>
+    //     <Text style={styles.createAccountInfoText}>
+    //       EMAIL
+    //     </Text>
+    //     <TextInput
+    //       placeholder="domain@example.com"
+    //       placeholderTextColor="gray"
+    //       value={email}
+    //       // onChange={setEmail}
+    //       onChangeText={setEmail}
+    //       style={styles.textInput}
+    //     />
+    //     <Text style={[styles.createAccountInfoText]}>
+    //       PASSWORD
+    //     </Text>
+    //     <TextInput
+    //       placeholder="Password"
+    //       placeholderTextColor="gray"
+    //       value={password}
+    //       // onChange={setPassword}
+    //       onChangeText={setPassword}
+    //       style={styles.textInput}
+    //       // autoComplete="off"
+    //       autoComplete="new-password"
+    //     />
+    //     <Text style={[styles.createAccountInfoText]}>
+    //       CONFIRM PASSWORD
+    //     </Text>
+    //     {/* <TextInput
+    //       placeholder="Confirm Password"
+    //       placeholderTextColor="gray"
+    //       value={password}
+    //       onChange={setPassword}
+    //       style={styles.textInput}
+    //       // autoComplete="new-password"
+    //       autoComplete="off"
+    //     /> */}
+    //     <TextInput
+    //       placeholder="Confirm Password"
+    //       placeholderTextColor="gray"
+    //       value={confirmPassword}
+    //       // onChange={setConfirmPassword}
+    //       onChangeText={setConfirmPassword}
+    //       style={styles.textInput}
+    //       autoComplete="new-password"
+    //     // autoComplete="off"
+    //     />
+
+
+
+
+    //     <Pressable style={[styles.signupButton, { marginTop: 40 }]}
+    //       onPress={() => emailPasswordSignUp(email, password, confirmPassword)}
+    //     >
+    //       {/* <Text style={[styles.signupText]} onPress={() => authContext.login()}>
+    //         SUBMIT
+    //       </Text> */}
+    //       {/* <Text style={[styles.signupText]} onPress={() => emailPasswordSignUp(email, password, confirmPassword)}> */}
+    //       <Text style={[styles.signupText]}>
+    //         SUBMIT
+    //       </Text>
+    //     </Pressable>
+
+
+    //     {/* <View style={[styles.divider, { marginTop: 45 }]}>
+    //       <View style={styles.dividerLine}></View>
+    //       <Text style={styles.dividerText}> Or Sign Up with </Text>
+    //       <View style={styles.dividerLine}></View>
+    //     </View>
+
+
+
+
+    //     <Pressable
+    //       style={[styles.loginButton, { marginTop: 45 }]}
+    //       onPress={() => authContext.login()}
+    //     >
+    //       <FontAwesome5
+    //         name="google"
+    //         size={20}
+    //         color="black"
+    //         style={styles.icon}
+    //       />
+    //       <Text style={styles.loginText}> Continue with Google </Text>
+    //     </Pressable>
+    //     <Pressable
+    //       style={[styles.loginButton, { marginTop: 15 }]}
+    //       onPress={() => authContext.login()}
+    //     >
+    //       <FontAwesome5
+    //         name="apple"
+    //         size={20}
+    //         color="black"
+    //         style={styles.icon}
+    //       />
+    //       <Text style={styles.loginText}> Continue with Apple </Text>
+    //     </Pressable> */}
+
+    //     <Text style={[styles.noticeText, { marginTop: 40 }]}>
+    //       Already have an account?{" "}
+    //       <Text onPress={() => router.push("/loginsetup")}>
+    //         Login
+    //       </Text>
+    //     </Text>
+    //   </View>
+    // </View>
   );
 }
+
+const nstyles = StyleSheet.create({
+  // background
+  screen: {
+    backgroundColor: "#024935",
+    flex: 1,
+  },
+  saview: {
+    flex: 1,
+    display: "flex",
+  },
+
+  // header
+  headerView: {
+    padding: 60,
+    flex: 1,
+  },
+  headerText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 32,
+    textAlign: "center",
+    color: "#FFFFFF",
+  },
+  headerLogo: {
+    flex: 1,
+    width: "100%",
+    resizeMode: "contain",
+  },
+
+  // body (login etc)
+  bodyView: {
+    flex: 2,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    padding: 40,
+    gap: "5%",
+  },
+  loginText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 32,
+    textAlign: "center",
+    color: "#024935",
+  },
+
+  inputContainer: {
+    gap: 10,
+  },
+  inputHeader: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 16,
+    color: "#024935",
+  },
+  textInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 15,
+  },
+
+  // buttons
+  signUpButton: {
+    //flex: 1,
+    backgroundColor: "#024935",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    height: "10%",
+  },
+  buttonText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 16,
+    //textAlign: "center",
+    color: "#FFFFFF",
+  },
+
+  // signup text
+  noticeText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 16,
+    color: "#024935",
+    alignSelf: "center",
+  },
+});
 
 const styles = StyleSheet.create({
   screen: {

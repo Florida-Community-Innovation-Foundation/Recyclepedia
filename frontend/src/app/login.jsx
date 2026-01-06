@@ -13,6 +13,7 @@ import { AuthContext } from "~/utils/authContext";
 import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
 import {useRouter} from "expo-router"
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const authContext = useContext(AuthContext);
@@ -21,59 +22,209 @@ export default function LoginScreen() {
   const router = useRouter();
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.headingContainer}>
-        <Text style={ styles.headingText }>
-          RECYCLE RIGHT WITH
-        </Text>
-        {/* <Text style={styles.headingText}>
-          RECYCLE RIGHT IN{" "}
+    <View style={nstyles.screen}>
+      <SafeAreaView style={nstyles.saview}>
+        {/* header view (1/3 screen) */}
+        <View style={nstyles.headerView}>
+          {/* Header */}
+          <Text style={nstyles.headerText}>
+            RECYCLE RIGHT WITH
+          </Text>
+
+          {/* Recyclepedia Logo */}
           <Image
-            src="https://www.miamidade.gov/resources/global/images/md-logo-color.png"
-            style={styles.secondaryLogo}
-          />{" "}
-          WITH
-        </Text> */}
-        {/* Recyclepedia Logo */}
-        <Image
-          src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
-          style={styles.mainLogo}
-        />
-      </View>
-      <View style={styles.createAccountContainer}>
+            src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
+            style={nstyles.headerLogo}
+          />
+        </View>
 
-          {/*add on */}
-        <Pressable style={[styles.signupButton, { marginTop: normalize(125, "height") }]}>
-          <Text style={styles.signupText} onPress={() => router.push("/loginsetup")}>
-            LOGIN
+        {/* body view (2/3 screen) */}
+        <View style={nstyles.bodyView}>
+          <Text style={nstyles.loginText}>
+            LOGIN OR SIGNUP
           </Text>
-        </Pressable>
+          {/* <Pressable style={[styles.signupButton, { marginTop: normalize(125, "height") }]}> */}
+          <Pressable style={nstyles.signUpButton} onPress={() => router.push("/loginsetup")}>
+            {/* <Text style={nstyles.buttonText} onPress={() => router.push("/loginsetup")}> */}
+            <Text style={nstyles.buttonText}>
+              LOGIN
+            </Text>
+          </Pressable>
 
-        <Pressable style={[styles.signupButton, { marginTop: normalize(40, "height") }]}>
-          <Text style={styles.signupText} onPress={() => router.push("/signupsetup")}>
-            REGISTER
-          </Text>
-        </Pressable>
+          {/* <Pressable style={[styles.signupButton, { marginTop: normalize(40, "height") }]}> */}
+          <Pressable style={nstyles.signUpButton} onPress={() => router.push("/signupsetup")}>
+            {/* <Text style={nstyles.buttonText} onPress={() => router.push("/signupsetup")}> */}
+            <Text style={nstyles.buttonText}>
+              REGISTER
+            </Text>
+          </Pressable>
 
-        <Pressable style={[styles.signupButton, {backgroundColor:'grey'}, { marginTop: normalize(40, "height") }]}>
-          <Text style={styles.signupText} onPress={() => authContext.login()}>
-            CONTINUE AS GUEST
+          {/* <Pressable style={[styles.signupButton, { backgroundColor: 'grey' }, { marginTop: normalize(40, "height") }]}> */}
+          <Pressable style={[nstyles.signUpButton, {backgroundColor: 'grey'}]} onPress={() => authContext.login()}>
+            {/* <Text style={nstyles.buttonText} onPress={() => authContext.login()}> */}
+            <Text style={nstyles.buttonText}>
+              CONTINUE AS GUEST
+            </Text>
+          </Pressable>
+
+          <Text style={nstyles.footerText}>
+            By clicking continue, you agree to our{" "}
+            <Link href="https://recyclepedia.vercel.app/terms-of-service">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link href="https://recyclepedia.vercel.app/privacy-policy">
+              Privacy Policy
+            </Link>
           </Text>
-        </Pressable>
-        <Text style={styles.noticeText}>
-          By clicking continue, you agree to our{" "}
-          <Link href="https://recyclepedia.vercel.app/terms-of-service">
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href="https://recyclepedia.vercel.app/privacy-policy">
-            Privacy Policy
-          </Link>
-        </Text>
-      </View>
+        </View>
+      </SafeAreaView>
     </View>
+    // <View style={nstyles.screen}>
+    //   <SafeAreaView style={nstyles.saview}>
+    //     <View style={nstyles.mainView}>
+    //       <View style={nstyles.headerView}>
+    //         {/* Header Text */}
+    //         <Text style={nstyles.headerText}>
+    //           RECYCLE RIGHT WITH
+    //         </Text>
+
+    //         {/* Recyclepedia Logo */}
+    //         <Image
+    //           src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
+    //           style={nstyles.headerLogo}
+    //         />
+    //       </View>
+    //     </View>
+    //   </SafeAreaView>      
+    // </View>
+    // <View style={styles.screen}>
+    //   <View style={styles.headingContainer}>
+    //     <Text style={ styles.headingText }>
+    //       RECYCLE RIGHT WITH
+    //     </Text>
+    //     {/* <Text style={styles.headingText}>
+    //       RECYCLE RIGHT IN{" "}
+    //       <Image
+    //         src="https://www.miamidade.gov/resources/global/images/md-logo-color.png"
+    //         style={styles.secondaryLogo}
+    //       />{" "}
+    //       WITH
+    //     </Text> */}
+    //     {/* Recyclepedia Logo */}
+    //     <Image
+    //       src="https://recyclepedia.vercel.app/Recyclepedia_Logo_Big-removebg-preview.png"
+    //       style={styles.mainLogo}
+    //     />
+    //   </View>
+    //   <View style={styles.createAccountContainer}>
+
+    //       {/*add on */}
+    //     <Pressable style={[styles.signupButton, { marginTop: normalize(125, "height") }]}>
+    //       <Text style={styles.signupText} onPress={() => router.push("/loginsetup")}>
+    //         LOGIN
+    //       </Text>
+    //     </Pressable>
+
+    //     <Pressable style={[styles.signupButton, { marginTop: normalize(40, "height") }]}>
+    //       <Text style={styles.signupText} onPress={() => router.push("/signupsetup")}>
+    //         REGISTER
+    //       </Text>
+    //     </Pressable>
+
+    //     <Pressable style={[styles.signupButton, {backgroundColor:'grey'}, { marginTop: normalize(40, "height") }]}>
+    //       <Text style={styles.signupText} onPress={() => authContext.login()}>
+    //         CONTINUE AS GUEST
+    //       </Text>
+    //     </Pressable>
+    //     <Text style={styles.noticeText}>
+    //       By clicking continue, you agree to our{" "}
+    //       <Link href="https://recyclepedia.vercel.app/terms-of-service">
+    //         Terms of Service
+    //       </Link>{" "}
+    //       and{" "}
+    //       <Link href="https://recyclepedia.vercel.app/privacy-policy">
+    //         Privacy Policy
+    //       </Link>
+    //     </Text>
+    //   </View>
+    // </View>
   );
 }
+
+const nstyles = StyleSheet.create({
+  // background
+  screen: {
+    backgroundColor: "#024935",
+    flex: 1,
+  },
+  saview: {
+    flex: 1,
+    display: "flex",
+  },
+  mainView: {
+    paddingTop: "10%",
+  },
+
+  // header
+  headerView: {
+    padding: 60,
+    flex: 1,
+  },
+  headerText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 32,
+    textAlign: "center",
+    color: "#FFFFFF",
+  },
+  headerLogo: {
+    flex: 1,
+    width: "100%",
+    resizeMode: "contain",
+  },
+
+  // body (login etc)
+  bodyView: {
+    flex: 2,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    padding: 40,
+    gap: 40,
+  },
+  loginText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 32,
+    textAlign: "center",
+    color: "#024935",
+  },
+
+  // buttons
+  signUpButton: {
+    //flex: 1,
+    backgroundColor: "#024935",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    height: "10%",
+  },
+  buttonText: {
+    fontFamily: "Bebas Neue",
+    fontWeight: 400,
+    fontSize: 16,
+    //textAlign: "center",
+    color: "#FFFFFF",
+  },
+
+  // footer
+  footerText: {
+    fontFamily: "Bebas Neue",
+    color: "#024935",
+    textAlign: "center",
+  }
+});
 
 const styles = StyleSheet.create({
   screen: {

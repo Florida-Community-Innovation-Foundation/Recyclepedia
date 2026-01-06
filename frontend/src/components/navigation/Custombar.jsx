@@ -39,7 +39,7 @@ export default function Custombar({ state, descriptors, navigation }) {
           <TouchableOpacity key={route.key} onPress={onPress}>
             {options.tabBarIcon &&
               options.tabBarIcon({
-                size: calcFont(34),
+                size: calcFont(32),
                 color: "#024935",
               })}
           </TouchableOpacity>
