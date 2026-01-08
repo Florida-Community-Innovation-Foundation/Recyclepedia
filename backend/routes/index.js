@@ -266,7 +266,7 @@ router.use("/itemData", async (req, res, next) => {
 
 // gets image and location from frontend and uses nyckel to decide recyclability
 router.post("/itemData", async (req, res) => {
-  //console.log("req body: ", req.body);
+  console.log("req body: ", req.body);
 
   const base64String = req.body.image.base64;
   const mediaType = 'image/jpeg';

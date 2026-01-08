@@ -12,7 +12,9 @@ export async function getBaseURL() {
   // 10.0.2.2 connects to local host on host machine for android emulators
   // this lets the emulator connect to backend running on host at a port
   // [note]: PORT in backend's .env should be the same as port variable here
-  return `http://10.0.2.2:${port}`;
+  //return `http://10.0.2.2:${port}`;
+
+  return `https://recycle-pedia.com`; // :DDDD
 
   // IOS
   // use if running iOS emulator
