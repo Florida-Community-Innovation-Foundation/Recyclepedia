@@ -8,7 +8,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 import { normalize } from "~/utils/normalize";
-import * as Location from 'expo-location';
+// import * as Location from 'expo-location'; // disabled, for now
 import { getBaseURL } from "../../../utils/baselineData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
@@ -50,67 +50,79 @@ export default function ItemScan() {
       setCity(null);
     });
 
+    // this is disabled for now since it is buggy and tricky to test, reenable later
     // create async function to use await in useEffect (is this good practice?)
-    const getLocation = async () => {
-      // get location
-      try {
-        // [note]: this can cause an error that the device has unsatisfied settings if improve location accuracy isn't on
-        let { status } = await Location.requestForegroundPermissionsAsync();
+    // const getLocation = async () => {
+    //   // get location
+    //   try {
+    //     // [note]: this can cause an error that the device has unsatisfied settings if improve location accuracy isn't on
+    //     let { status } = await Location.requestForegroundPermissionsAsync();
 
-        // default to Miami
-        if (status !== "granted") {
-          alert("Permission to access location was denied! Recyclepedia is defaulting to Miami.");
-          return;
-        }
+    //     // default to Miami
+    //     if (status !== "granted") {
+    //       alert("Permission to access location was denied! Recyclepedia is defaulting to Miami.");
+    //       return;
+    //     }
 
-        // if no location service enabled, use Miami
-        const servicesEnabled = await Location.hasServicesEnabledAsync();
-        if (!servicesEnabled) {
-          alert("Location services not enabled! Recyclepedia is defaulting to Miami.");
-          return;
-        }
+    //     // if no location service enabled, use Miami
+    //     const servicesEnabled = await Location.hasServicesEnabledAsync();
+    //     if (!servicesEnabled) {
+    //       alert("Location services not enabled! Recyclepedia is defaulting to Miami.");
+    //       return;
+    //     }
 
-        const position = await Location.getCurrentPositionAsync({});
+    //     const position = await Location.getCurrentPositionAsync({});
 
-        if (!position) {
-          alert("Unabled to determine location! Recyclepedia is defaulting to Miami.");
-          return;
-        }
+    //     if (!position) {
+    //       alert("Unabled to determine location! Recyclepedia is defaulting to Miami.");
+    //       return;
+    //     }
 
-        const currentLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
+    //     const currentLocation = {
+    //       latitude: position.coords.latitude,
+    //       longitude: position.coords.longitude,
+    //     };
 
-        setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+    //     setLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+    //   } catch (error) {
+    //     console.error(error.message);
+    //   }
+    // };
 
-    getLocation();
+    // getLocation();
   }, [navigation]);
 
   // // when the image is updated (uploaded or taken), send to backend
   useEffect(() => {
     const getItemAccepted = async () => {
       if (!city) {
+        Alert("You must select a city before proceeding!");
         console.log("Need to select a city");
         return;
       }
-      console.log("City: ", city);
+      //console.log("City: ", city);
       const baseURL = await getBaseURL();
+
+      console.log("JSON stringifying request...");
+      const reqBody = JSON.stringify({ city, image });
+      console.log("Request stringified!");
+
+      console.log("Request size: ", new Blob([reqBody]).size);
+
       const response = await fetch(`${baseURL}/itemData`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         //body: JSON.stringify({ location, image }),
-        body: JSON.stringify({ city, image }),
+        //body: JSON.stringify({ city, image }),
+        body: reqBody
       });
 
       if (!response.ok) {
         console.error("Res not ok");
+        console.error("Response: ", response);
+        Alert("Oops! Something went wrong!");
       }
 
       const data = await response.json();
@@ -128,7 +140,8 @@ export default function ItemScan() {
       mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      //quality: 1,
+      quality: 0.5, // quality needs to be downgraded to fit within 1mb per request
       base64: true,
     });
 
@@ -142,7 +155,8 @@ export default function ItemScan() {
       mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      //quality: 1,
+      quality: 0.5,
       base64: true,
     });
 
@@ -152,26 +166,26 @@ export default function ItemScan() {
     }
   };
 
-  const handleCurrentLocationPress = async () => {
-    console.log("CITY: ", city);
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        alert("Permission to access location was denied");
-        return;
-      }
-      const position = await Location.getCurrentPositionAsync({});
-      const currentLocation = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      };
-      const addresses = await Location.reverseGeocodeAsync(currentLocation);
-      setCity(addresses[0].city);
-    } catch (error) {
-      console.error(error.message);
-    }
-    console.log("CITY: ", city);
-  };
+  // const handleCurrentLocationPress = async () => {
+  //   console.log("CITY: ", city);
+  //   try {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       alert("Permission to access location was denied");
+  //       return;
+  //     }
+  //     const position = await Location.getCurrentPositionAsync({});
+  //     const currentLocation = {
+  //       latitude: position.coords.latitude,
+  //       longitude: position.coords.longitude,
+  //     };
+  //     const addresses = await Location.reverseGeocodeAsync(currentLocation);
+  //     setCity(addresses[0].city);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  //   console.log("CITY: ", city);
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -224,7 +238,8 @@ export default function ItemScan() {
               />
 
               {/* Show "Use my current location" for users to populate location data automatically */}
-              <Pressable
+              {/* This is disabled for now since it has a lot of bugs and is difficult to test, add later */}
+              {/* <Pressable
                 style={styles.selectCurrentLocation}
                 onPress={handleCurrentLocationPress}
               >
@@ -232,7 +247,7 @@ export default function ItemScan() {
                 <Text style={styles.selectCurrentLocationText}>
                   Use my current location
                 </Text>
-              </Pressable>
+              </Pressable> */}
             </View>
             <View style={styles.imageContainer}>
               {/* take photo button */}
@@ -478,6 +493,7 @@ const styles = StyleSheet.create({
     color: "#024935",
   },
   imageContainer: {
+    paddingTop: 10, // just until location services are turned on
     alignItems: "center",
   },
 });

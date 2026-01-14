@@ -21,7 +21,7 @@ export async function getBaseURL() {
   //return `http://${ipAddress}:8080`;
 
   // AWS
-  //return `https://ec2-18-219-236-103.us-east-2.compute.amazonaws.com:${port}`;
+  //return `http://ec2-18-219-236-103.us-east-2.compute.amazonaws.com:${port}`;
 }
 
 export async function getCurbsideData() {

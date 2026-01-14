@@ -137,7 +137,7 @@ export default function Signinsetup() {
             <TextInput
               placeholder="Confirm Password"
               placeholderTextColor="gray"
-              value={password}
+              value={confirmPassword}
               onChangeText={setConfirmPassword}
               style={nstyles.textInput}
               autoComplete="new-password"

@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { firebaseAuth, firebaseDB } from "../configs/firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,16 +14,18 @@ export const AuthContext = createContext({
   // defaults
   userName: "Guest",
   uuid: "",
-  isLoggedIn: false,
-  isReady: false,
+  // isLoggedIn: false,
+  // isReady: false,
   login: () => {},
   logout: () => {},
   //fbDB: {},
 });
 
 export function AuthProvider({ children }) {
-  const [isReady, setIsReady] = useState(true);
+  // const [isReady, setIsReady] = useState(true);
+  const [isReady, setIsReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  //const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userName, setUserName] = useState("Guest");
   const [uuid, setUUID] = useState("");
   const router = useRouter();
@@ -173,26 +176,31 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(false);
     storeAuthState({ isLoggedIn: false });
     router.replace("/login");
+    signOut(firebaseAuth); // make sure this is ok if there is no firebase user logged (ie Guest)
   };
 
   // disabled for now since not exactly sure how it should work
-  // useEffect(() => {
-  //   const getAuthFromStorage = async () => {
-  //     // simulate a delay, e.g. for an API request
-  //     await new Promise((res) => setTimeout(() => res(null), 1000));
-  //     try {
-  //       const value = await AsyncStorage.getItem(authStorageKey);
-  //       if (value !== null) {
-  //         const auth = JSON.parse(value);
-  //         setIsLoggedIn(auth.isLoggedIn);
-  //       }
-  //     } catch (error) {
-  //       console.log("Error fetching from storage", error);
-  //     }
-  //     setIsReady(true);
-  //   };
-  //   getAuthFromStorage();
-  // }, []);
+  useEffect(() => {
+    const getAuthFromStorage = async () => {
+      // simulate a delay, e.g. for an API request
+      //await new Promise((res) => setTimeout(() => res(null), 1000));
+      try {
+        const value = await AsyncStorage.getItem(authStorageKey);
+
+        console.log("Value: ", value);
+
+        if (value !== null) {
+          const auth = JSON.parse(value);
+          console.log("Auth: ", auth);
+          setIsLoggedIn(auth.isLoggedIn);
+        }
+      } catch (error) {
+        console.log("Error fetching from storage", error);
+      }
+      setIsReady(true);
+    };
+    getAuthFromStorage();
+  }, []);
 
   useEffect(() => {
     if (isReady) {

@@ -48,19 +48,30 @@ export function EventsListDisplay({
   };
 
   return (
+    // Disabled for now since there aren't any events anyway, reenable later (and make website to modify events)
+    // <View style={styles.container}>
+    //   <Text style={styles.eventsDisplayHeader}>
+    //     {_.indexOf(dayDisplaysPressed, true) !== -1
+    //       ? "EVENTS"
+    //       : "UPCOMING EVENTS"}
+    //   </Text>
+    //   <View style={styles.eventsListContainer}>
+    //     <FlatList
+    //       scrollEnabled={false}
+    //       data={displayedCalendarEvents}
+    //       renderItem={renderItem}
+    //       keyExtractor={(item, index) => index}
+    //     />
+    //   </View>
+    // </View>
     <View style={styles.container}>
       <Text style={styles.eventsDisplayHeader}>
-        {_.indexOf(dayDisplaysPressed, true) !== -1
-          ? "EVENTS"
-          : "UPCOMING EVENTS"}
+        EVENTS
       </Text>
-      <View style={styles.eventsListContainer}>
-        <FlatList
-          scrollEnabled={false}
-          data={displayedCalendarEvents}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-        />
+      <View style={styles.tempEventContainer}>
+        <Text style={styles.tempEventText}>
+          There are no upcoming events!
+        </Text>
       </View>
     </View>
   );
@@ -77,4 +88,19 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginLeft: 6,
   },
+
+  // temp, delete when events are properly added
+  tempEventContainer: {
+    borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginTop: 8,
+  },
+  tempEventText: {
+    fontSize: 21,
+    fontWeight: 400,
+    color: "#fff",
+  }
 });

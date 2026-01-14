@@ -222,24 +222,24 @@ const CurbsideDropoff = () => {
     }
   };
 
-  const handleCurrentLocationPress = async () => {
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        alert("Permission to access location was denied");
-        return;
-      }
-      const position = await Location.getCurrentPositionAsync({});
-      const currentLocation = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      };
-      const addresses = await Location.reverseGeocodeAsync(currentLocation);
-      setCity(addresses[0].city);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+  // const handleCurrentLocationPress = async () => {
+  //   try {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       alert("Permission to access location was denied");
+  //       return;
+  //     }
+  //     const position = await Location.getCurrentPositionAsync({});
+  //     const currentLocation = {
+  //       latitude: position.coords.latitude,
+  //       longitude: position.coords.longitude,
+  //     };
+  //     const addresses = await Location.reverseGeocodeAsync(currentLocation);
+  //     setCity(addresses[0].city);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  // };
 
   // allow users to select municiplaity from map markers
   const handleMapPoiClick = (marker) => {
@@ -420,8 +420,9 @@ const CurbsideDropoff = () => {
               />
 
 
+                {/* This is currently disabled since it's buggy and hard to test */}
               {/* Show "Use my current location" for users to populate location data automatically */}
-              <Pressable
+              {/* <Pressable
                 style={styles.selectCurrentLocation}
                 onPress={handleCurrentLocationPress}
               >
@@ -429,7 +430,7 @@ const CurbsideDropoff = () => {
                 <Text style={styles.selectCurrentLocationText}>
                   Use my current location
                 </Text>
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         )}
@@ -488,8 +489,9 @@ const CurbsideDropoff = () => {
               </>
 
 
+              {/* This is currently disabled since it's buggy and hard to test */}
               {/* Show "Use my current location" for users to populate location data automatically */}
-              <Pressable
+              {/* <Pressable
                 style={styles.selectCurrentLocation}
                 onPress={handleCurrentLocationPress}
               >
@@ -497,7 +499,7 @@ const CurbsideDropoff = () => {
                 <Text style={styles.selectCurrentLocationText}>
                   Use my current location
                 </Text>
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         )}
