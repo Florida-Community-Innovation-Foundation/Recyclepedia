@@ -544,7 +544,7 @@ const CurbsideDropoff = () => {
             region={region}
             style={
               curbsideColor === "white"
-                ? [styles.map, { marginTop: 30 }]
+                ? [styles.map, { marginTop: 30, }]
                 : styles.map
             }
             scrollDuringRotateOrZoomEnabled={false}
