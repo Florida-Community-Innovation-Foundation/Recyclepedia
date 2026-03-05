@@ -7,19 +7,15 @@ import { useState } from "react";
 import { useRef } from "react";
 import {
   Pressable,
-  //SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import DoAndDontSection from "~/components/curbside/DoAndDontSection";
 import DropdownSelector from "~/components/curbside/DropdownSelector";
-import RecyclingList from "~/components/curbside/RecyclingList";
 import {
   getCurbsideData,
   getDropoffData,
@@ -133,11 +129,6 @@ const CurbsideDropoff = () => {
 
   }, [city]);
 
-  // testing
-  // useEffect(() => {
-  //   console.log("City: ", city);
-  // }, [city]);
-
   // use hardcoded miami coordinates as default, replaced with whatever's loaded in curbside data
   const [region, setRegion] = useState({
     latitude: 25.7617,
@@ -185,12 +176,6 @@ const CurbsideDropoff = () => {
       ["textiles", 3.37],
     ]);
 
-
-    /*test
-    const offset = materials.get("paper");
-    setChosenItem("paper");
-    setCarbonOffset(prev=> prev + offset);
-    console.log("Material:", chosenItem + ", Total Carbon offset:", carbonOffset);*/
     if (category) {
       setItemsRecycled(itemsRecycled + 1);
       setChosenItem(category);
@@ -203,8 +188,6 @@ const CurbsideDropoff = () => {
             return {
               name: dropOffLocation["Name"],
               location: {
-                // latitude: dropOffLocation["Latitude"],
-                // longitude: dropOffLocation["Longitude"],
                 latitude: parseFloat(dropOffLocation["Latitude"]) || 0,
                 longitude: parseFloat(dropOffLocation["Longitude"]) || 0,
               },
@@ -212,7 +195,6 @@ const CurbsideDropoff = () => {
             };
           })
           .uniqBy((location) => `${String(location.name).toLowerCase().trim()}_${location.latitude}_${location.longitude}`) // this is just in testing
-          //.uniq()
           .value(),
       );
 
@@ -246,12 +228,6 @@ const CurbsideDropoff = () => {
     if (marker) {
       setCity(marker.name);
     }
-
-    // console.log("Marker: ", marker);
-    // if (marker.name) {
-    //   setCity(marker.name);
-    // }
-    //setCity(marker.name);
   };
 
   const handleSearchChange = (text) => {
@@ -382,12 +358,6 @@ const CurbsideDropoff = () => {
           <View>
             <View style={styles.cityPickerContainer}>
               <Text style={styles.cityPickerLabel}>{selectText}</Text>
-              {/* <DropdownSelector
-                  setItem={setCity}
-                  cities={getCities(curbsideData)}
-                  key="curbsideCityDropdown"
-                /> */}
-
               {/* Municipality dropdown */}
               <Dropdown
                 style={styles.picker}

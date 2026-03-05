@@ -136,12 +136,10 @@ export default function ItemScan() {
   }, [image]);
 
   const handleCameraPhotoPress = async () => {
+    setImage(null);
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      //quality: 1,
-      quality: 0.5, // quality needs to be downgraded to fit within 1mb per request
+      quality: 0.5, // quality probably should be downgraded and 0.5 seems to work fine
       base64: true,
     });
 
@@ -153,15 +151,11 @@ export default function ItemScan() {
   const handleUploadPhotoPress = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      //quality: 1,
       quality: 0.5,
       base64: true,
     });
 
     if (!result.canceled) {
-      //setImageUri(result.assets[0].uri);
       setImage(result.assets[0]);
     }
   };
@@ -250,9 +244,18 @@ export default function ItemScan() {
               </Pressable> */}
             </View>
             <View style={styles.imageContainer}>
+              {/* image */}
+              {image && (
+                <Image
+                  source={{ uri: image.uri }}
+                  style={styles.cameraContainer}
+                  contentFit="contain"
+                  enableLiveTextInteraction={true}
+                />
+              )}
               {/* take photo button */}
               {
-                !image &&
+                //!image &&
                 <Pressable
                   style={styles.uploadPhotoButton}
                   onPress={handleCameraPhotoPress}
@@ -262,15 +265,6 @@ export default function ItemScan() {
                   </Text>
                 </Pressable>
               }
-              {image && (
-                <Image
-                  source={{ uri: image.uri }}
-                  style={styles.cameraContainer}
-                  //contentFit="cover"
-                  contentFit="fill"
-                  enableLiveTextInteraction={true}
-                />
-              )}
 
               {/* divider */}
               <View style={styles.divider}>
@@ -454,11 +448,11 @@ const styles = StyleSheet.create({
     width: normalize(300, "width"),
   },
   cameraContainer: {
-    width: normalize(350, "width"),
-    height: normalize(300, "height"),
+    width: "100%",
+    aspectRatio: 1,
   },
   divider: {
-    marginVertical: normalize(10, "height"),
+    //marginVertical: normalize(10, "height"),
     display: "flex",
     flexDirection: "row",
   },
@@ -495,5 +489,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     paddingTop: 10, // just until location services are turned on
     alignItems: "center",
+    gap: normalize(10, "height"),
   },
 });
