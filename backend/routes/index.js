@@ -188,7 +188,7 @@ async function parseLabelMunicipality(data, municipality) {
         return "This item is recyclable!";
       }
 
-      return "This item is not recyclable in ", testingLocation, "!";
+      return `This item is not recyclable in ${testingLocation}!`;
     }
   }
   
