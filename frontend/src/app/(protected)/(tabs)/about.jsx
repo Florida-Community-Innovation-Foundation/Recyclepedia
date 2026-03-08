@@ -2,6 +2,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
+import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AboutCalendar } from "./calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,6 +24,8 @@ function calcWidth(size) {
 }
 
 export default function About() {
+  useStatusBarStyle("dark");
+
   const [num, setNum] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {

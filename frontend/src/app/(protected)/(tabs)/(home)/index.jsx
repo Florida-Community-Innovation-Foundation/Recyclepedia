@@ -3,6 +3,7 @@ import { useQueries } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import _ from "lodash";
 import { useEffect } from "react";
+import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import { useState } from "react";
 import { useRef } from "react";
 import {
@@ -33,6 +34,8 @@ import CityRules from "../../../../components/curbside/CityRules";
 import { Dropdown } from "react-native-element-dropdown";
 
 const CurbsideDropoff = () => {
+  useStatusBarStyle("light");
+
   const navigation = useNavigation();
   const {
     itemsRecycled,

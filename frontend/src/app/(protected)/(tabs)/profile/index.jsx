@@ -2,6 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
 import { useContext, useEffect, useState } from "react";
+import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import { Link } from "expo-router";
 import Svg, { Path } from 'react-native-svg';
 import {
@@ -33,6 +34,8 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function UserAccount() {
+  useStatusBarStyle("dark");
+
   const {
     itemsRecycled,
     setItemsRecycled,
