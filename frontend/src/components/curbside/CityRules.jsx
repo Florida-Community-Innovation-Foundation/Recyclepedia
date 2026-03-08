@@ -268,7 +268,7 @@ export default function CityRules({ location }) {
       <View style={styles.sectionContainer}>
       {/* section header */}
       <Text style={styles.sectionHeader}>
-        Recycleable Items
+        Recyclable Items
       </Text>
       
       {/* item list */}

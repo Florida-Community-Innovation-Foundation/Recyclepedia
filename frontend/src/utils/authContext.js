@@ -2,9 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SplashScreen, useRouter } from "expo-router";
 import { createContext, useEffect, useState } from "react";
 import { firebaseAuth, firebaseDB } from "../configs/firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { onAuthStateChanged, signOut } from "firebase/auth";
 
 SplashScreen.preventAutoHideAsync();
 
