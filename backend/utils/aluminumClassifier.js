@@ -60,6 +60,9 @@ function preprocessImage(base64String) {
 
 // Stage 2: classify aluminum subtype from base64 string
 export async function classifyAluminum(base64String) {
+  if (!aluminumModel) {
+    throw new Error('Aluminum model is not loaded. Ensure loadAluminumModel() has been called successfully.');
+  }
   const tensor = preprocessImage(base64String);
   const predictions = aluminumModel.predict(tensor);
   const scores = await predictions.data();
