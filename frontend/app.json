@@ -4,6 +4,7 @@
     "slug": "Recyclepedia",
     "scheme": "recyclepedia",
     "version": "1.0.0",
+    "icon": "./src/assets/img/icon.png",
     "newArchEnabled": true,
     "platforms": ["ios", "android"],
     "plugins": [
@@ -49,6 +50,10 @@
       "expo-asset"
     ],
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/img/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "bundleIdentifier": "com.aadit.kamat.Recyclepedia",
       "config": {
         "googleMaps": {
