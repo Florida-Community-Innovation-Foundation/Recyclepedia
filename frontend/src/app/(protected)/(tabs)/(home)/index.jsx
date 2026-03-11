@@ -161,6 +161,9 @@ const CurbsideDropoff = () => {
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
+  const onSelectCity = (location) =>
+      setCity(location);
+
   const handleSubmit = async () => {
     // debug
     console.log("City: ", city);
@@ -539,7 +542,7 @@ const CurbsideDropoff = () => {
 
           {/* Show list of recycling locations */}
           {dropoffColor === "white" &&
-            <LocationList locations={places} />
+            <LocationList locations={places} onSelectCity={onSelectCity} />
           }
           {
             curbsideColor === "white" && city != null &&
@@ -552,6 +555,8 @@ const CurbsideDropoff = () => {
     </SafeAreaView>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   picker: {

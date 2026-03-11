@@ -1,9 +1,9 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { normalize } from "~/utils/normalize";
 
 // list of locations after user submits category and municipality
 
-export default function LocationList({ locations }) {
+export default function LocationList({ locations, onSelectCity }) {
   return (
     <View
       style={styles.container}
@@ -15,9 +15,25 @@ export default function LocationList({ locations }) {
       </Text>
       {
         locations.map((location, index) => (
-          <View
+          // <View
+          //   key={index}
+          //   style={styles.itemSection}
+          // >
+          //   <Text
+          //     style={styles.itemTitle}
+          //   >
+          //     {location.name}
+          //   </Text>
+          //   <Text
+          //     style={styles.itemDescription}
+          //   >
+          //     {location.street}
+          //   </Text>
+          // </View>
+          <TouchableOpacity
             key={index}
             style={styles.itemSection}
+            onPress={() => onSelectCity(location.name)}
           >
             <Text
               style={styles.itemTitle}
@@ -29,7 +45,7 @@ export default function LocationList({ locations }) {
             >
               {location.street}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))
       }
     </View>
