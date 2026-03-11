@@ -2,7 +2,6 @@ import { Redirect, Stack } from "expo-router";
 import { useContext, useMemo } from "react";
 import { AuthContext } from "~/utils/authContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { setStatusBarStyle } from "expo-status-bar";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)", // anchor

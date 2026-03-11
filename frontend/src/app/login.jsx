@@ -10,12 +10,15 @@ import {
   View,
 } from "react-native";
 import { AuthContext } from "~/utils/authContext";
+import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
 import {useRouter} from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
+  useStatusBarStyle("light");
+
   const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

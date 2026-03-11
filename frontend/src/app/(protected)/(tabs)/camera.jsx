@@ -4,6 +4,7 @@ import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
+import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
@@ -16,6 +17,8 @@ import _ from "lodash";
 import { useQueries } from "@tanstack/react-query";
 
 export default function ItemScan() {
+  useStatusBarStyle("light");
+
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [accepted, setAccepted] = useState(false);
