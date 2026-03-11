@@ -3,6 +3,7 @@ import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
 import getNyckelToken from "../middelware/tokenService.js";
+import { classifyAluminum } from "../utils/aluminumClassifier.js";
 
 const router = express.Router();
 
@@ -158,13 +159,15 @@ function crossCheck(category, location) {
 
 // analyzes label to see if item is recyclable
 // most of nyckel's labels are accurate except some locations have exceptions
-async function parseLabelMunicipality(data, municipality) {
+async function parseLabelMunicipality(data, municipality, base64Image) {
   const label = data.labelName.toString().toLowerCase();
+  //console.log("Label: ", label); // debug
+  //console.log("Municipality: ", municipality); // debug
 
   // the order of the labels is precedence for messages
   // (ewaste label has the word trash in it, but we want to return a special message for batteries so much check ewaste first)
   const badLabels = [ "ewaste", "trash", "non-recyclable", "not recyclable", "special drop-off" ];
-  const warningLabels = ["aluminum", "cardboard", "glass"];
+  const warningLabels = ["cardboard", "glass"];
 
   // check if label has Trash, Non-Recyclable, Not recyclable, or Special drop-off
   // if it does, not recyclable
@@ -180,7 +183,24 @@ async function parseLabelMunicipality(data, municipality) {
 
   const testingLocation = municipality;
 
-  // check if label has Aluminum, Cardboard, or Glass
+  // Stage 2: if Nyckel says aluminum, use local model to distinguish foil vs can
+  if (label.includes("aluminum")) {
+    const aluminumResult = await classifyAluminum(base64Image);
+    //console.log("Aluminum Stage 2: ", aluminumResult);
+
+    // Aluminum cans are recyclable everywhere
+    if (aluminumResult.label === "aluminum can") {
+      return "This item is recyclable!";
+    }
+
+    // Aluminum foil has city exceptions
+    if (crossCheck("aluminum", testingLocation)) {
+      return "This item is recyclable!";
+    }
+    return `This item is not recyclable in ${testingLocation}!`;
+  }
+
+  // check if label has Cardboard or Glass
   for (const warningLabel of warningLabels) {
     // if it does cross check 
     if (label.includes(warningLabel)) {
@@ -188,7 +208,7 @@ async function parseLabelMunicipality(data, municipality) {
         return "This item is recyclable!";
       }
 
-      return "This item is not recyclable in ", testingLocation, "!";
+      return `This item is not recyclable in ${testingLocation}!`;
     }
   }
   
@@ -221,7 +241,9 @@ async function processScan(image, token, municipality) {
     return "We are currently experiencing technical difficulties, Please try again later.";
   }
 
-  const result = await parseLabelMunicipality(data, municipality);
+  // Extract raw base64 from the data URI for the local aluminum model
+  const base64Image = image.replace(/^data:image\/\w+;base64,/, '');
+  const result = await parseLabelMunicipality(data, municipality, base64Image);
 
   return result;
 }

@@ -16,6 +16,7 @@ import { response } from "express";
 import app from "./app.js";
 import { initLogCorrelation, logger } from "./utils/logging.js";
 import { fetchProjectId } from "./utils/metadata.js";
+import { loadAluminumModel } from "./utils/aluminumClassifier.js";
 
 // store reference to server for shutdowns
 let server;
@@ -31,6 +32,9 @@ const main = async () => {
     }
     // Initialize request-based logger with project Id
     initLogCorrelation(project);
+
+    // Load the aluminum foil/can classifier model
+    await loadAluminumModel();
 
     // this isn't useful, but it's sorta helpful for reference
     // const items = {
