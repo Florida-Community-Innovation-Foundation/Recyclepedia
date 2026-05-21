@@ -15,21 +15,6 @@ export default function LocationList({ locations, onSelectCity }) {
       </Text>
       {
         locations.map((location, index) => (
-          // <View
-          //   key={index}
-          //   style={styles.itemSection}
-          // >
-          //   <Text
-          //     style={styles.itemTitle}
-          //   >
-          //     {location.name}
-          //   </Text>
-          //   <Text
-          //     style={styles.itemDescription}
-          //   >
-          //     {location.street}
-          //   </Text>
-          // </View>
           <TouchableOpacity
             key={index}
             style={styles.itemSection}

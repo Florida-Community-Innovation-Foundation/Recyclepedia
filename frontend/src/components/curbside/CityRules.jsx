@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet, FlatList } from "react-native";
+import { useState } from "react";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { normalize } from "~/utils/normalize";
 
 // knot ideal but we need something for saturday
@@ -60,10 +61,12 @@ const bigListSpecial = [
   "Barrels",
   "Hazardous Electronics (such as Computers)",
   "Furniture",
-  "Filled Gas Cans (maximum 10 Gallons)",
+  "Filled Gas Cans (Maximum 10 Gallons)",
   "Motor Oil",
   "Oil Filters",
 ];
+
+// Specific Items (big list of locations w/ same recycling plan)
 
 // key biscayne
 const kbGood = [
@@ -164,6 +167,444 @@ const hgSpecial = [
   "Hazardous Waste",
 ];
 
+// bal harbour
+const bhGood = [
+  "Aluminum Cans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const bhTrash = [
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+];
+
+const bhSpecial = [
+];
+
+// bay harbor island
+const bhiGood = [
+  "Aluminum Cans",
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const bhiTrash = [
+];
+
+const bhiSpecial = [
+];
+
+// biscayne park
+const bpGood = [
+  "Aluminum Cans",
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+];
+
+const bpTrash = [
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const bpSpecial = [
+];
+
+// coral gables
+const cgGood = [
+  "Aluminum Cans",
+  "Aluminum Foil",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+];
+
+const cgTrash = [
+  "Aluminum Pie Pans",
+  "Yogurt Containers (All Sizes)"
+];
+
+const cgSpecial = [
+];
+
+// homestead
+const hGood = [
+  "Aluminum Cans",
+  "Aluminum Pie Pans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes (Not Greasy)",
+  "Yogurt Containers (All Sizes)"
+];
+
+const hTrash = [
+  "Aluminum Foil",
+];
+
+const hSpecial = [
+];
+
+// indian creek
+const icGood = [
+  "Aluminum Cans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const icTrash = [
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+];
+
+const icSpecial = [
+];
+
+// miami
+const mGood = [
+  "Aluminum Cans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+];
+
+const mTrash = [
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Cartons",
+  "Steel Cans",
+  "Yogurt Containers (All Sizes)"
+];
+
+const mSpecial = [
+];
+
+// miami shores
+const msGood = [
+  "Aluminum Cans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+];
+
+const msTrash = [
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+];
+
+const msSpecial = [
+];
+
+// north miami
+const nmGood = [
+  "Aluminum Cans",
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Books (Paperback)",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const nmTrash = [
+  "Shampoo Bottles",
+];
+
+const nmSpecial = [
+];
+
+// north miami beach
+const nmbGood = [
+  "Aluminum Cans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+];
+
+const nmbTrash = [
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const nmbSpecial = [
+];
+
+// surfside
+const sGood = [
+  "Aluminum Cans",
+  "Aluminum Foil",
+  "Aluminum Pie Pans",
+  "Books",
+  "Narrow Neck Bottles",
+  "Bottles",
+  "Bottles",
+  "Cans",
+  "Cardboard",
+  "Cereal Boxes",
+  "Cartons",
+  "Detergent Bottles",
+  "Documents",
+  "Drink Boxes",
+  "Glass Bottles",
+  "Juice Boxes",
+  "Mail",
+  "Magazines",
+  "Milk Bottles",
+  "Milk Cartons",
+  "Newspapers",
+  "Paper",
+  "Paper Egg Cartons",
+  "Paper Shopping Bags",
+  "Phone Books",
+  "Shampoo Bottles",
+  "Steel Cans",
+  "Toilet Paper Rolls",
+  "Pizza Boxes",
+  "Yogurt Containers (All Sizes)"
+];
+
+const sTrash = [
+];
+
+const sSpecial = [
+];
+
 // others (fix somehow)
 // Bal Harbour 305-866-4633
 // Bay Harbor Island 305-866-6241
@@ -176,11 +617,11 @@ const hgSpecial = [
 // North Miami 305-895-9870
 // North Miami Beach 305-948-2904
 // Surfside 305-861-4863
-const otherGood = [ "No Data" ];
-const otherTrash = [ "No Data" ];
-const otherSpecial = [ "No Data" ];
+const otherGood = ["No Data"];
+const otherTrash = ["No Data"];
+const otherSpecial = ["No Data"];
 
-function makeDiv({item}) {
+function makeDiv({ item }) {
   <View>
     <Text>
       {item}
@@ -241,6 +682,72 @@ export default function CityRules({ location }) {
       special = hgSpecial;
       break;
 
+    case "Bal Harbour":
+      good = bhGood;
+      trash = bhTrash;
+      special = bhSpecial;
+      break;
+
+    case "Bay Harbor Islands":
+      good = bhiGood;
+      trash = bhiTrash;
+      special = bhiSpecial;
+      break;
+
+    case "Biscayne Park":
+      good = bpGood;
+      trash = bpTrash;
+      special = bpSpecial;
+      break;
+
+    case "Coral Gables":
+      good = cgGood;
+      trash = cgTrash;
+      special = cgSpecial;
+      break;
+
+    case "Homestead":
+      good = hGood;
+      trash = hTrash;
+      special = hSpecial;
+      break;
+
+    case "Indian Creek":
+      good = icGood;
+      trash = icTrash;
+      special = icSpecial;
+      break;
+
+    case "Miami":
+      good = mGood;
+      trash = mTrash;
+      special = mSpecial;
+      break;
+
+    case "Miami Shores":
+      good = msGood;
+      trash = msTrash;
+      special = msSpecial;
+      break;
+
+    case "North Miami":
+      good = nmGood;
+      trash = nmTrash;
+      special = nmSpecial;
+      break;
+
+    case "North Miami Beach":
+      good = nmbGood;
+      trash = nmbTrash;
+      special = nmbSpecial;
+      break;
+
+    case "Surfside":
+      good = sGood;
+      trash = sTrash;
+      special = sSpecial;
+      break;
+
     default:
       console.error("NO INFO FOR THIS LOCATION");
       good = otherGood;
@@ -258,163 +765,64 @@ export default function CityRules({ location }) {
     </View>
   }
 
+  const [activeTab, setActiveTab] = useState('good');
+  const data = {
+    good,
+    trash,
+    special,
+  };
+  const tabs = [
+    { key: 'good', label: 'recycle'},
+    { key: 'trash', label: 'trash'},
+    { key: 'special', label: 'drop-off'},
+  ];
+
   return (
     <View style={styles.listContainer}>
-      {/* city name */}
-      <Text style={styles.cityTitle}>
-        {location}
-      </Text>
-
-      <View style={styles.sectionContainer}>
-      {/* section header */}
-      <Text style={styles.sectionHeader}>
-        Recyclable Items
-      </Text>
-      
-      {/* item list */}
-      <View>
-        {good.map((item, index) => (
-          <Text style={styles.itemEntry} key={index}>
-                {item}
-              </Text>
+      {/* tabs */}
+      <View style={{ flexDirection: 'row',  }}>
+        {tabs.map(tab => (
+          <TouchableOpacity
+            key={tab.key}
+            onPress={() => setActiveTab(tab.key)}
+            style={{
+              flex: 1, 
+              alignItems: 'center', 
+              paddingVertical: 12, 
+              borderColor: "#024935",
+              borderTopWidth: activeTab === tab.key ? 3 : 0,
+              borderLeftWidth: activeTab === tab.key ? 3 : 0,
+              borderRightWidth: activeTab === tab.key ? 3 : 0,
+              borderBottomWidth: activeTab === tab.key ? 0 : 3,
+              borderBottomEndRadius: 0,
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+            }}
+          >
+            <Text style={{
+              fontSize: 18, fontWeight: activeTab === tab.key ? '500' : '400', color: activeTab === tab.key ? 'black' : '#888'
+            }}>
+              {tab.label.toUpperCase()}
+            </Text>
+          </TouchableOpacity>
         ))}
       </View>
-      </View>
 
-      {/* trash */}
-      <View style={styles.sectionContainer}>
-      {/* section header */}
-      <Text style={styles.sectionHeader}>
-        Trash
-      </Text>
-      
-      {/* item list */}
-      <View>
-        {trash.map((item, index) => (
-          <Text style={styles.itemEntry} key={index}>
-                {item}
-              </Text>
-        ))}
-      </View>
-      </View>
+      {/* list */}
+      <FlatList
+        style={{ borderLeftWidth: 3, borderRightWidth: 3, borderBottomWidth: 3, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderColor: "#024935", paddingHorizontal: 6 }}
+        data={data[activeTab]}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Text style={{ paddingVertical: 5, fontSize: 18 }}>
+            {item}
+          </Text>
+        )}
+      />
 
-      {/* drop-off */}
-      <View style={styles.sectionContainer}>
-      {/* section header */}
-      <Text style={styles.sectionHeader}>
-        Drop-Off
-      </Text>
-
-      <Text style={styles.sectionSubtitle}>
-        Consider checking out the Drop-Off tab to find locations for special items!
-      </Text>
-      
-      {/* item list */}
-      <View>
-        {special.map((item, index) => (
-          <Text style={styles.itemEntry} key={index}>
-                {item}
-              </Text>
-        ))}
-      </View>
-      </View>
     </View>
   );
-};
-
-// export default function CityRules({ location }) {
-//   // console.log("Locatoin: ", location);
-//   switch (location) {
-//     default:
-//     // case "Aventura":
-//     // case "Cutler Bay":
-//     // case "Doral":
-//     // case "Miami Gardens":
-//     // case "Miami Lakes":
-//     // case "Opa-locka":
-//     // case "Palmetto Bay":
-//     // case "Pinecrest":
-//     // case "Sunny Isles Beach":
-//     // case "Sweetwater":
-//     // case "El Portal":
-//     // case "Florida City":
-//     // case "Medley":
-//     // case "Miami Beach":
-//     // case "Miami Springs":
-//     // case "North Bay Village":
-//     // case "South Miami":
-//     // case "Virginia Gardens":
-//     // case "West Miami":
-//       return (
-//         <View style={styles.container}>
-//           {/* city name */}
-//           <Text style={styles.itemTitle}>
-//             {location}
-//           </Text>
-
-//           {/* header */}
-//           <Text style={styles.alternativeText}>
-//             Recyclable Items:
-//           </Text>
-
-//           {/* list of recyclable items */}
-//           <Text style={styles.alternativeText}> Aluminum Cans </Text>
-//           <Text style={styles.alternativeText}> Juice/Milk Cartons </Text>
-//           <Text style={styles.alternativeText}> Books </Text>
-//           <Text style={styles.alternativeText}> Plastic & Glass Bottles </Text>
-//           <Text style={styles.alternativeText}> Plastic Butter & Margarine Tubs </Text>
-//           <Text style={styles.alternativeText}> Cans </Text>
-//           <Text style={styles.alternativeText}> Clean Cardboard</Text>
-//           <Text style={styles.alternativeText}> Paper Documents</Text>
-//           <Text style={styles.alternativeText}> Paper egg cartons</Text>
-
-//           {/* header */}
-//           <Text style={styles.alternativeText}>
-//             Non-Recyclable Items:
-//           </Text>
-
-//           {/* list of non-recyclable items */}
-//           <Text style={styles.alternativeText}> Aerosol Cans </Text>
-//           <Text style={styles.alternativeText}> Batteries (Rechargeable, coin cell, and vehicle batteries may not be thrown away, either. Check the Drop-Off tab for a suitable disposal location) </Text>
-//           <Text style={styles.alternativeText}> Ceramics</Text>
-//           <Text style={styles.alternativeText}> Christmas Trees</Text>
-//           <Text style={styles.alternativeText}> Christmas Lights</Text>
-//           <Text style={styles.alternativeText}> Eye Glasses</Text>
-//           <Text style={styles.alternativeText}> Foam Products</Text>
-//           <Text style={styles.alternativeText}> Furniture</Text>
-//           <Text style={styles.alternativeText}> Garden Hoses</Text>
-
-//           <Text style={styles.alternativeText}>
-//             Non-Recyclable & Non-Trash Items:
-//           </Text>
-
-//           <Text style={styles.alternativeText}>Rechargeable, coin cell, and vehicle batteries</Text>
-//           <Text style={styles.alternativeText}>Light Bulbs</Text>
-//           <Text style={styles.alternativeText}>Ink cartridges</Text>
-
-//         </View>
-//       );
-
-//     //default:
-//       // return (
-//       //   <View style={styles.container}>
-//       //     {/* city name */}
-//       //     <Text style={styles.itemTitle}>
-//       //       {location}
-//       //     </Text>
-
-//       //     {/* header */}
-//       //     <Text style={styles.alternativeText}>
-//       //       Recyclable Items:
-//       //     </Text>
-
-//       //     {/* list of recyclable items */}
-//       //     <Text style={styles.alternativeText}> Data not yet available for {location}! </Text>
-
-//       //   </View>
-//       // );
-//   }
-// }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -461,9 +869,10 @@ const styles = StyleSheet.create({
   listContainer: {
     backgroundColor: "#fff",
     marginTop: normalize(15),
-    paddingHorizontal: normalize(15),
-    paddingVertical: normalize(8),
-    gap: normalize(16),
+    padding: normalize(8),
+    //paddingHorizontal: normalize(8),
+    //paddingVertical: normalize(8),
+    //gap: normalize(16),
     borderRadius: normalize(8),
   },
 

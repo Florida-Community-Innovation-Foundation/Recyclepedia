@@ -67,8 +67,8 @@ const CurbsideDropoff = () => {
   const [dropoffColor, setDropoffColor] = useState("#024935");
   const [selectText, setSelectText] = useState("SELECT YOUR TOWN OR CITY:");
   const [city, setCity] = useState(null);
-  const [places, setPlaces] = useState([]);
-  const [testing, setTesting] = useState(false);
+  const [curbsideCities, setCurbsideCities] = useState([]);
+  const [dropoffPOIs, setDropoffPOIs] = useState([]);
   const mapRef = useRef(null);
 
   // update places once curbside data loads
@@ -86,7 +86,7 @@ const CurbsideDropoff = () => {
       };
     });
 
-    setPlaces(newPlaces);
+    setCurbsideCities(newPlaces);
   }, [curbsideData]);
 
   // update when city changes
@@ -97,9 +97,9 @@ const CurbsideDropoff = () => {
 
     let loc = curbsideData.find(entry => entry[city]);
 
-    // if user selects a drop-off location, loc won't have anything
+    // if user selects a drop-off location, loc won't have anything, this can be removed since this no longer runs w/ drop-off
     if (!loc) {
-      loc = places.find((place) => place.name === city);
+      loc = curbsideCities.find((place) => place.name === city);
 
       // get city coords for map transition
       const testCoord = {
@@ -144,10 +144,11 @@ const CurbsideDropoff = () => {
 
   // update the region when curbside data's places finishes loading
   useEffect(() => {
-    if (places.length > 0) {
-      const miami = places.find((place) => place.name === "Miami");
+    if (curbsideCities.length > 0) {
+      const miami = curbsideCities.find((place) => place.name === "Miami");
 
       if (miami && miami.location) {
+        console.log("HERELOLOLOL");
         setRegion({
           latitude: miami.location.latitude,
           longitude: miami.location.longitude,
@@ -156,19 +157,12 @@ const CurbsideDropoff = () => {
         });
       }
     }
-  }, [places]);
+  }, [curbsideCities]);
 
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
-  const onSelectCity = (location) =>
-      setCity(location);
-
   const handleSubmit = async () => {
-    // debug
-    console.log("City: ", city);
-    console.log("Places: ", places);
-
     const materials = new Map([
       //used to calculate carbon offset
       ["plastic", 1.02], // kg CO2 saved per kg of plastic
@@ -187,7 +181,7 @@ const CurbsideDropoff = () => {
       setChosenItem(category);
       setCarbonOffset(prev => prev + materials.get(category));
 
-      setPlaces(
+      setDropoffPOIs(
         _.chain(dropOffData)
           .filter((dropOffLocation) => dropOffLocation["Category"] === category)
           .map((dropOffLocation) => {
@@ -203,10 +197,6 @@ const CurbsideDropoff = () => {
           .uniqBy((location) => `${String(location.name).toLowerCase().trim()}_${location.latitude}_${location.longitude}`) // this is just in testing
           .value(),
       );
-
-      //setCity(places.at(0));
-
-      setTesting(true);
     }
   };
 
@@ -274,6 +264,7 @@ const CurbsideDropoff = () => {
                 setCurbsideColor("white");
                 setDropoffColor("#024935");
                 setSelectText("SELECT YOUR TOWN OR CITY:");
+                //setCity(prevCity);
               }}
             >
               {/* Curbside selected */}
@@ -318,7 +309,6 @@ const CurbsideDropoff = () => {
                 );
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setCity("Miami");
                 setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
               }}
             >
@@ -455,13 +445,6 @@ const CurbsideDropoff = () => {
                   )}
                   key="curbsideCityDropdown"
                 />
-
-                {/* <DropdownSelector
-                    itemType="city"
-                    setItem={setCity}
-                    cities={getCities(curbsideData)}
-                    key="dropoffCityDropdown"
-                  /> */}
               </>
 
 
@@ -480,6 +463,7 @@ const CurbsideDropoff = () => {
           </View>
         )}
 
+        {/* This is currently disabled since it's buggy and hard to test */}
         {/* Show "Use my current location" for users to populate location data automatically */}
         {/* <Pressable
             style={styles.selectCurrentLocation}
@@ -506,7 +490,6 @@ const CurbsideDropoff = () => {
                 marginBottom: 10,
                 color: "#FFFFFF",
                 textAlign: "left",
-                //marginHorizontal: 32,
               },
             ]}
           >
@@ -527,30 +510,55 @@ const CurbsideDropoff = () => {
             provider={PROVIDER_GOOGLE}
             ref={mapRef}
           >
-            {places &&
-              places.map((place, index) => (
-                <Marker
-                  key={index}
-                  coordinate={place.location}
-                  title={place.name}
-                  description={place.street}
-                  titleVisibility="visible" // [note]: this is only on ios (so no android emulator)
-                  onPress={() => handleMapPoiClick(place)}
-                />
-              ))}
+              {
+                curbsideColor === "white" && curbsideCities &&
+                curbsideCities.map((place, index) => (
+                  <Marker
+                    key={index}
+                    coordinate={place.location}
+                    title={place.name}
+                    description={place.street}
+                    titleVisibility="visible" // [note]: this is only on ios (so no android emulator)
+                    onPress={() => handleMapPoiClick(place)}
+                  />
+                ))
+              }
+              {
+                dropoffColor === "white" && dropoffPOIs &&
+                dropoffPOIs.map((place, index) => (
+                  <Marker
+                    key={index}
+                    coordinate={place.location}
+                    title={place.name}
+                    description={place.street}
+                    titleVisibility="visible" // [note]: this is only on ios (so no android emulator)
+                  />
+                ))
+              }
           </MapView>
 
           {/* Show list of recycling locations */}
           {dropoffColor === "white" &&
-            <LocationList locations={places} onSelectCity={onSelectCity} />
+            <LocationList locations={dropoffPOIs} onSelectCity={ (name) => {
+              let location = dropoffPOIs.find((place) => place.name === name);
+
+              const locationCoords = {
+                latitude: location.location.latitude,
+                longitude: location.location.longitude,
+              };
+
+              mapRef.current.animateToRegion({
+                ...locationCoords,
+                longitudeDelta: 0.0922,
+                latitudeDelta: 0.0421,
+              }, 500); // ms/transition
+            }} />
           }
           {
             curbsideColor === "white" && city != null &&
             <CityRules location={city} />
           }
         </View>
-
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -749,19 +757,41 @@ const styles = StyleSheet.create({
 
   //Submit Button Styles
   submitButton: {
-    backgroundColor: "#24A0ED",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#828282",
+    // marginLeft: normalize(75, "width"),
+    // width: normalize(155, "width"),
+    backgroundColor: "#FFFFFF",
+    // height: normalize(43, "height"),
+    // marginTop: normalize(10, "height"),
+    padding: normalize(10),
     width: normalize(150, "width"),
     height: normalize(40, "height"),
-    borderRadius: normalize(8),
+
     marginBottom: normalize(5, "height"),
     marginTop: normalize(15, "height"),
     marginLeft: normalize(185, "width"),
     marginRight: normalize(32, "width"),
+    
+
+    // backgroundColor: "#24A0ED",
+    // width: normalize(150, "width"),
+    // height: normalize(40, "height"),
+    // borderRadius: normalize(8),
+    // marginBottom: normalize(5, "height"),
+    // marginTop: normalize(15, "height"),
+    // marginLeft: normalize(185, "width"),
+    // marginRight: normalize(32, "width"),
   },
   submitButtonText: {
-    color: "#FFFFFF",
-    marginTop: normalize(10, "height"),
     textAlign: "center",
+    fontSize: 22,
+    fontFamily: "Bebas Neue",
+    color: "#024935",
+    // color: "#FFFFFF",
+    // marginTop: normalize(10, "height"),
+    // textAlign: "center",
   },
   //Map Styles
   map: {

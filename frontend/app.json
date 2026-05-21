@@ -6,8 +6,20 @@
     "version": "1.0.0",
     "icon": "./src/assets/img/icon.png",
     "newArchEnabled": true,
-    "platforms": ["ios", "android"],
-    "plugins": [
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [      
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "./plugins/withReactNativeMapsfix",
       "expo-router",
       [
         "expo-camera",
@@ -66,12 +78,6 @@
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.READ_CALENDAR",
-        "android.permission.WRITE_CALENDAR",
-        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.aadit.kamat.Recyclepedia"
@@ -80,7 +86,10 @@
       "config": {
         "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
       },
-      "bundleIdentifier": "com.aadit.kamat.Recyclepedia"
+      "bundleIdentifier": "com.aadit.kamat.Recyclepedia",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "extra": {
       "router": {},
