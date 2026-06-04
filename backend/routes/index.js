@@ -290,15 +290,26 @@ router.use("/itemData", async (req, res, next) => {
 router.post("/itemData", async (req, res) => {
   console.log("req body: ", req.body);
 
-  const base64String = req.body.image.base64;
-  const mediaType = 'image/jpeg';
-  const imageURI = `data:${mediaType};base64,${base64String}`;
+  try {
+    const base64String = req.body.image.base64;
 
-  // location from frontend should be passed to processScan as well
-  const response = await processScan(imageURI, req.nyckelAccessToken, req.body.city);
+    // detect image format from base64 header, fall back to jpeg
+    const mimeMatch = base64String.match(/^data:(image\/\w+);base64,/);
+    let mediaType = 'image/jpeg';
+    let rawBase64 = base64String;
+    if (mimeMatch) {
+      mediaType = mimeMatch[1];
+      rawBase64 = base64String.replace(/^data:image\/\w+;base64,/, '');
+    }
 
-  const r = { text: response };
-  return res.status(200).json(r);
+    const imageURI = `data:${mediaType};base64,${rawBase64}`;
+
+    const response = await processScan(imageURI, req.nyckelAccessToken, req.body.city);
+    return res.status(200).json({ text: response });
+  } catch (err) {
+    console.error("Error processing image: ", err);
+    return res.status(200).json({ text: "We couldn't process this image. Please try again with a different photo." });
+  }
 });
 
 export default router;
