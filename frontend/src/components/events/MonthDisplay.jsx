@@ -2,7 +2,7 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import dayjs from "dayjs";
 import _ from "lodash";
 import {
-  FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -34,22 +34,6 @@ export function MonthDisplay({
         }
         return false;
       }),
-    );
-  };
-
-  const renderItem = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        key={index}
-        onPress={() => dayDisplayHandlePress(index)}
-      >
-        <DayDisplay
-          dayOfWeek={item.dayOfWeek}
-          dayNum={item.dayNum}
-          hasEvents={item.hasEvents}
-          isPressed={dayDisplaysPressed[index]}
-        />
-      </TouchableOpacity>
     );
   };
 
@@ -92,14 +76,21 @@ export function MonthDisplay({
           </TouchableOpacity>
         </View>
       </View>
-      <View>
-        <FlatList
-          horizontal={true}
-          data={getMonthDisplayData(currentDate)}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.dayNum}
-        />
-      </View>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        {getMonthDisplayData(currentDate).map((item, index) => (
+          <TouchableOpacity
+            key={item.dayNum}
+            onPress={() => dayDisplayHandlePress(index)}
+          >
+            <DayDisplay
+              dayOfWeek={item.dayOfWeek}
+              dayNum={item.dayNum}
+              hasEvents={item.hasEvents}
+              isPressed={dayDisplaysPressed[index]}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }

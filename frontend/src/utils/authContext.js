@@ -170,35 +170,49 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    // reset user name/recycling info 
-
     setIsLoggedIn(false);
+    setUUID("");
+    setUserName("Guest");
     storeAuthState({ isLoggedIn: false });
     router.replace("/login");
-    signOut(firebaseAuth); // make sure this is ok if there is no firebase user logged (ie Guest)
+    signOut(firebaseAuth).catch(() => {}); // no-op if no Firebase user (guest)
   };
 
-  // disabled for now since not exactly sure how it should work
   useEffect(() => {
-    const getAuthFromStorage = async () => {
-      // simulate a delay, e.g. for an API request
-      //await new Promise((res) => setTimeout(() => res(null), 1000));
-      try {
-        const value = await AsyncStorage.getItem(authStorageKey);
+    if (!firebaseAuth) {
+      console.warn("[Auth] firebaseAuth is undefined — skipping onAuthStateChanged");
+      setIsReady(true);
+      return;
+    }
 
-        console.log("Value: ", value);
+    const fallback = setTimeout(() => setIsReady(true), 5000);
 
-        if (value !== null) {
-          const auth = JSON.parse(value);
-          console.log("Auth: ", auth);
-          setIsLoggedIn(auth.isLoggedIn);
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+      clearTimeout(fallback);
+      if (user) {
+        setUUID(user.uid);
+        setUserName(user.email);
+        setIsLoggedIn(true);
+      } else {
+        // No Firebase user — reset identity and check for guest login
+        setUUID("");
+        setUserName("Guest");
+        try {
+          const value = await AsyncStorage.getItem(authStorageKey);
+          if (value !== null) {
+            const auth = JSON.parse(value);
+            setIsLoggedIn(auth.isLoggedIn || false);
+          }
+        } catch (error) {
+          console.log("Error fetching from storage", error);
         }
-      } catch (error) {
-        console.log("Error fetching from storage", error);
       }
       setIsReady(true);
+    });
+    return () => {
+      clearTimeout(fallback);
+      unsubscribe();
     };
-    getAuthFromStorage();
   }, []);
 
   useEffect(() => {

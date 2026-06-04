@@ -52,9 +52,9 @@ export default function Custombar({ state, descriptors, navigation }) {
 const styles = StyleSheet.create({
   bar: {
     position: "absolute",
-    paddingBottom: "7%",
+    paddingBottom: 28,
     bottom: 0,
-    height: "10%",
+    height: 80,
     width: "100%",
     backgroundColor: "white",
     flexDirection: "row",

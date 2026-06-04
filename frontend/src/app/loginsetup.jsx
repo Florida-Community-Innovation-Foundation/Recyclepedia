@@ -3,7 +3,10 @@ import { Link } from "expo-router";
 import { useContext, useState } from "react";
 import {
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -28,9 +31,8 @@ export default function Loginsetup() {
       return;
     }
 
-    // make sure passwords are same
     if (pass === "") {
-      alert("Please enter an appropriate email address!");
+      alert("Please enter a password!");
       return;
     }
 
@@ -43,7 +45,10 @@ export default function Loginsetup() {
 
 
   return (
-    <View style={nstyles.screen}>
+    <KeyboardAvoidingView
+      style={nstyles.screen}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <SafeAreaView style={nstyles.saview}>
         {/* header view (1/3 screen) */}
         <View style={nstyles.headerView}>
@@ -60,7 +65,12 @@ export default function Loginsetup() {
         </View>
 
         {/* body view (2/3 screen) */}
-        <View style={nstyles.bodyView}>
+        <ScrollView
+          style={nstyles.bodyScroll}
+          contentContainerStyle={nstyles.bodyView}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={nstyles.loginText}>
             LOGIN
           </Text>
@@ -76,6 +86,8 @@ export default function Loginsetup() {
               value={email}
               onChangeText={setEmail}
               style={nstyles.textInput}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
           </View>
 
@@ -89,28 +101,27 @@ export default function Loginsetup() {
               value={password}
               onChangeText={setPassword}
               style={nstyles.textInput}
-              autoComplete="new-password"
+              secureTextEntry
+              autoComplete="password"
             />
           </View>
 
           <Pressable style={nstyles.signUpButton}
             onPress={() => emailPasswordLogin(email, password)}
           >
-            {/* <Text style={[styles.signupText]} onPress={() => authContext.loginUserWithEmailPassword()}> */}
             <Text style={nstyles.buttonText}>
               SUBMIT
             </Text>
           </Pressable>
 
-         <Text style={nstyles.noticeText}>
-           Don't have an account?{" "}
-           <Text onPress={() => router.push("/signupsetup")}>
-             Sign Up
+         <Pressable onPress={() => router.push("/signupsetup")}>
+           <Text style={nstyles.noticeText}>
+             Don't have an account? Sign Up
            </Text>
-         </Text>
-        </View>
+         </Pressable>
+        </ScrollView>
       </SafeAreaView>
-    </View>
+    </KeyboardAvoidingView>
 
     // <View style={styles.screen}>
     // <View style={styles.createAccountContainer}>
@@ -204,8 +215,10 @@ const nstyles = StyleSheet.create({
 
   // header
   headerView: {
-    padding: 60,
-    flex: 1,
+    paddingHorizontal: 40,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: 200,
   },
   headerText: {
     fontFamily: "Bebas Neue",
@@ -215,19 +228,22 @@ const nstyles = StyleSheet.create({
     color: "#FFFFFF",
   },
   headerLogo: {
-    flex: 1,
+    height: 120,
     width: "100%",
     resizeMode: "contain",
   },
 
   // body (login etc)
-  bodyView: {
-    flex: 2,
+  bodyScroll: {
+    flex: 1,
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
+  },
+  bodyView: {
     padding: 40,
-    gap: "5%",
+    gap: 20,
+    paddingBottom: 60,
   },
   loginText: {
     fontFamily: "Bebas Neue",
@@ -254,12 +270,11 @@ const nstyles = StyleSheet.create({
 
   // buttons
   signUpButton: {
-    //flex: 1,
     backgroundColor: "#024935",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-    height: "10%",
+    paddingVertical: 16,
   },
   buttonText: {
     fontFamily: "Bebas Neue",

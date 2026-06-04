@@ -5,12 +5,12 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 import { normalize } from "~/utils/normalize";
 // import * as Location from 'expo-location'; // disabled, for now
-import { getBaseURL } from "../../../utils/baselineData";
+import { getBaseURL, getItemsData, getCurbsideData, getDropoffData } from "../../../utils/baselineData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import _ from "lodash";
@@ -50,7 +50,7 @@ export default function ItemScan() {
     navigation.addListener("tabPress", () => {
       //setImageUri(null);
       setImage(null);
-      setCity(null);
+      setCity("Miami");
     });
 
     // this is disabled for now since it is buggy and tricky to test, reenable later
@@ -99,38 +99,38 @@ export default function ItemScan() {
   useEffect(() => {
     const getItemAccepted = async () => {
       if (!city) {
-        Alert("You must select a city before proceeding!");
+        Alert.alert("You must select a city before proceeding!");
         console.log("Need to select a city");
         return;
       }
       //console.log("City: ", city);
-      const baseURL = await getBaseURL();
+      try {
+        const baseURL = await getBaseURL();
 
-      console.log("JSON stringifying request...");
-      const reqBody = JSON.stringify({ city, image });
-      console.log("Request stringified!");
+        const reqBody = JSON.stringify({ city, image });
+        console.log("Request size: ", new Blob([reqBody]).size);
 
-      console.log("Request size: ", new Blob([reqBody]).size);
+        const response = await fetch(`${baseURL}/itemData`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: reqBody
+        });
 
-      const response = await fetch(`${baseURL}/itemData`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        //body: JSON.stringify({ location, image }),
-        //body: JSON.stringify({ city, image }),
-        body: reqBody
-      });
+        if (!response.ok) {
+          console.error("Response not ok: ", response);
+          Alert.alert("Oops! Something went wrong!");
+          return;
+        }
 
-      if (!response.ok) {
-        console.error("Res not ok");
-        console.error("Response: ", response);
-        Alert("Oops! Something went wrong!");
+        const data = await response.json();
+        setExText(data.text ?? "");
+        console.log("Data: ", data);
+      } catch (error) {
+        console.error("Network error: ", error);
+        Alert.alert("Network error. Please check your connection and try again.");
       }
-
-      const data = await response.json();
-      setExText(data.text);
-      console.log("Data: ", data);
     };
 
     if (image != null) {
@@ -139,10 +139,15 @@ export default function ItemScan() {
   }, [image]);
 
   const handleCameraPhotoPress = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission needed", "Camera access is required to take photos.");
+      return;
+    }
     setImage(null);
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ["images"],
-      quality: 0.5, // quality probably should be downgraded and 0.5 seems to work fine
+      quality: 0.5,
       base64: true,
     });
 
@@ -152,6 +157,11 @@ export default function ItemScan() {
   };
 
   const handleUploadPhotoPress = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission needed", "Photo library access is required to upload photos.");
+      return;
+    }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 0.5,

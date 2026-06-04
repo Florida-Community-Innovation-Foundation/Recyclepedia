@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { normalize } from "~/utils/normalize";
 
 // knot ideal but we need something for saturday
@@ -630,6 +630,8 @@ function makeDiv({ item }) {
 }
 
 export default function CityRules({ location }) {
+  // Must be at top — React requires hooks before any conditional return
+  const [activeTab, setActiveTab] = useState('good');
   let good, trash, special;
 
   switch (location) {
@@ -757,15 +759,15 @@ export default function CityRules({ location }) {
   }
 
   if (good.length === 0 && trash.length === 0 && special.length === 0) {
-    //console.error("NO INFO FOR LOCATION ", location);
-    <View>
-      <Text>
-        No info for location: {location}!
-      </Text>
-    </View>
+    return (
+      <View>
+        <Text>
+          No info for location: {location}!
+        </Text>
+      </View>
+    );
   }
 
-  const [activeTab, setActiveTab] = useState('good');
   const data = {
     good,
     trash,
@@ -809,16 +811,13 @@ export default function CityRules({ location }) {
       </View>
 
       {/* list */}
-      <FlatList
-        style={{ borderLeftWidth: 3, borderRightWidth: 3, borderBottomWidth: 3, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderColor: "#024935", paddingHorizontal: 6 }}
-        data={data[activeTab]}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Text style={{ paddingVertical: 5, fontSize: 18 }}>
+      <View style={{ borderLeftWidth: 3, borderRightWidth: 3, borderBottomWidth: 3, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, borderColor: "#024935", paddingHorizontal: 6 }}>
+        {data[activeTab].map((item, index) => (
+          <Text key={index} style={{ paddingVertical: 5, fontSize: 18 }}>
             {item}
           </Text>
-        )}
-      />
+        ))}
+      </View>
 
     </View>
   );

@@ -91,7 +91,7 @@ const CurbsideDropoff = () => {
 
   // update when city changes
   useEffect(() => {
-    if (city == null) {
+    if (city == null || !curbsideData) {
       return;
     }
 
@@ -101,6 +101,8 @@ const CurbsideDropoff = () => {
     if (!loc) {
       loc = curbsideCities.find((place) => place.name === city);
 
+      if (!loc?.location) return;
+
       // get city coords for map transition
       const testCoord = {
         latitude: loc.location.latitude,
@@ -108,14 +110,18 @@ const CurbsideDropoff = () => {
       };
 
       // update map to zoom in on marker
-      mapRef.current.animateToRegion({
-        ...testCoord,
-        longitudeDelta: 0.0922,
-        latitudeDelta: 0.0421,
-      }, 500);
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          ...testCoord,
+          longitudeDelta: 0.0922,
+          latitudeDelta: 0.0421,
+        }, 500);
+      }
 
       return;
     }
+
+    if (!loc[city]?.latitude) return;
 
     // get city coords for map transition
     const testCoord = {
@@ -124,11 +130,13 @@ const CurbsideDropoff = () => {
     }
 
     // update map to zoom in on marker
-    mapRef.current.animateToRegion({
-      ...testCoord,
-      longitudeDelta: 0.0922,
-      latitudeDelta: 0.0421,
-    }, 500);
+    if (mapRef.current) {
+      mapRef.current.animateToRegion({
+        ...testCoord,
+        longitudeDelta: 0.0922,
+        latitudeDelta: 0.0421,
+      }, 500);
+    }
 
   }, [city]);
 
@@ -318,7 +326,7 @@ const CurbsideDropoff = () => {
                   <Text
                     style={[
                       styles.pillText,
-                      { color: dropoffColor === "white" ? "#024935" : white },
+                      { color: dropoffColor === "white" ? "#024935" : "white" },
                     ]}
                   >
                     {" "}
@@ -541,6 +549,8 @@ const CurbsideDropoff = () => {
           {dropoffColor === "white" &&
             <LocationList locations={dropoffPOIs} onSelectCity={ (name) => {
               let location = dropoffPOIs.find((place) => place.name === name);
+
+              if (!location?.location || !mapRef.current) return;
 
               const locationCoords = {
                 latitude: location.location.latitude,

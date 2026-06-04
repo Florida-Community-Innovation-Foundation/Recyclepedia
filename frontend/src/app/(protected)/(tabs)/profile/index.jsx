@@ -13,7 +13,6 @@ import {
   Text,
   View,
   TextInput,
-  FlatList,
   TouchableOpacity,
   Modal
 } from "react-native";
@@ -164,8 +163,18 @@ export default function UserAccount() {
     });
 
     if (!result.canceled) {
-      console.log("Photo taken!!");
-      setProfilePicture({ uri: result.assets[0].uri });
+      const uri = result.assets[0].uri;
+      setProfilePicture({ uri });
+
+      if (authContext.uuid) {
+        await setDoc(
+          doc(authContext.fbDB, "users", authContext.uuid),
+          { profilePicture: uri },
+          { merge: true }
+        );
+      } else {
+        await AsyncStorage.setItem("profilePicture", uri);
+      }
     }
   };
 
@@ -214,13 +223,8 @@ export default function UserAccount() {
     );
   };
 
-  function logoutUser() {
-    console.log("Logout...");
-
-    console.log("Clearing AsyncStorage...");
-    AsyncStorage.clear();
-    console.log("Cleared Storage!");
-
+  async function logoutUser() {
+    await AsyncStorage.clear();
     authContext.logout();
   }
 
@@ -257,7 +261,7 @@ export default function UserAccount() {
     }
 
     // only store in local storage if Guest
-    AsyncStorage.setItem("items", JSON.stringify(addedItems));
+    AsyncStorage.setItem("items", JSON.stringify(addedItems)).catch(console.error);
   }, [addedItems]);
 
   // when profile screen first loads, get data from AsyncStorage if Guest, else Firebase
@@ -266,10 +270,10 @@ export default function UserAccount() {
       console.log("Loading items...");
 
       let items;
+      let savedProfilePicture;
 
       // if user isn't Guest, load from Firestore
       if (authContext.uuid) {
-        // get snapshot of data
         const snapshot = await getDoc(doc(authContext.fbDB, "users", authContext.uuid));
 
         if (!snapshot.exists()) {
@@ -277,17 +281,23 @@ export default function UserAccount() {
         }
 
         items = snapshot.data().score;
+        savedProfilePicture = snapshot.data().profilePicture;
       }
 
       // user is Guest, load from Storage
       else {
         items = await AsyncStorage.getItem("items");
+        savedProfilePicture = await AsyncStorage.getItem("profilePicture");
+      }
+
+      if (savedProfilePicture) {
+        setProfilePicture({ uri: savedProfilePicture });
       }
 
       if (!items) {
         return;
       }
-      
+
       setAddedItems(JSON.parse(items));
     }
 
@@ -339,7 +349,7 @@ export default function UserAccount() {
                 style={[
                   styles.recyclingGoalCompleted,
                   {
-                    width: `${new Number((addedItems.reduce((total, item) => total + item.quantity, 0) * 100) / totalItemsToRecycle).toFixed(2)}%`,
+                    width: `${Math.min((addedItems.reduce((total, item) => total + item.quantity, 0) * 100) / totalItemsToRecycle, 100).toFixed(2)}%`,
                   },
                 ]}
               />
@@ -447,11 +457,10 @@ export default function UserAccount() {
                       onPress={() => setIsDropdownVisible(false)}
                     >
                       <View style={styles.dropdownContainer}>
-                        <FlatList
-                          data={materials}
-                          keyExtractor={(item) => item}
-                          renderItem={({ item }) => (
+                        <ScrollView>
+                          {materials.map((item) => (
                             <TouchableOpacity
+                              key={item}
                               style={[
                                 styles.dropdownItem,
                                 selectedMaterial === item && styles.selectedDropdownItem
@@ -468,8 +477,8 @@ export default function UserAccount() {
                                 {item}
                               </Text>
                             </TouchableOpacity>
-                          )}
-                        />
+                          ))}
+                        </ScrollView>
                       </View>
                     </TouchableOpacity>
                   </Modal>
@@ -693,7 +702,6 @@ const styles = StyleSheet.create({
   addedItemsContainer: {
     paddingTop: 8,
     paddingHorizontal: 16,
-    maxHeight: 200,
   },
 
   addedItemRow: {

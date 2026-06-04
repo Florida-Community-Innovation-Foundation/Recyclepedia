@@ -58,6 +58,10 @@ export async function getItemsData() {
   console.log("items");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/itemsData`);
+  if (!response.ok) {
+    console.error("Failed to fetch items data");
+    return;
+  }
   const itemsData = await response.json();
   return itemsData;
 }

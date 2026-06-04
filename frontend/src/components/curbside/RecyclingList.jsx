@@ -134,7 +134,7 @@ const RecyclingList = ({ items }) => {
                 {expandedItem.description}
               </Text>
               <Text style={styles.expandedItemRecycleStatus}>
-                {canRecycle ? "Can be recycled" : "Cannot be recycled"}
+                {expandedItem?.canRecycle ? "Can be recycled" : "Cannot be recycled"}
               </Text>
             </View>
           </View>
