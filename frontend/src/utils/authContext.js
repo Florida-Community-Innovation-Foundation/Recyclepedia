@@ -5,7 +5,7 @@ import { firebaseAuth, firebaseDB } from "../configs/firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const authStorageKey = "auth-key";
 

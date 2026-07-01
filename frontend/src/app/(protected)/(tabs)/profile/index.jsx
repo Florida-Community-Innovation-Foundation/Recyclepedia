@@ -155,26 +155,35 @@ export default function UserAccount() {
   };
 
   const handleProfilePictureEdit = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setProfilePicture({ uri });
-
-      if (authContext.uuid) {
-        await setDoc(
-          doc(authContext.fbDB, "users", authContext.uuid),
-          { profilePicture: uri },
-          { merge: true }
-        );
-      } else {
-        await AsyncStorage.setItem("profilePicture", uri);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        return;
       }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        setProfilePicture({ uri });
+
+        if (authContext.uuid) {
+          await setDoc(
+            doc(authContext.fbDB, "users", authContext.uuid),
+            { profilePicture: uri },
+            { merge: true }
+          );
+        } else {
+          await AsyncStorage.setItem("profilePicture", uri);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to update profile picture:", error);
     }
   };
 
@@ -224,7 +233,8 @@ export default function UserAccount() {
   };
 
   async function logoutUser() {
-    await AsyncStorage.clear();
+    // don't AsyncStorage.clear() here — that would wipe the guest's saved
+    // items and profile picture; authContext.logout() resets the auth state
     authContext.logout();
   }
 
@@ -247,11 +257,15 @@ export default function UserAccount() {
     console.log("Storing items...");
 
     const storeItemsDB = async () => {
-      await setDoc(
-        doc(authContext.fbDB, "users", authContext.uuid),
-        { score: JSON.stringify(addedItems) },
-        { merge: true }
-      );
+      try {
+        await setDoc(
+          doc(authContext.fbDB, "users", authContext.uuid),
+          { score: JSON.stringify(addedItems) },
+          { merge: true }
+        );
+      } catch (error) {
+        console.error("Failed to store items in Firestore:", error);
+      }
     }
 
     // if uuid is present user has account w/ firebase
@@ -267,38 +281,40 @@ export default function UserAccount() {
   // when profile screen first loads, get data from AsyncStorage if Guest, else Firebase
   useEffect(() => {
     const loadItems = async () => {
-      console.log("Loading items...");
+      try {
+        let items;
+        let savedProfilePicture;
 
-      let items;
-      let savedProfilePicture;
+        // if user isn't Guest, load from Firestore
+        if (authContext.uuid) {
+          const snapshot = await getDoc(doc(authContext.fbDB, "users", authContext.uuid));
 
-      // if user isn't Guest, load from Firestore
-      if (authContext.uuid) {
-        const snapshot = await getDoc(doc(authContext.fbDB, "users", authContext.uuid));
+          if (!snapshot.exists()) {
+            return;
+          }
 
-        if (!snapshot.exists()) {
+          items = snapshot.data().score;
+          savedProfilePicture = snapshot.data().profilePicture;
+        }
+
+        // user is Guest, load from Storage
+        else {
+          items = await AsyncStorage.getItem("items");
+          savedProfilePicture = await AsyncStorage.getItem("profilePicture");
+        }
+
+        if (savedProfilePicture) {
+          setProfilePicture({ uri: savedProfilePicture });
+        }
+
+        if (!items) {
           return;
         }
 
-        items = snapshot.data().score;
-        savedProfilePicture = snapshot.data().profilePicture;
+        setAddedItems(JSON.parse(items));
+      } catch (error) {
+        console.error("Failed to load saved items:", error);
       }
-
-      // user is Guest, load from Storage
-      else {
-        items = await AsyncStorage.getItem("items");
-        savedProfilePicture = await AsyncStorage.getItem("profilePicture");
-      }
-
-      if (savedProfilePicture) {
-        setProfilePicture({ uri: savedProfilePicture });
-      }
-
-      if (!items) {
-        return;
-      }
-
-      setAddedItems(JSON.parse(items));
     }
 
     loadItems();

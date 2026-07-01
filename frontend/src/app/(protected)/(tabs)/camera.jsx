@@ -45,10 +45,9 @@ export default function ItemScan() {
   const getCities = (curbsideData) =>
     _.map(curbsideData, (obj) => _.keys(obj)[0]);
 
-  // this only fires the first time a user goes to item scan
+  // reset the scan state whenever the user re-enters the tab
   useEffect(() => {
-    navigation.addListener("tabPress", () => {
-      //setImageUri(null);
+    const unsubscribe = navigation.addListener("tabPress", () => {
       setImage(null);
       setCity("Miami");
     });
@@ -93,6 +92,9 @@ export default function ItemScan() {
     // };
 
     // getLocation();
+
+    // unsubscribe on unmount — otherwise every remount stacks another listener
+    return unsubscribe;
   }, [navigation]);
 
   // // when the image is updated (uploaded or taken), send to backend
@@ -136,7 +138,8 @@ export default function ItemScan() {
     if (image != null) {
       getItemAccepted();
     }
-  }, [image]);
+    // include city so changing the dropdown re-checks the current photo
+  }, [image, city]);
 
   const handleCameraPhotoPress = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();

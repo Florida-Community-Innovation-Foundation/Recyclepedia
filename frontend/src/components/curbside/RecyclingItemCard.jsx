@@ -16,6 +16,12 @@ const RecyclingItemCard = ({ item }) => {
     setIsExpanded(!isExpanded);
   };
 
+  // items may carry a bundled asset (item.image, a require()) or a remote URL
+  // string (item.imageURL) — RN's Image source needs {uri} for URL strings
+  const imageSource =
+    item.image ??
+    (item.imageURL ? { uri: item.imageURL } : { uri: "https://placehold.co/96.png" });
+
   return (
     <View style={styles.container}>
       <View style={styles.badgeContainer}>
@@ -33,7 +39,7 @@ const RecyclingItemCard = ({ item }) => {
         <View style={styles.textContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
           <Image
-            source={item.imageURL || "https://placehold.co/96"}
+            source={imageSource}
             style={styles.itemImage}
             resizeMode="cover"
           />
@@ -62,9 +68,8 @@ const RecyclingItemCard = ({ item }) => {
               >
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
-              {console.log(item.imageURL)}
               <Image
-                source={item.imageURL || "https://placehold.co/250"} // Larger view of the image
+                source={imageSource}
                 style={styles.modalImage}
                 resizeMode="contain"
               />

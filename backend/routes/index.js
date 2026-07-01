@@ -1,15 +1,33 @@
-import express, { json } from "express";
+import express from "express";
 import _ from "lodash";
 import xlsx from "xlsx";
 import getBaselineData from "../utils/firebaseStorage.js";
 import getNyckelToken from "../middelware/tokenService.js";
 import { classifyAluminum } from "../utils/aluminumClassifier.js";
+import { logger } from "../utils/logging.js";
 
 const router = express.Router();
 
+// Express 4 doesn't catch rejected promises from async handlers — without
+// this wrapper a single failed Firebase/Nyckel call would crash the process.
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// The baseline spreadsheet changes rarely; cache it so every request doesn't
+// re-download and re-parse the whole xlsx from Firebase Storage.
+const BASELINE_CACHE_TTL_MS = 5 * 60 * 1000;
+let cachedWorkbook = null;
+let cachedAt = 0;
+
 async function readBaselineData() {
+  if (cachedWorkbook && Date.now() - cachedAt < BASELINE_CACHE_TTL_MS) {
+    return cachedWorkbook;
+  }
   const file = await getBaselineData();
-  return xlsx.read(file);
+  cachedWorkbook = xlsx.read(file);
+  cachedAt = Date.now();
+  return cachedWorkbook;
 }
 
 function mapCityToCategories(data) {
@@ -35,20 +53,23 @@ function mapLocationToCity(data, locations) {
   return _.chain(data)
     .map((row) => {
       const city = _.keys(row)[0];
+      // A city can exist in the Curbside sheet but be missing from the Data
+      // Collection sheet (typo or partial spreadsheet edit) — skip it rather
+      // than crashing the whole endpoint.
+      const location = _.find(locations, (loc) => loc["City"] === city);
+      if (!location) {
+        logger.warn(`City "${city}" has no row in the Data Collection sheet; skipping`);
+        return null;
+      }
       return {
         [city]: {
           items: row[city]["items"],
-          latitude: _.filter(
-            locations,
-            (location) => location["City"] === city,
-          )[0]["Latitude"],
-          longitude: _.filter(
-            locations,
-            (location) => location["City"] === city,
-          )[0]["Longitude"],
+          latitude: location["Latitude"],
+          longitude: location["Longitude"],
         },
       };
     })
+    .compact()
     .value();
 }
 
@@ -185,11 +206,18 @@ async function parseLabelMunicipality(data, municipality, base64Image) {
 
   // Stage 2: if Nyckel says aluminum, use local model to distinguish foil vs can
   if (label.includes("aluminum")) {
-    const aluminumResult = await classifyAluminum(base64Image);
-    //console.log("Aluminum Stage 2: ", aluminumResult);
+    // The local model only decodes JPEG; on any other format (or a corrupt
+    // image) fall back to the conservative foil rules instead of failing the
+    // whole scan.
+    let aluminumResult = null;
+    try {
+      aluminumResult = await classifyAluminum(base64Image);
+    } catch (err) {
+      logger.warn(`Aluminum stage-2 classification failed: ${err.message}`);
+    }
 
     // Aluminum cans are recyclable everywhere
-    if (aluminumResult.label === "aluminum can") {
+    if (aluminumResult && aluminumResult.label === "aluminum can") {
       return "This item is recyclable!";
     }
 
@@ -231,13 +259,17 @@ async function processScan(image, token, municipality) {
     )
   });
 
+  if (!response.ok) {
+    logger.error(`Nyckel invoke failed with status ${response.status}`);
+    return "We are currently experiencing technical difficulties, Please try again later.";
+  }
+
   const data = await response.json();
+  logger.info({ labelName: data.labelName, confidence: data.confidence }, "Nyckel result");
 
-  // log data for now to understand response formats
-  console.log("Data: ", data);
-
-  // Nyckel failed for some reason (use a better error detector)
-  if (data.message === 'Invalid bearer token') {
+  // Any error shape (rate limit, quota, changed API) lacks labelName
+  if (!data.labelName) {
+    logger.error({ nyckelResponse: data }, "Nyckel response missing labelName");
     return "We are currently experiencing technical difficulties, Please try again later.";
   }
 
@@ -248,7 +280,7 @@ async function processScan(image, token, municipality) {
   return result;
 }
 
-router.get("/curbsideData", async (req, res) => {
+router.get("/curbsideData", asyncHandler(async (req, res) => {
   const workbook = await readBaselineData();
   const sheets = [
     workbook.Sheets["Curbside"],
@@ -261,36 +293,36 @@ router.get("/curbsideData", async (req, res) => {
   const cityLocations = xlsx.utils.sheet_to_json(sheets[1]);
   curbsideData = mapLocationToCity(curbsideData, cityLocations);
 
-  res.send(curbsideData).status(200);
-  //return res.json(curbsideData);
-});
+  return res.status(200).json(curbsideData);
+}));
 
-router.get("/itemsData", async (req, res) => {
+router.get("/itemsData", asyncHandler(async (req, res) => {
   const workbook = await readBaselineData();
   const sheet = workbook.Sheets["Items"];
   const itemsData = xlsx.utils.sheet_to_json(sheet);
   return res.json(await getItemDetails(itemsData));
-});
+}));
 
-router.get("/dropOffData", async (req, res) => {
+router.get("/dropOffData", asyncHandler(async (req, res) => {
   const workbook = await readBaselineData();
   const sheet = workbook.Sheets["Items"];
   const itemsData = xlsx.utils.sheet_to_json(sheet);
   const dropOffLocations = getDropoffLocations(itemsData);
   return res.json(dropOffLocations);
-});
+}));
 
 // middleware to add Nyckel token to incoming requests
-router.use("/itemData", async (req, res, next) => {
+router.use("/itemData", asyncHandler(async (req, res, next) => {
   req.nyckelAccessToken = await getNyckelToken();
   next();
-});
+}));
 
 // gets image and location from frontend and uses nyckel to decide recyclability
 router.post("/itemData", async (req, res) => {
-  console.log("req body: ", req.body);
-
   try {
+    if (!req.body?.image?.base64) {
+      return res.status(400).json({ text: "No image was provided. Please take a photo and try again." });
+    }
     const base64String = req.body.image.base64;
 
     // detect image format from base64 header, fall back to jpeg

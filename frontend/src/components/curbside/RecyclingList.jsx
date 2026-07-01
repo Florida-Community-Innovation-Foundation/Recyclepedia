@@ -29,6 +29,8 @@ const RecyclingList = ({ items }) => {
     Cardboard: require("~/assets/img/Cardboard.jpg"),
     Furniture: require("~/assets/img/Furniture.jpg"),
     Plastics: require("~/assets/img/Plastics.jpg"),
+    // CityData items use the singular form
+    Plastic: require("~/assets/img/Plastics.jpg"),
     Textiles: require("~/assets/img/Textiles.jpg"),
     Batteries: require("~/assets/img/Batteries.jpg"),
     Medication: require("~/assets/img/Medication.jpg"),
@@ -59,9 +61,9 @@ const RecyclingList = ({ items }) => {
       {/* Categories */}
       {!selectedCategory && (
         <View style={styles.categoriesGrid}>
-          {_.map(categories, (category, index) => (
+          {_.map(categories, (category) => (
             <CategoryCard
-              key={index}
+              key={category.name}
               image={category.image}
               category={category.name}
               onSelect={setSelectedCategory}
@@ -96,10 +98,10 @@ const RecyclingList = ({ items }) => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.itemsGrid}>
-            {filteredItems.map((item, index) => {
+            {filteredItems.map((item) => {
               return (
                 <RecyclingItemCard
-                  key={index}
+                  key={item.name}
                   item={item}
                   onPress={() => setExpandedItem(item)}
                 />
@@ -125,7 +127,13 @@ const RecyclingList = ({ items }) => {
                 <Ionicons name="close" size={30} color="white" />
               </TouchableOpacity>
               <Image
-                source={{ uri: expandedItem.image || "default_image_url" }}
+                source={
+                  // bundled asset (require) vs remote URL vs placeholder
+                  expandedItem.image ??
+                  (expandedItem.imageURL
+                    ? { uri: expandedItem.imageURL }
+                    : { uri: "https://placehold.co/250.png" })
+                }
                 style={styles.expandedItemImage}
                 resizeMode="cover"
               />

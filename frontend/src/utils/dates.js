@@ -2,12 +2,11 @@ import _ from "lodash";
 
 function convertTime(timeString) {
   const [timePrefix, timeSuffix] = _.split(timeString, " ");
-  if (timeSuffix == "AM") {
-    if (timePrefix.length === 4) return `0${timeSuffix}`;
-    return timePrefix;
-  }
   const [hour, minutes] = _.split(timePrefix, ":");
-  return hour === "12" ? timePrefix : `${parseInt(hour) + 12}:${minutes}`;
+  let hour24 = parseInt(hour, 10);
+  if (timeSuffix === "AM" && hour24 === 12) hour24 = 0; // 12:xx AM is 00:xx
+  if (timeSuffix === "PM" && hour24 !== 12) hour24 += 12;
+  return `${String(hour24).padStart(2, "0")}:${minutes}`;
 }
 
 export function createDate(dateString, timeString) {

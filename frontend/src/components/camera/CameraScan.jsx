@@ -7,9 +7,14 @@ export default function CameraScan({ setImageUri }) {
   const [permission, requestPermission] = useCameraPermissions();
 
   const takePicture = async () => {
-    const photo = await cameraRef.current?.takePictureAsync();
-    console.log("Take Picture; Photo: ", photo?.uri);
-    setImage(photo?.uri);
+    try {
+      const photo = await cameraRef.current?.takePictureAsync();
+      if (photo?.uri) {
+        setImageUri(photo.uri);
+      }
+    } catch (error) {
+      console.error("Failed to take picture:", error);
+    }
   };
 
   if (!permission) {

@@ -7,6 +7,7 @@ import {
   Text,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useRouter } from "expo-router";
 import diggy from "~/assets/diggy.png";
 
 const { width, height } = Dimensions.get("window");
@@ -23,12 +24,16 @@ const calcHeight = (size) => {
   return Math.round(size * scaleFactor);
 };
 const FeaturedGame = () => {
+  const router = useRouter();
   return (
     <View style={styles.imageContainer}>
       <Image source={diggy} style={styles.learnGameImage} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>Diggy Recycling Game</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/unityGame")}
+        >
           <Text style={styles.buttonText}>Play Now</Text>
           <Icon name="play-arrow" size={calcFont(30)} color="#d3d3d3" />
         </TouchableOpacity>

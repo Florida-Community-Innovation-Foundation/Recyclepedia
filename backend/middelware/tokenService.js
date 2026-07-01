@@ -4,21 +4,39 @@ let token = null;
 let expiresAt = null;
 
 export default async function getNyckelToken() {
-  // return the token if we have it and it is valid
-  if (token && Date.now() < expiresAt) {
+  // return the token if we have it and it is valid (with a 60s safety margin
+  // so a token can't expire while a request is in flight)
+  if (token && Date.now() < expiresAt - 60_000) {
     return token;
   }
 
+  const clientId = process.env.NYCKEL_CLIENT_ID;
+  const clientSecret = process.env.NYCKEL_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error("NYCKEL_CLIENT_ID and NYCKEL_CLIENT_SECRET must be set");
+  }
+
   // get response from Nyckel
-  const response = await fetch('https://www.nyckel.com/connect/token', {
-    method: 'POST',
+  const response = await fetch("https://www.nyckel.com/connect/token", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: 'grant_type=client_credentials&client_id=nrvimk7lzfxquhfz82gar5zrmthbqm39&client_secret=p9qr9sgy3vrn76rdfh2c3o7ir3vt3wucco1kqopfli6vdcjf23v9kq5018z6wnu6'
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: clientId,
+      client_secret: clientSecret,
+    }),
   });
 
+  if (!response.ok) {
+    throw new Error(`Nyckel token request failed with status ${response.status}`);
+  }
+
   const data = await response.json();
+  if (!data.access_token) {
+    throw new Error("Nyckel token response did not include an access token");
+  }
 
   token = data.access_token;
   // tokens expire after one hour

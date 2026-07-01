@@ -18,8 +18,10 @@ import { createDate } from "~/utils/dates";
 
 export function EventDisplay({ eventItem }) {
   const handleLocationPress = (location) => {
-    const locationParams = _.join(_.split(location, " "), "+");
-    Linking.openURL(`https://www.google.com/maps/place/${locationParams}`);
+    const locationParams = encodeURIComponent(location);
+    Linking.openURL(`https://www.google.com/maps/place/${locationParams}`).catch(
+      (error) => console.error("Failed to open maps:", error),
+    );
   };
 
   const handleCalendarIconPress = async () => {
@@ -50,11 +52,11 @@ export function EventDisplay({ eventItem }) {
   };
 
   const handleShareIconPress = async () => {
-    const icsString = generateIcsString(eventDetails);
-    const filename = `event-${Date.now()}.ics`; // Unique filename
-    const fileUri = FileSystem.cacheDirectory + filename; // Use cache directory
-
     try {
+      const icsString = generateIcsString(eventItem);
+      const filename = `event-${Date.now()}.ics`; // Unique filename
+      const fileUri = FileSystem.cacheDirectory + filename; // Use cache directory
+
       await FileSystem.writeAsStringAsync(fileUri, icsString, {
         encoding: FileSystem.EncodingType.UTF8,
       });

@@ -8,14 +8,11 @@ const UnityGame = () => {
     <View style={styles.container}>
       <BackButton />
       <WebView
-        // source={{ uri: 'https://apele11.github.io/Recyle-Mania/' }}
         source={{ uri: 'https://florida-community-innovation-foundation.github.io/Recycle-Mania/' }}
         style={styles.webView}
         javaScriptEnabled={true}
         domStorageEnabled={true}
-        allowFileAccess={true}
-        mixedContentMode='always'
-        originWhitelist={['*']}
+        originWhitelist={['https://*']}
       />
     </View>
   );

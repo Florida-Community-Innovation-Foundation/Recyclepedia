@@ -14,9 +14,9 @@ export default function LocationList({ locations, onSelectCity }) {
         Available Drop-Off Locations
       </Text>
       {
-        locations.map((location, index) => (
+        (locations ?? []).map((location, index) => (
           <TouchableOpacity
-            key={index}
+            key={`${location.name}_${location.street}_${index}`}
             style={styles.itemSection}
             onPress={() => onSelectCity(location.name)}
           >

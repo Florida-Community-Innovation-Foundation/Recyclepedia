@@ -17,7 +17,6 @@ import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
 //import Loginsetup  from "./loginsetup";
 import { useRouter } from "expo-router"
-import { setDoc, doc } from "@firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // function emailPasswordSignUp(email, pass, confirmpass) {

@@ -24,44 +24,32 @@ export async function getBaseURL() {
   //return `http://ec2-18-219-236-103.us-east-2.compute.amazonaws.com:${port}`;
 }
 
+// These are TanStack Query queryFns — they must throw on failure (resolving
+// to undefined is itself treated as an error by React Query v5, with a worse
+// message and no retry semantics).
 export async function getCurbsideData() {
-  console.log("curbside");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/curbsideData`);
-
   if (!response.ok) {
-    const message = `An error occurred: ${response.statusText}`;
-    console.error(message);
-    return;
+    throw new Error(`Failed to fetch curbside data (status ${response.status})`);
   }
-
-  const curbsideData = await response.json();
-  return curbsideData;
+  return response.json();
 }
 
 export async function getDropoffData() {
-  console.log("dropoff");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/dropOffData`);
-
   if (!response.ok) {
-    console.error("Failed");
-    return
+    throw new Error(`Failed to fetch drop-off data (status ${response.status})`);
   }
-
-  const dropOffData = await response.json();
-
-  return dropOffData;
+  return response.json();
 }
 
 export async function getItemsData() {
-  console.log("items");
   const baseURL = await getBaseURL();
   const response = await fetch(`${baseURL}/itemsData`);
   if (!response.ok) {
-    console.error("Failed to fetch items data");
-    return;
+    throw new Error(`Failed to fetch items data (status ${response.status})`);
   }
-  const itemsData = await response.json();
-  return itemsData;
+  return response.json();
 }

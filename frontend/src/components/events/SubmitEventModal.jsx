@@ -52,7 +52,7 @@ export default function SubmitEventModal({
       ],
       (obj, key) => {
         obj[key] =
-          key === "email"
+          key === "Person Email"
             ? yup.string().email().required()
             : yup.string().required();
         return obj;
@@ -86,7 +86,7 @@ export default function SubmitEventModal({
     const timeFieldValues = _.reduce(
       [...inputFields.time],
       (obj, key) => {
-        obj[key] = dayjs().format("HH:mm A");
+        obj[key] = dayjs().format("hh:mm A");
         return obj;
       },
       {},

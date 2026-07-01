@@ -1,3 +1,11 @@
+import { createDate } from "~/utils/dates";
+
+// ICS requires UTC timestamps as yyyymmddThhmmssZ — plain toISOString() output
+// (dashes, colons, milliseconds) is rejected by calendar apps
+function toIcsDate(date) {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
 export function getCalendarEvents() {
   return [
     {
@@ -30,9 +38,9 @@ export function generateIcsString(eventItem) {
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:recyclepedia.events@gmail.com`,
-    `DTSTAMP:${new Date().toISOString()}`,
-    `DTSTART:${createDate(eventItem["Start Date"], eventItem["Start Time"]).toISOString()}`,
-    `DTEND:${createDate(eventItem["End Date"], eventItem["End Time"]).toISOString()}`,
+    `DTSTAMP:${toIcsDate(new Date())}`,
+    `DTSTART:${toIcsDate(createDate(eventItem["Start Date"], eventItem["Start Time"]))}`,
+    `DTEND:${toIcsDate(createDate(eventItem["End Date"], eventItem["End Time"]))}`,
     `SUMMARY:${eventItem["Event Title"]}`,
     `DESCRIPTION:${eventItem["Event Description"]}`,
     `LOCATION:${eventItem["Event Location"]}`,

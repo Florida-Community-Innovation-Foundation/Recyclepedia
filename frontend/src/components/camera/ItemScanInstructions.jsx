@@ -6,77 +6,6 @@ import { useRecycling } from "../../utils/recyclingContext";
 
 // [NOTE]: this should take in the image, this is what will check whether the image is accepted or not
 
-// don't use
-// export default function ItemScanInstructions({ itemChecked, itemAccepted }) {
-//   const navigation = useNavigation();
-//   const [text, setText] = useState("Hello");
-
-//   const itemAcceptedButtonPress = () => {
-//     navigation.navigate("Curbside Dropoff");
-//   };
-
-//   // useEffect(() => {
-//   //   const fetchText = async () => {
-//   //     fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
-//   //       method: 'POST',
-//   //       headers: {
-//   //         'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzUzNzMwNzI0LCJpYXQiOjE3NTM3MzA3MjQsImV4cCI6MTc1MzczNDMyNCwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiMDZGMDk4M0YxQUE2RTQxMkY3QzhCN0ZFODI2RjRCQzIifQ.Zyalh8b5OK9Uq5LpO9v1gr15p5wcEKo-Qh4rbVeUQYXmXX3nN7lbDq_dGiXpPBlojC-LUMxX-ZwpMLjpbAoY34keDMaY43ZdydFb3tQocQmDFq_oByd_P7nmXlr-hkAiYL8oc2a8Tu5uVQVt8mI_VKWwlZxBmlyXn7uv05OMtOV-Fkdv5DwMRLte6PBJ47AKRaO7z13q01op9QBRLPQ9Cq7cplMVNhrAAklxGammxXc8XFxd4GK2-CLLm76qe-QMdDONnORAAfYrpgWAKxuia1o5f7Z6TEU3I40yWYKaeW4at5gTqce6vYZI0yzXCAGO4ZI5yM6HVJUrUY4NICVqng',
-//   //         'Content-Type': 'application/json',
-//   //       },
-//   //       body: JSON.stringify(
-//   //         { "data": "https://www.nyckel.com/assets/example.jpg" }
-//   //       )
-//   //     })
-//   //     .then(response => response.json())
-//   //     .then(console.log(data));
-
-//   //     return "lolz";
-//   //   };
-
-//   //   setText(fetchText);
-//   //   //setText("t");
-//   // }, [itemChecked]);
-
-//   // useEffect(() => {
-//   //   const fetchText = async () => {
-//   //     fetch('https://www.nyckel.com/v1/functions/recycling-identifier/invoke', {
-//   //       method: 'POST',
-//   //       headers: {
-//   //         'Authorization': 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3d3dy5ueWNrZWwuY29tIiwibmJmIjoxNzUzNzMwNzI0LCJpYXQiOjE3NTM3MzA3MjQsImV4cCI6MTc1MzczNDMyNCwic2NvcGUiOlsiYXBpIl0sImNsaWVudF9pZCI6Im5ydmltazdsemZ4cXVoZno4MmdhcjV6cm10aGJxbTM5IiwianRpIjoiMDZGMDk4M0YxQUE2RTQxMkY3QzhCN0ZFODI2RjRCQzIifQ.Zyalh8b5OK9Uq5LpO9v1gr15p5wcEKo-Qh4rbVeUQYXmXX3nN7lbDq_dGiXpPBlojC-LUMxX-ZwpMLjpbAoY34keDMaY43ZdydFb3tQocQmDFq_oByd_P7nmXlr-hkAiYL8oc2a8Tu5uVQVt8mI_VKWwlZxBmlyXn7uv05OMtOV-Fkdv5DwMRLte6PBJ47AKRaO7z13q01op9QBRLPQ9Cq7cplMVNhrAAklxGammxXc8XFxd4GK2-CLLm76qe-QMdDONnORAAfYrpgWAKxuia1o5f7Z6TEU3I40yWYKaeW4at5gTqce6vYZI0yzXCAGO4ZI5yM6HVJUrUY4NICVqng',
-//   //         'Content-Type': 'application/json',
-//   //       },
-//   //       body: JSON.stringify(
-//   //         { "data": "https://www.nyckel.com/assets/example.jpg" }
-//   //       )
-//   //     })
-//   //       .then(response => response.json())
-//   //       .then(data => {
-//   //         console.log(data);
-//   //         //return data;
-//   //         //return data.labelName;
-//   //         //setText(data);
-//   //       });
-//   //       //.then(data => console.log(data));
-//   //       //.then(setText(data.labelName));
-//   //       //.then()
-//   //       //return response
-//   //   };
-
-//   //   //setText(fetchText);
-//   //   fetchText();
-//   //   //fetchText();
-//   // }, [itemChecked]);
-
-//   return (
-//     <View>
-//       <Text>{text}</Text>
-//     </View>
-//   );
-// }
-
-//export default function ItemScanInstructions({ })
-
-// old itemscan instructions
 export default function ItemScanInstructions({ itemChecked, itemAccepted, exampleText }) {
   const {
     itemsRecycled,
@@ -93,9 +22,11 @@ export default function ItemScanInstructions({ itemChecked, itemAccepted, exampl
 
   useEffect(() => {
     if (itemChecked) {
-      setItemsRecycled(itemsRecycled + 1);
-      }
-      }, [itemChecked]);
+      // functional update — rapid successive scans would otherwise read a
+      // stale count and lose increments
+      setItemsRecycled((prev) => prev + 1);
+    }
+  }, [itemChecked]);
 
   return (
     <View style={ styles.container }>

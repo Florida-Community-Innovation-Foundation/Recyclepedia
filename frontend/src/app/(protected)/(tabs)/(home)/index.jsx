@@ -138,7 +138,7 @@ const CurbsideDropoff = () => {
       }, 500);
     }
 
-  }, [city]);
+  }, [city, curbsideData, curbsideCities]);
 
   // use hardcoded miami coordinates as default, replaced with whatever's loaded in curbside data
   const [region, setRegion] = useState({
@@ -185,9 +185,12 @@ const CurbsideDropoff = () => {
     ]);
 
     if (category) {
-      setItemsRecycled(itemsRecycled + 1);
+      setItemsRecycled((prev) => prev + 1);
       setChosenItem(category);
-      setCarbonOffset(prev => prev + materials.get(category));
+      // categories from the backend don't always match a material key —
+      // default to 0 so one unknown category can't poison the total with NaN
+      const offset = materials.get(String(category).toLowerCase()) ?? 0;
+      setCarbonOffset((prev) => prev + offset);
 
       setDropoffPOIs(
         _.chain(dropOffData)
@@ -202,7 +205,7 @@ const CurbsideDropoff = () => {
               street: dropOffLocation["Street"],
             };
           })
-          .uniqBy((location) => `${String(location.name).toLowerCase().trim()}_${location.latitude}_${location.longitude}`) // this is just in testing
+          .uniqBy((place) => `${String(place.name).toLowerCase().trim()}_${place.location.latitude}_${place.location.longitude}`)
           .value(),
       );
     }

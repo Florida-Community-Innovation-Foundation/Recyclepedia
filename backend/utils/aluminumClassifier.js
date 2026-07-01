@@ -15,9 +15,12 @@ export async function loadAluminumModel() {
   const modelJSON = JSON.parse(fs.readFileSync(path.join(modelDir, 'model.json'), 'utf8'));
 
   const weightPaths = modelJSON.weightsManifest[0].paths;
-  const weightBuffers = weightPaths.map(p =>
-    fs.readFileSync(path.join(modelDir, p)).buffer
-  );
+  // slice by byteOffset/byteLength — small Buffers share a pooled ArrayBuffer,
+  // so .buffer alone can include unrelated bytes
+  const weightBuffers = weightPaths.map(p => {
+    const buf = fs.readFileSync(path.join(modelDir, p));
+    return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+  });
   const weightData = new Uint8Array(
     weightBuffers.reduce((total, buf) => total + buf.byteLength, 0)
   );

@@ -621,14 +621,6 @@ const otherGood = ["No Data"];
 const otherTrash = ["No Data"];
 const otherSpecial = ["No Data"];
 
-function makeDiv({ item }) {
-  <View>
-    <Text>
-      {item}
-    </Text>
-  </View>
-}
-
 export default function CityRules({ location }) {
   // Must be at top — React requires hooks before any conditional return
   const [activeTab, setActiveTab] = useState('good');
@@ -638,7 +630,6 @@ export default function CityRules({ location }) {
     case "Aventura":
     case "Cutler Bay":
     case "Doral":
-    case "Miami":
     case "Miami Gardens":
     case "Miami Lakes":
     case "Opa-locka":

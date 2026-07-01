@@ -37,20 +37,24 @@ export function MonthDisplay({
     );
   };
 
-  const resetDayDisplays = () => {
+  // size the pressed-array from the month being navigated TO, not the current
+  // one — otherwise days at the end of longer months can't be selected
+  const resetDayDisplays = (date) => {
     setDayDisplaysPressed(
-      _.map(_.range(0, dayjs(currentDate).daysInMonth()), (dayNum) => false),
+      _.map(_.range(0, dayjs(date).daysInMonth()), () => false),
     );
   };
 
   const handleLeftButtonPress = () => {
-    resetDayDisplays();
-    setCurrentDate(currentDate.subtract(1, "month"));
+    const newDate = currentDate.subtract(1, "month");
+    resetDayDisplays(newDate);
+    setCurrentDate(newDate);
   };
 
   const handleRightButtonPress = () => {
-    resetDayDisplays();
-    setCurrentDate(currentDate.add(1, "month"));
+    const newDate = currentDate.add(1, "month");
+    resetDayDisplays(newDate);
+    setCurrentDate(newDate);
   };
 
   return (

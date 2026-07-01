@@ -32,11 +32,14 @@ export default function DateInput({
     }
   };
 
+  // depend on the date string, not the whole `values` object — setFieldValue
+  // creates a new values object every run, which would loop this effect forever
+  const dateValue = values[dateInputField];
   useEffect(() => {
     const timeString = dayjs(selectedTime).format("hh:mm A");
-    setText(`${values[dateInputField]}, ${timeString}`);
+    setText(`${dateValue}, ${timeString}`);
     setFieldValue(timeInputField, timeString);
-  }, [selectedTime, values]);
+  }, [selectedTime, dateValue]);
 
   return (
     <View>

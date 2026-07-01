@@ -5,9 +5,16 @@ import { AuthProvider } from "~/utils/authContext";
 import { RecyclingProvider } from "../utils/recyclingContext";
 import { firebaseInitError } from "~/configs/firebaseConfig";
 
+// Debug aid: surface JS errors in an alert, but always chain to the default
+// handler so fatal errors still crash/restart properly instead of leaving the
+// app in an undefined state. Alert only in dev builds.
 if (global.ErrorUtils) {
+  const defaultHandler = global.ErrorUtils.getGlobalHandler();
   global.ErrorUtils.setGlobalHandler((error, isFatal) => {
-    Alert.alert("JS Error", `${error?.message}\n\n${error?.stack?.slice(0, 300)}`);
+    if (__DEV__) {
+      Alert.alert("JS Error", `${error?.message}\n\n${error?.stack?.slice(0, 300)}`);
+    }
+    defaultHandler?.(error, isFatal);
   });
 }
 

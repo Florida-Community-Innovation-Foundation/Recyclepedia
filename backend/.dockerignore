@@ -26,3 +26,9 @@ node_modules/
 
 # Exclude git history and configuration.
 .gitignore
+
+# Never bake secrets into the image — credentials come from the runtime environment
+private/
+.env*
+*.pem
+serviceAccountKey.json
