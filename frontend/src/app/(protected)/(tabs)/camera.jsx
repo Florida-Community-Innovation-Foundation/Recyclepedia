@@ -43,7 +43,7 @@ export default function ItemScan() {
   const [itemsData, curbsideData, dropOffData] = data;
 
   const getCities = (curbsideData) =>
-    _.map(curbsideData, (obj) => _.keys(obj)[0]);
+    _.map(curbsideData, (obj) => _.keys(obj)[0]).sort();
 
   // reset the scan state whenever the user re-enters the tab
   useEffect(() => {

@@ -759,10 +759,11 @@ export default function CityRules({ location }) {
     );
   }
 
+  // alphabetize and dedupe the lists for display
   const data = {
-    good,
-    trash,
-    special,
+    good: [...new Set(good)].sort(),
+    trash: [...new Set(trash)].sort(),
+    special: [...new Set(special)].sort(),
   };
   const tabs = [
     { key: 'good', label: 'recycle'},

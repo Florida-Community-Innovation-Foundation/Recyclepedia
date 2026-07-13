@@ -168,7 +168,7 @@ const CurbsideDropoff = () => {
   }, [curbsideCities]);
 
   const getCities = (curbsideData) =>
-    _.map(curbsideData, (obj) => _.keys(obj)[0]);
+    _.map(curbsideData, (obj) => _.keys(obj)[0]).sort();
 
   const handleSubmit = async () => {
     const materials = new Map([
@@ -333,7 +333,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Drop-Off{" "}
+                    Drop-Off Only{" "}
                   </Text>
                 </View>
               )}
@@ -348,7 +348,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Drop-Off{" "}
+                    Drop-Off Only{" "}
                   </Text>
                 </View>
               )}
@@ -423,6 +423,7 @@ const CurbsideDropoff = () => {
                   categories={_.chain(itemsData)
                     .map((item) => item.category)
                     .uniq()
+                    .sort()
                     .value()}
                   key="dropoffCategoryDropdown"
                 />
