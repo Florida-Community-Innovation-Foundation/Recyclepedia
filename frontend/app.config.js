@@ -5,6 +5,10 @@ export default {
     scheme: "recyclepedia",
     version: "1.0.0",
     icon: "./src/assets/img/icon.png",
+    // Google Play recommends no orientation lock so tablets / foldables /
+    // desktop-mode Android can rotate and resize ("Remove resizability and
+    // orientation restrictions"). Expo's default is a portrait lock.
+    orientation: "default",
     newArchEnabled: true,
     platforms: ["ios", "android"],
     plugins: [
