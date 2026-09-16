@@ -77,20 +77,44 @@ async function getItemDetails(data) {
   return _.chain(data)
     .map((row) => {
       return {
-        name: row["Item"],
-        category: row["Category"],
+        name: _.trim(row["Item"]),
+        // the sheet has stray trailing spaces ("Electronics ") which made the
+        // same category show up twice in the app's dropdowns
+        category: _.trim(row["Category"]),
         imageURL: row["Image URL"],
         canRecycle: row["canRecycle"] === "Yes",
         description: _.trim(row["Description"]),
       };
     })
+    .filter((item) => item.name)
     .uniqBy("name")
     .value();
 }
 
 function getDropoffLocations(data) {
+  // The Items sheet has one row per (item x location), so the same physical
+  // site appears dozens of times per category. Trim, drop rows without
+  // coordinates, and dedupe on (category, name, lat, lng) — this cuts the
+  // payload from ~4600 rows / 620KB to ~900 rows.
   return _.chain(data)
-    .map((row) => _.pick(row, ["Latitude", "Longitude", "Category", "Name", "Street"]))
+    .map((row) => ({
+      Latitude: parseFloat(row["Latitude"]),
+      Longitude: parseFloat(row["Longitude"]),
+      Category: _.trim(row["Category"]),
+      Name: _.trim(row["Name"]),
+      Street: _.trim(row["Street"]),
+    }))
+    .filter(
+      (row) =>
+        row.Category &&
+        row.Name &&
+        Number.isFinite(row.Latitude) &&
+        Number.isFinite(row.Longitude),
+    )
+    .uniqBy(
+      (row) =>
+        `${row.Category.toLowerCase()}|${row.Name.toLowerCase()}|${row.Latitude.toFixed(5)}|${row.Longitude.toFixed(5)}`,
+    )
     .value();
 }
 

@@ -33,6 +33,15 @@ export default function BottomTabsLayout() {
           tabBarLabel: "ItemScan",
         }}
       />
+      <Tabs.Screen
+        name="game"
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="sports-esports" size={size} color={color} />
+          ),
+          tabBarLabel: "Game",
+        }}
+      />
       {/* <Tabs.Screen
         name="calendar"
         options={{

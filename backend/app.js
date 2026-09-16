@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import createError from "http-errors";
 import cors from "cors";
+import compression from "compression";
 
 import indexRouter from "./routes/index.js";
 import { logger, pinoHttp } from "./utils/logging.js";
@@ -9,6 +10,9 @@ import { logger, pinoHttp } from "./utils/logging.js";
 var app = express();
 
 app.use(pinoHttp);
+// gzip JSON responses — /dropOffData and /itemsData are hundreds of KB and
+// were taking 20s+ to download on mobile uncompressed
+app.use(compression());
 app.use(cors());
 // POST /itemData receives base64 camera photos in the JSON body, which far
 // exceed express.json's default 100kb limit

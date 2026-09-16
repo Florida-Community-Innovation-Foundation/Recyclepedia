@@ -9,7 +9,6 @@ import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-nati
 import CameraScan from "~/components/camera/CameraScan";
 import ItemScanInstructions from "~/components/camera/ItemScanInstructions";
 import { normalize } from "~/utils/normalize";
-// import * as Location from 'expo-location'; // disabled, for now
 import { getBaseURL, getItemsData, getCurbsideData, getDropoffData } from "../../../utils/baselineData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";

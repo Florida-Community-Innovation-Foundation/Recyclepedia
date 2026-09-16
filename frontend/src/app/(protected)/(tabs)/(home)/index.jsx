@@ -1,12 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQueries } from "@tanstack/react-query";
-import * as Location from "expo-location";
 import _ from "lodash";
 import { useEffect } from "react";
 import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
 import { useState } from "react";
 import { useRef } from "react";
 import {
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -28,6 +28,24 @@ import { useRecycling } from "../../../../utils/recyclingContext";
 import LocationList from "../../../../components/curbside/LocationList";
 import CityRules from "../../../../components/curbside/CityRules";
 import { Dropdown } from "react-native-element-dropdown";
+
+// The spreadsheet behind the API has stray whitespace / casing differences
+// ("Electronics " vs "Electronics"), so compare categories loosely.
+const normalizeCategory = (value) => String(value ?? "").trim().toLowerCase();
+
+// Great-circle distance between two {latitude, longitude} points, in miles.
+const distanceInMiles = (from, to) => {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const R = 3958.8;
+  const dLat = toRad(to.latitude - from.latitude);
+  const dLng = toRad(to.longitude - from.longitude);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(from.latitude)) *
+      Math.cos(toRad(to.latitude)) *
+      Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+};
 
 const CurbsideDropoff = () => {
   useStatusBarStyle("light");
@@ -69,6 +87,7 @@ const CurbsideDropoff = () => {
   const [city, setCity] = useState(null);
   const [curbsideCities, setCurbsideCities] = useState([]);
   const [dropoffPOIs, setDropoffPOIs] = useState([]);
+  const [submittedCategory, setSubmittedCategory] = useState(null);
   const mapRef = useRef(null);
 
   // update places once curbside data loads
@@ -171,6 +190,10 @@ const CurbsideDropoff = () => {
     _.map(curbsideData, (obj) => _.keys(obj)[0]).sort();
 
   const handleSubmit = async () => {
+    if (!category) {
+      Alert.alert("Pick an item type", "Choose what you want to recycle first.");
+      return;
+    }
     const materials = new Map([
       //used to calculate carbon offset
       ["plastic", 1.02], // kg CO2 saved per kg of plastic
@@ -192,22 +215,57 @@ const CurbsideDropoff = () => {
       const offset = materials.get(String(category).toLowerCase()) ?? 0;
       setCarbonOffset((prev) => prev + offset);
 
-      setDropoffPOIs(
-        _.chain(dropOffData)
-          .filter((dropOffLocation) => dropOffLocation["Category"] === category)
-          .map((dropOffLocation) => {
-            return {
-              name: dropOffLocation["Name"],
-              location: {
-                latitude: parseFloat(dropOffLocation["Latitude"]) || 0,
-                longitude: parseFloat(dropOffLocation["Longitude"]) || 0,
-              },
-              street: dropOffLocation["Street"],
-            };
-          })
-          .uniqBy((place) => `${String(place.name).toLowerCase().trim()}_${place.location.latitude}_${place.location.longitude}`)
-          .value(),
-      );
+      // Where to measure distance from: the selected town/city if there is
+      // one, otherwise the center of the current map view.
+      const selectedCity = curbsideCities.find((place) => place.name === city);
+      const origin = selectedCity?.location?.latitude
+        ? selectedCity.location
+        : { latitude: region.latitude, longitude: region.longitude };
+
+      const wanted = normalizeCategory(category);
+      const pois = _.chain(dropOffData)
+        .filter(
+          (dropOffLocation) =>
+            normalizeCategory(dropOffLocation["Category"]) === wanted,
+        )
+        .map((dropOffLocation) => {
+          const latitude = parseFloat(dropOffLocation["Latitude"]);
+          const longitude = parseFloat(dropOffLocation["Longitude"]);
+          return {
+            name: String(dropOffLocation["Name"] ?? "").trim(),
+            location: { latitude, longitude },
+            street: String(dropOffLocation["Street"] ?? "").trim(),
+          };
+        })
+        // rows with no usable coordinates can't be shown on the map or ranked
+        .filter(
+          (place) =>
+            place.name &&
+            Number.isFinite(place.location.latitude) &&
+            Number.isFinite(place.location.longitude),
+        )
+        .uniqBy((place) => `${place.name.toLowerCase()}_${place.location.latitude}_${place.location.longitude}`)
+        .map((place) => ({
+          ...place,
+          distanceMiles: distanceInMiles(origin, place.location),
+        }))
+        .sortBy("distanceMiles")
+        .value();
+
+      setDropoffPOIs(pois);
+      setSubmittedCategory(category);
+
+      // zoom the map to the closest handful of sites so the user immediately
+      // sees WHERE to go, not just a list of names
+      if (pois.length > 0 && mapRef.current) {
+        mapRef.current.fitToCoordinates(
+          pois.slice(0, 5).map((place) => place.location),
+          {
+            edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
+            animated: true,
+          },
+        );
+      }
     }
   };
 
@@ -421,9 +479,10 @@ const CurbsideDropoff = () => {
                   itemType="category"
                   setItem={setCategory}
                   categories={_.chain(itemsData)
-                    .map((item) => item.category)
-                    .uniq()
-                    .sort()
+                    .map((item) => String(item.category ?? "").trim())
+                    .filter(Boolean)
+                    .uniqBy((c) => c.toLowerCase())
+                    .sortBy((c) => c.toLowerCase())
                     .value()}
                   key="dropoffCategoryDropdown"
                 />
@@ -551,7 +610,7 @@ const CurbsideDropoff = () => {
 
           {/* Show list of recycling locations */}
           {dropoffColor === "white" &&
-            <LocationList locations={dropoffPOIs} onSelectCity={ (name) => {
+            <LocationList locations={dropoffPOIs} searched={submittedCategory} onSelectCity={ (name) => {
               let location = dropoffPOIs.find((place) => place.name === name);
 
               if (!location?.location || !mapRef.current) return;

@@ -22,6 +22,8 @@ export default {
         "expo-camera",
         {
           cameraPermission: "Allow Recyclepedia to access your camera.",
+          // scanning takes still photos only — don't request the microphone
+          recordAudioAndroid: false,
         },
       ],
       [
@@ -38,13 +40,6 @@ export default {
         },
       ],
       "expo-font",
-      [
-        "expo-location",
-        {
-          locationAlwaysAndWhenInUsePermission:
-            "Allow Recyclepedia to use your location.",
-        },
-      ],
       "expo-asset",
     ],
     android: {
@@ -58,13 +53,18 @@ export default {
           apiKey: process.env.GOOGLE_MAPS_API_KEY,
         },
       },
+      // Location is never read (all location code is disabled) and audio is
+      // never recorded — requesting them contradicted the Play Data safety form.
       permissions: [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR",
+      ],
+      blockedPermissions: [
+        "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
       ],
       package: "com.aadit.kamat.Recyclepedia",
     },
