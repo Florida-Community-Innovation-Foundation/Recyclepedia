@@ -75,6 +75,11 @@ export default {
       bundleIdentifier: "com.aadit.kamat.Recyclepedia",
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
+        // Apple warning ITMS-90683: react-native-maps references location
+        // APIs, so a purpose string is required even though the app never
+        // requests the user's location.
+        NSLocationWhenInUseUsageDescription:
+          "Recyclepedia does not track your location. This permission is only used by the map to show recycling drop-off sites near the town you select.",
       },
     },
     extra: {
