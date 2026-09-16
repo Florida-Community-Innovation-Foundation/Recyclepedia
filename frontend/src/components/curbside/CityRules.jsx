@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { normalize } from "~/utils/normalize";
+import { useItemName, useTranslation } from "~/i18n";
 
 // knot ideal but we need something for saturday
 // print list of city recycling rules based on location
@@ -624,6 +625,8 @@ const otherSpecial = ["No Data"];
 export default function CityRules({ location }) {
   // Must be at top — React requires hooks before any conditional return
   const [activeTab, setActiveTab] = useState('good');
+  const { t } = useTranslation();
+  const itemName = useItemName();
   let good, trash, special;
 
   switch (location) {
@@ -753,22 +756,25 @@ export default function CityRules({ location }) {
     return (
       <View>
         <Text>
-          No info for location: {location}!
+          {t("cityRules.noInfo", { location })}
         </Text>
       </View>
     );
   }
 
-  // alphabetize and dedupe the lists for display
+  // translate (when Spanish), then alphabetize and dedupe the lists for display
+  const prepare = (list) =>
+    [...new Set(list.map((name) => (name === "No Data" ? t("cityRules.noData") : itemName(name))))]
+      .sort((a, b) => a.localeCompare(b));
   const data = {
-    good: [...new Set(good)].sort(),
-    trash: [...new Set(trash)].sort(),
-    special: [...new Set(special)].sort(),
+    good: prepare(good),
+    trash: prepare(trash),
+    special: prepare(special),
   };
   const tabs = [
-    { key: 'good', label: 'recycle'},
-    { key: 'trash', label: 'trash'},
-    { key: 'special', label: 'drop-off'},
+    { key: 'good', label: t("cityRules.recycle")},
+    { key: 'trash', label: t("cityRules.trash")},
+    { key: 'special', label: t("cityRules.dropoff")},
   ];
 
   return (

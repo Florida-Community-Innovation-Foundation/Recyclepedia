@@ -4,6 +4,7 @@ import { Alert, Text, View, ScrollView } from "react-native";
 import { AuthProvider } from "~/utils/authContext";
 import { RecyclingProvider } from "../utils/recyclingContext";
 import { firebaseInitError } from "~/configs/firebaseConfig";
+import { I18nProvider } from "~/i18n";
 
 // Debug aid: surface JS errors in an alert, but always chain to the default
 // handler so fatal errors still crash/restart properly instead of leaving the
@@ -48,14 +49,16 @@ class ErrorBoundary extends React.Component {
 export default function RootLayout() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <RecyclingProvider>
-          <Stack screenOptions={{ headerShown: false, animation: "none" }}>
-            <Stack.Screen name="(protected)" />
-            <Stack.Screen name="login" />
-          </Stack>
-        </RecyclingProvider>
-      </AuthProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <RecyclingProvider>
+            <Stack screenOptions={{ headerShown: false, animation: "none" }}>
+              <Stack.Screen name="(protected)" />
+              <Stack.Screen name="login" />
+            </Stack>
+          </RecyclingProvider>
+        </AuthProvider>
+      </I18nProvider>
     </ErrorBoundary>
   );
 }

@@ -8,7 +8,7 @@ const UnityGame = () => {
     <View style={styles.container}>
       <BackButton />
       <WebView
-        source={{ uri: 'https://florida-community-innovation-foundation.github.io/Recycle-Mania/' }}
+        source={{ uri: "https://inestanitxr.github.io/Recycle-Mania/" }}
         style={styles.webView}
         javaScriptEnabled={true}
         domStorageEnabled={true}

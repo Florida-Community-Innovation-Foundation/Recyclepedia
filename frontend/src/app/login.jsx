@@ -15,6 +15,8 @@ import Divider from "~/components/common/Divider";
 import { normalize } from "~/utils/normalize";
 import {useRouter} from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "~/i18n";
+import LanguageToggle from "~/components/common/LanguageToggle";
 
 export default function LoginScreen() {
   useStatusBarStyle("light");
@@ -23,15 +25,17 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <View style={nstyles.screen}>
       <SafeAreaView style={nstyles.saview}>
         {/* header view (1/3 screen) */}
         <View style={nstyles.headerView}>
+          <LanguageToggle light style={nstyles.langToggle} />
           {/* Header */}
           <Text style={nstyles.headerText}>
-            RECYCLE RIGHT WITH
+            {t("login.header")}
           </Text>
 
           {/* Recyclepedia Logo */}
@@ -44,13 +48,13 @@ export default function LoginScreen() {
         {/* body view (2/3 screen) */}
         <View style={nstyles.bodyView}>
           <Text style={nstyles.loginText}>
-            LOGIN OR SIGNUP
+            {t("login.loginOrSignup")}
           </Text>
           {/* <Pressable style={[styles.signupButton, { marginTop: normalize(125, "height") }]}> */}
           <Pressable style={nstyles.signUpButton} onPress={() => router.push("/loginsetup")}>
             {/* <Text style={nstyles.buttonText} onPress={() => router.push("/loginsetup")}> */}
             <Text style={nstyles.buttonText}>
-              LOGIN
+              {t("login.login")}
             </Text>
           </Pressable>
 
@@ -58,7 +62,7 @@ export default function LoginScreen() {
           <Pressable style={nstyles.signUpButton} onPress={() => router.push("/signupsetup")}>
             {/* <Text style={nstyles.buttonText} onPress={() => router.push("/signupsetup")}> */}
             <Text style={nstyles.buttonText}>
-              REGISTER
+              {t("login.register")}
             </Text>
           </Pressable>
 
@@ -66,18 +70,18 @@ export default function LoginScreen() {
           <Pressable style={[nstyles.signUpButton, {backgroundColor: 'grey'}]} onPress={() => authContext.login()}>
             {/* <Text style={nstyles.buttonText} onPress={() => authContext.login()}> */}
             <Text style={nstyles.buttonText}>
-              CONTINUE AS GUEST
+              {t("login.guest")}
             </Text>
           </Pressable>
 
           <Text style={nstyles.footerText}>
-            By clicking continue, you agree to our{" "}
+            {t("login.footerPrefix")}{" "}
             <Link href="https://recyclepedia.vercel.app/terms-of-service">
-              Terms of Service
+              {t("login.terms")}
             </Link>{" "}
-            and{" "}
+            {t("login.and")}{" "}
             <Link href="https://recyclepedia.vercel.app/privacy-policy">
-              Privacy Policy
+              {t("login.privacy")}
             </Link>
           </Text>
         </View>
@@ -172,7 +176,11 @@ const nstyles = StyleSheet.create({
   // header
   headerView: {
     padding: 60,
+    paddingTop: 20,
     flex: 1,
+  },
+  langToggle: {
+    marginBottom: 12,
   },
   headerText: {
     fontFamily: "Bebas Neue",

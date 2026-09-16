@@ -28,6 +28,7 @@ import { useRecycling } from "../../../../utils/recyclingContext";
 import LocationList from "../../../../components/curbside/LocationList";
 import CityRules from "../../../../components/curbside/CityRules";
 import { Dropdown } from "react-native-element-dropdown";
+import { useItemName, useTranslation } from "~/i18n";
 
 // The spreadsheet behind the API has stray whitespace / casing differences
 // ("Electronics " vs "Electronics"), so compare categories loosely.
@@ -49,6 +50,8 @@ const distanceInMiles = (from, to) => {
 
 const CurbsideDropoff = () => {
   useStatusBarStyle("light");
+  const { t, locale } = useTranslation();
+  const itemName = useItemName();
 
   const navigation = useNavigation();
   const {
@@ -74,16 +77,15 @@ const CurbsideDropoff = () => {
   });
   const [itemsData, curbsideData, dropOffData] = data;
 
-  const MAP_LABEL = "DROP-OFF LOCATIONS:";
+  const MAP_LABEL = t("home.mapLabel");
 
   const [category, setCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [subtitle, setSubtitle] = useState(
-    "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN OR CITY.",
-  );
+  // store translation KEYS so the text follows the language setting
+  const [subtitle, setSubtitle] = useState("home.curbsideSubtitle");
   const [curbsideColor, setCurbsideColor] = useState("white");
   const [dropoffColor, setDropoffColor] = useState("#024935");
-  const [selectText, setSelectText] = useState("SELECT YOUR TOWN OR CITY:");
+  const [selectText, setSelectText] = useState("home.selectCity");
   const [city, setCity] = useState(null);
   const [curbsideCities, setCurbsideCities] = useState([]);
   const [dropoffPOIs, setDropoffPOIs] = useState([]);
@@ -191,7 +193,7 @@ const CurbsideDropoff = () => {
 
   const handleSubmit = async () => {
     if (!category) {
-      Alert.alert("Pick an item type", "Choose what you want to recycle first.");
+      Alert.alert(t("home.pickItemTitle"), t("home.pickItemBody"));
       return;
     }
     const materials = new Map([
@@ -327,12 +329,10 @@ const CurbsideDropoff = () => {
           <View style={styles.pillButtonsContainer}>
             <TouchableOpacity
               onPress={() => {
-                setSubtitle(
-                  "FIND OUT WHAT CAN BE RECYCLED AT THE CURB IN YOUR\nTOWN OR CITY.",
-                );
+                setSubtitle("home.curbsideSubtitle");
                 setCurbsideColor("white");
                 setDropoffColor("#024935");
-                setSelectText("SELECT YOUR TOWN OR CITY:");
+                setSelectText("home.selectCity");
                 //setCity(prevCity);
               }}
             >
@@ -348,7 +348,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Curbside{" "}
+                    {t("home.curbside")}{" "}
                   </Text>
                 </View>
               )}
@@ -364,7 +364,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Curbside{" "}
+                    {t("home.curbside")}{" "}
                   </Text>
                 </View>
               )}
@@ -373,12 +373,10 @@ const CurbsideDropoff = () => {
             {/* Drop-Off Button */}
             <TouchableOpacity
               onPress={() => {
-                setSubtitle(
-                  "FIND DROP-OFF LOCATIONS FOR ITEMS THAT CAN'T GO IN \nYOUR CURBSIDE BIN.",
-                );
+                setSubtitle("home.dropoffSubtitle");
                 setCurbsideColor("#024935");
                 setDropoffColor("white");
-                setSelectText("FIND DROP-OFF LOCATIONS FOR SPECIFIC ITEMS:");
+                setSelectText("home.findDropoff");
               }}
             >
               {/* Drop-off selected */}
@@ -391,7 +389,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Drop-Off Only{" "}
+                    {t("home.dropoffOnly")}{" "}
                   </Text>
                 </View>
               )}
@@ -406,7 +404,7 @@ const CurbsideDropoff = () => {
                     ]}
                   >
                     {" "}
-                    Drop-Off Only{" "}
+                    {t("home.dropoffOnly")}{" "}
                   </Text>
                 </View>
               )}
@@ -414,7 +412,7 @@ const CurbsideDropoff = () => {
           </View>
 
           <Text style={[styles.subtitle, { color: "#BBB8B8" }]}>
-            {subtitle}
+            {t(subtitle)}
           </Text>
         </View>
 
@@ -422,7 +420,7 @@ const CurbsideDropoff = () => {
         {curbsideColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={styles.cityPickerLabel}>{selectText}</Text>
+              <Text style={styles.cityPickerLabel}>{t(selectText)}</Text>
               {/* Municipality dropdown */}
               <Dropdown
                 style={styles.picker}
@@ -433,7 +431,7 @@ const CurbsideDropoff = () => {
                   }))
                 }
                 search
-                searchPlaceholder="Search..."
+                searchPlaceholder={t("common.searchPlaceholder")}
                 labelField="label"
                 valueField="value"
                 renderItem={(item) => (
@@ -443,7 +441,7 @@ const CurbsideDropoff = () => {
                 )}
                 selectedTextStyle={styles.selectedTextStyle}
                 placeholderStyle={styles.placeholderStyle}
-                placeholder={"Select town or city"}
+                placeholder={t("home.selectCityPlaceholder")}
                 value={city}
                 onChange={(item) => {
                   setCity(item.value);
@@ -473,7 +471,7 @@ const CurbsideDropoff = () => {
         {dropoffColor === "white" && (
           <View>
             <View style={styles.cityPickerContainer}>
-              <Text style={styles.cityPickerLabel}>{selectText}</Text>
+              <Text style={styles.cityPickerLabel}>{t(selectText)}</Text>
               <>
                 <DropdownSelector
                   itemType="category"
@@ -482,9 +480,10 @@ const CurbsideDropoff = () => {
                     .map((item) => String(item.category ?? "").trim())
                     .filter(Boolean)
                     .uniqBy((c) => c.toLowerCase())
-                    .sortBy((c) => c.toLowerCase())
+                    .map((c) => ({ label: itemName(c), value: c }))
+                    .sortBy((c) => c.label.toLowerCase())
                     .value()}
-                  key="dropoffCategoryDropdown"
+                  key={`dropoffCategoryDropdown-${locale}`}
                 />
 
                 <Dropdown
@@ -496,7 +495,7 @@ const CurbsideDropoff = () => {
                     }))
                   }
                   search
-                  searchPlaceholder="Search..."
+                  searchPlaceholder={t("common.searchPlaceholder")}
                   labelField="label"
                   valueField="value"
                   renderItem={(item) => (
@@ -506,7 +505,7 @@ const CurbsideDropoff = () => {
                   )}
                   selectedTextStyle={styles.selectedTextStyle}
                   placeholderStyle={styles.placeholderStyle}
-                  placeholder={"Select town or city"}
+                  placeholder={t("home.selectCityPlaceholder")}
                   value={city}
                   onChange={(item) => {
                     setCity(item.value);
@@ -548,7 +547,7 @@ const CurbsideDropoff = () => {
 
         {dropoffColor === "white" && (
           <Pressable style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}> Submit </Text>
+            <Text style={styles.submitButtonText}> {t("common.submit")} </Text>
           </Pressable>
         )}
 
@@ -610,7 +609,7 @@ const CurbsideDropoff = () => {
 
           {/* Show list of recycling locations */}
           {dropoffColor === "white" &&
-            <LocationList locations={dropoffPOIs} searched={submittedCategory} onSelectCity={ (name) => {
+            <LocationList locations={dropoffPOIs} searched={submittedCategory ? itemName(submittedCategory) : null} onSelectCity={ (name) => {
               let location = dropoffPOIs.find((place) => place.name === name);
 
               if (!location?.location || !mapRef.current) return;

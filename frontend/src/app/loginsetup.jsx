@@ -18,21 +18,23 @@ import { normalize } from "~/utils/normalize";
 //import Loginsetup  from "./loginsetup";
 import {useRouter} from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "~/i18n";
 
 export default function Loginsetup() {
       const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { t } = useTranslation();
 
   async function emailPasswordLogin(email, pass) {
     if (email === "") {
-      alert("Please enter an appropriate email address!")
+      alert(t("auth.errEmail"))
       return;
     }
 
     if (pass === "") {
-      alert("Please enter a password!");
+      alert(t("auth.errPassword"));
       return;
     }
 
@@ -54,7 +56,7 @@ export default function Loginsetup() {
         <View style={nstyles.headerView}>
           {/* Header */}
           <Text style={nstyles.headerText}>
-            RECYCLE RIGHT WITH
+            {t("login.header")}
           </Text>
 
           {/* Recyclepedia Logo */}
@@ -72,16 +74,16 @@ export default function Loginsetup() {
           showsVerticalScrollIndicator={false}
         >
           <Text style={nstyles.loginText}>
-            LOGIN
+            {t("auth.loginTitle")}
           </Text>
 
           <View style={nstyles.inputContainer}>
             <Text style={nstyles.inputHeader}>
-              EMAIL
+              {t("auth.email")}
             </Text>
 
             <TextInput
-              placeholder="domain@example.com"
+              placeholder={t("auth.emailPlaceholder")}
               placeholderTextColor="gray"
               value={email}
               onChangeText={setEmail}
@@ -93,10 +95,10 @@ export default function Loginsetup() {
 
           <View style={nstyles.inputContainer}>
             <Text style={nstyles.inputHeader}>
-              PASSWORD
+              {t("auth.password")}
             </Text>
             <TextInput
-              placeholder="Password"
+              placeholder={t("auth.passwordPlaceholder")}
               placeholderTextColor="gray"
               value={password}
               onChangeText={setPassword}
@@ -110,13 +112,13 @@ export default function Loginsetup() {
             onPress={() => emailPasswordLogin(email, password)}
           >
             <Text style={nstyles.buttonText}>
-              SUBMIT
+              {t("auth.submit")}
             </Text>
           </Pressable>
 
          <Pressable onPress={() => router.push("/signupsetup")}>
            <Text style={nstyles.noticeText}>
-             Don't have an account? Sign Up
+             {t("auth.noAccount")}
            </Text>
          </Pressable>
         </ScrollView>

@@ -14,9 +14,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import _ from "lodash";
 import { useQueries } from "@tanstack/react-query";
+import { useTranslation } from "~/i18n";
 
 export default function ItemScan() {
   useStatusBarStyle("light");
+  const { t } = useTranslation();
 
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
@@ -100,7 +102,7 @@ export default function ItemScan() {
   useEffect(() => {
     const getItemAccepted = async () => {
       if (!city) {
-        Alert.alert("You must select a city before proceeding!");
+        Alert.alert(t("scan.errCity"));
         console.log("Need to select a city");
         return;
       }
@@ -121,7 +123,7 @@ export default function ItemScan() {
 
         if (!response.ok) {
           console.error("Response not ok: ", response);
-          Alert.alert("Oops! Something went wrong!");
+          Alert.alert(t("scan.errGeneric"));
           return;
         }
 
@@ -130,7 +132,7 @@ export default function ItemScan() {
         console.log("Data: ", data);
       } catch (error) {
         console.error("Network error: ", error);
-        Alert.alert("Network error. Please check your connection and try again.");
+        Alert.alert(t("scan.errNetwork"));
       }
     };
 
@@ -143,7 +145,7 @@ export default function ItemScan() {
   const handleCameraPhotoPress = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission needed", "Camera access is required to take photos.");
+      Alert.alert(t("scan.permTitle"), t("scan.permCamera"));
       return;
     }
     setImage(null);
@@ -161,7 +163,7 @@ export default function ItemScan() {
   const handleUploadPhotoPress = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission needed", "Photo library access is required to upload photos.");
+      Alert.alert(t("scan.permTitle"), t("scan.permLibrary"));
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -202,19 +204,15 @@ export default function ItemScan() {
         <View style={styles.screenContainer}>
           {/* header */}
           <View>
-            <Text style={styles.h1}>
-              SCAN &amp; RECYCLE
-            </Text>
-            <Text style={styles.h2}>
-              CHECK IF YOUR ITEM IS RECYCLABLE AND GET CLEAR DISPOSAL INSTRUCTIONS.
-            </Text>
+            <Text style={styles.h1}>{t("scan.title")}</Text>
+            <Text style={styles.h2}>{t("scan.subtitle")}</Text>
           </View>
 
           {/* image */}
           {/* <View style={styles.imageContainer}> */}
           <View>
             <View>
-              <Text style={styles.cityPickerLabel}>SELECT YOUR TOWN OR CITY:</Text>
+              <Text style={styles.cityPickerLabel}>{t("scan.selectCity")}</Text>
               <Dropdown
                 style={styles.picker}
                 data={
@@ -224,7 +222,7 @@ export default function ItemScan() {
                   }))
                 }
                 search
-                searchPlaceholder="Search..."
+                searchPlaceholder={t("common.searchPlaceholder")}
                 labelField="label"
                 valueField="value"
                 renderItem={(item) => (
@@ -234,7 +232,7 @@ export default function ItemScan() {
                 )}
                 selectedTextStyle={styles.selectedTextStyle}
                 placeholderStyle={styles.placeholderStyle}
-                placeholder={"Select town or city"}
+                placeholder={t("home.selectCityPlaceholder")}
                 value={city}
                 onChange={(item) => {
                   console.log("City: ", item.value);
@@ -275,16 +273,14 @@ export default function ItemScan() {
                   style={styles.uploadPhotoButton}
                   onPress={handleCameraPhotoPress}
                 >
-                  <Text style={styles.uploadPhotoText}>
-                    TAKE A PICTURE
-                  </Text>
+                  <Text style={styles.uploadPhotoText}>{t("scan.takePicture")}</Text>
                 </Pressable>
               }
 
               {/* divider */}
               <View style={styles.divider}>
                 <View style={styles.dividerLine}></View>
-                <Text style={styles.dividerText}> or </Text>
+                <Text style={styles.dividerText}> {t("common.or")} </Text>
                 <View style={styles.dividerLine}></View>
               </View>
 
@@ -293,7 +289,7 @@ export default function ItemScan() {
                 style={styles.uploadPhotoButton}
                 onPress={handleUploadPhotoPress}
               >
-                <Text style={styles.uploadPhotoText}>UPLOAD A PHOTO</Text>
+                <Text style={styles.uploadPhotoText}>{t("scan.uploadPhoto")}</Text>
               </Pressable>
             </View>
 
@@ -304,7 +300,7 @@ export default function ItemScan() {
                 !image &&
                 <View style={{ flexGrow: 1, backgroundColor: "#FFFFFF", borderRadius: 30, marginTop: 20, }}>
                   <Text style={{ padding: 16, fontSize: 16, fontWeight: 700, color: "#024935", fontFamily: "Bebas Neue", textAlign: "center" }}>
-                    SCAN AN ITEM TO VIEW RECYCLING INFORMATION
+                    {t("scan.prompt")}
                   </Text>
                 </View>
               }

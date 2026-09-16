@@ -1,3 +1,4 @@
+import { useTranslation } from "~/i18n";
 import {
     Text,
     View,
@@ -5,9 +6,10 @@ import {
   } from "react-native";
 
 export default function DoAndDontSection() {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Curbside Pickup Do's and Don't's</Text>
+      <Text style={styles.title}>{t("curbside.doDont")}</Text>
       {/* Your Do's and Don't's items go here */}
     </View>
   );

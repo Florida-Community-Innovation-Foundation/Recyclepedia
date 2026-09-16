@@ -6,104 +6,106 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import Entypo from '@expo/vector-icons/Entypo';
 import { normalize } from "~/utils/normalize";
-import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
+import { useTranslation } from "~/i18n";
+import LanguageToggle from "~/components/common/LanguageToggle";
 
  // this should load/save the user's settings from the profile stuff
  // update this when that is added to the project
 export default function Settings() {
+  const { t } = useTranslation();
   return (
     <View style={styles.screen}>
       <View style={styles.profileInfo}>
         <View style={styles.recyclingInfoContainer}>
           <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> Account </Text>
+            <Text style={styles.recyclingHeaderText}> {t("settings.account")} </Text>
           </View>
 
           <View style={styles.recyclingStatsContainer}>
             <View style={styles.settingGroupContainer}>
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Account </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.account")} </Text>
                 {/*idk why 1st option won't work*/}
                 {/*<Entypo name="arrow-with-circle-right" style={styles.settingButton} />*/}
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Privacy </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.privacy")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Security & Permissions </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.security")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Share Profile </Text>
-                <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> Content & Display </Text>
-          </View>
-
-          <View style={styles.recyclingStatsContainer}>
-            <View style={styles.settingGroupContainer}>
-              <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Notifications </Text>
-                <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
-              </View>
-
-              <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Language </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.shareProfile")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
             </View>
           </View>
 
           <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> Support & About </Text>
+            <Text style={styles.recyclingHeaderText}> {t("settings.contentDisplay")} </Text>
           </View>
 
           <View style={styles.recyclingStatsContainer}>
             <View style={styles.settingGroupContainer}>
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Report A Problem </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.notifications")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Support </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.language")} </Text>
+                <LanguageToggle />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.recyclingHeader}>
+            <Text style={styles.recyclingHeaderText}> {t("settings.supportAbout")} </Text>
+          </View>
+
+          <View style={styles.recyclingStatsContainer}>
+            <View style={styles.settingGroupContainer}>
+              <View style={styles.settingContainer}>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.reportProblem")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Rate Our App </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.support")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Terms & Policies </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.rate")} </Text>
+                <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
+              </View>
+
+              <View style={styles.settingContainer}>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.terms")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
             </View>
           </View>
           
           <View style={styles.recyclingHeader}>
-            <Text style={styles.recyclingHeaderText}> Login </Text>
+            <Text style={styles.recyclingHeaderText}> {t("settings.loginSection")} </Text>
           </View>
 
           <View style={styles.recyclingStatsContainer}>
             <View style={styles.settingGroupContainer}>
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Switch Account </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.switchAccount")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
 
               <View style={styles.settingContainer}>
-                <Text style={styles.recyclingHeaderText2}> Log Out </Text>
+                <Text style={styles.recyclingHeaderText2}> {t("settings.logout")} </Text>
                 <Entypo name="arrow-with-circle-right" size={18} color="#024935" />
               </View>
             </View>
@@ -123,7 +125,9 @@ const styles = StyleSheet.create({
   settingContainer: {
     flexDirection: "row",
     justifyContent: 'space-between',
+    alignItems: "center",
     paddingHorizontal: 5,
+    paddingVertical: 4,
     width: "95%",
   },
   settingButton: {

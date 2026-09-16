@@ -1,10 +1,12 @@
+import { useTranslation } from "~/i18n";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Divider() {
+  const { t } = useTranslation();
   return (
     <View style={styles.divider}>
       <View style={styles.dividerLine}></View>
-      <Text style={styles.dividerText}> or </Text>
+      <Text style={styles.dividerText}> {t("common.or")} </Text>
       <View style={styles.dividerLine}></View>
     </View>
   );

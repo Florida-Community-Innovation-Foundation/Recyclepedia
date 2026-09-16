@@ -1,4 +1,5 @@
 import Entypo from "@expo/vector-icons/Entypo";
+import { useTranslation } from "~/i18n";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ function calcWidth(size) {
 }
 
 export default function About() {
+  const { t } = useTranslation();
   useStatusBarStyle("dark");
 
   const [num, setNum] = useState(0);
@@ -42,16 +44,10 @@ export default function About() {
           {/* About Our Story */}
           <View style={nstyles.sectionContainer}>
             <Text style={nstyles.sectionHeader}>
-              Our Story
+              {t("about.ourStory")}
             </Text>
             <Text style={nstyles.sectionBody}>
-              Since 2006, Dream in Green (DIG) has empowered individuals,
-              particularly youth, to lead the response to climate change and
-              environmental challenges in South Florida. Through partnerships with
-              schools, households, local governments, and businesses, we focus on
-              reducing environmental footprints. By developing and overseeing
-              educational programs and workshops, we promote sustainable behaviors
-              across all age groups, with a special emphasis on K-12 students.
+              {t("about.storyBody")}
             </Text>
             <View style={nstyles.socialIcons}>
               <Link href="https://www.linkedin.com/company/dream-in-green/">
@@ -94,42 +90,29 @@ export default function About() {
 
           {/* About Our Mission */}
           <View style={nstyles.sectionContainer}>
-            <Text style={nstyles.sectionHeader}>Our Mission</Text>
+            <Text style={nstyles.sectionHeader}>{t("about.ourMission")}</Text>
             <Text style={nstyles.sectionBody}>
-              One of the major obstacles to effective recycling is
-              contamination—when non-recyclable items are mistakenly placed into
-              recycling systems. Our mission is to provide residents with clear,
-              accessible, and up-to-date recycling information tailored to their
-              specific community. By reducing contamination, we aim to improve
-              recycling rates and help transform waste into valuable resources.
+              {t("about.missionBody")}
             </Text>
 
             <View style={nstyles.funFactRow}>
               <Text style={nstyles.funFactNumber}>{num}</Text>
-              <Text style={nstyles.funFactText}>tons of waste</Text>
+              <Text style={nstyles.funFactText}>{t("about.tonsOfWaste")}</Text>
             </View>
 
             <Text style={nstyles.funFact}>
-              Note: "Did you know the world generates over 2.01 billion tons of
-              waste each year? That is 318.5 tons of waste every 5 seconds."
+              {t("about.funFact")}
             </Text>
           </View>
 
          {/* About Our Solution */}
          <View style={nstyles.sectionContainer}>
-           <Text style={nstyles.sectionHeader}>Our Solution</Text>
+           <Text style={nstyles.sectionHeader}>{t("about.ourSolution")}</Text>
            <Text style={nstyles.sectionBody}>
-             Recyclepedia is designed to simplify access to accurate recycling
-             information for Miami-Dade County residents. By providing
-             comprehensive guidance on what can and cannot be recycled,
-             Recyclepedia helps reduce contamination and improve recycling success.
-             The platform offers alternatives for disposing of non-recyclable
-             items, directing users to appropriate drop-off locations. By
-             increasing recycling rates, we can reduce pollution and enhance the
-             overall health of our communities.
+             {t("about.solutionBody")}
            </Text>
            <Link href="https://dreamingreen.org/about-us/">
-             <Text style={nstyles.learnMore}>Learn More</Text>
+             <Text style={nstyles.learnMore}>{t("about.learnMore")}</Text>
            </Link>
          </View>
 

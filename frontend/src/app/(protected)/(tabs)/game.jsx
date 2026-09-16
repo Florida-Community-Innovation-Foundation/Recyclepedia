@@ -4,11 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import { normalize } from "~/utils/normalize";
 import { useStatusBarStyle } from "~/utils/useStatusBarStyle";
+import { useTranslation } from "~/i18n";
 
-// Recycle-Mania is a Unity WebGL game hosted on GitHub Pages
-// (repo: Florida-Community-Innovation-Foundation/Recycle-Mania).
+// Recycle-Mania is a Unity WebGL game hosted on GitHub Pages. It is served
+// from Ines's fork (inesTanitXR/Recycle-Mania, docs/ folder) because the
+// org repo can only be updated by an org owner. To ship a game update:
+// rebuild docs/ and push to the fork's main branch.
 const GAME_URL =
-  "https://florida-community-innovation-foundation.github.io/Recycle-Mania/";
+  "https://inestanitxr.github.io/Recycle-Mania/";
 
 // The custom tab bar is absolutely positioned and 80px tall, so leave room
 // for it or the bottom of the game gets covered.
@@ -16,22 +19,18 @@ const TAB_BAR_HEIGHT = 80;
 
 export default function GameTab() {
   useStatusBarStyle("light");
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <Text style={styles.title}>RECYCLE-MANIA</Text>
-      <Text style={styles.subtitle}>
-        DRAG EACH ITEM INTO THE RIGHT BIN BEFORE TIME RUNS OUT.
-      </Text>
+      <Text style={styles.title}>{t("game.title")}</Text>
+      <Text style={styles.subtitle}>{t("game.subtitle")}</Text>
       <View style={styles.gameContainer}>
         {failed ? (
           <View style={styles.center}>
-            <Text style={styles.errorText}>
-              The game could not load. Check your internet connection and try
-              again.
-            </Text>
+            <Text style={styles.errorText}>{t("game.loadError")}</Text>
           </View>
         ) : (
           <WebView

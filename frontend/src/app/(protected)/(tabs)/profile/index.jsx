@@ -31,6 +31,8 @@ import { AuthContext } from "../../../../utils/authContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useItemName, useTranslation } from "~/i18n";
+import LanguageToggle from "~/components/common/LanguageToggle";
 
 export default function UserAccount() {
   useStatusBarStyle("dark");
@@ -43,6 +45,8 @@ export default function UserAccount() {
   } = useRecycling();
 
 
+  const { t } = useTranslation();
+  const itemName = useItemName();
   const [profilePicture, setProfilePicture] = useState(naturePicture);
   //const [itemsRecycled, setItemsRecycled] = useState(0);
   const [totalItemsToRecycle, setTotalItemsToRecycle] = useState(100);
@@ -332,13 +336,14 @@ export default function UserAccount() {
                 <Ionicons name="settings-sharp" size={24} color="#FFFFFF" />
               </Link>
             </Pressable> */}
-          <Pressable style={styles.settings}
-           onPress={logoutUser}
-          >
-            <Text style={styles.logoutButton}>
-              Logout
-            </Text>
-          </Pressable>
+          <View style={styles.headerActions}>
+            <LanguageToggle light />
+            <Pressable onPress={logoutUser}>
+              <Text style={styles.logoutButton}>
+                {t("profile.logout")}
+              </Text>
+            </Pressable>
+          </View>
           {/* Profile Picture */}
           <Image source={profilePicture} style={styles.profilePicture} />
           <Pressable
@@ -354,10 +359,10 @@ export default function UserAccount() {
           {/* Recycling Goal */}
           <View style={styles.recyclingInfoContainer}>
             <View style={styles.recyclingHeader}>
-              <Text style={styles.recyclingHeaderText}> RECYCLING GOAL </Text>
+              <Text style={styles.recyclingHeaderText}> {t("profile.recyclingGoal")} </Text>
               <Text
                 style={styles.recyclingGoalItemsNumber}
-              >{`${addedItems.reduce((total, item) => total + item.quantity, 0)}/${totalItemsToRecycle} Items`}</Text>
+              >{t("profile.goalItems", { done: addedItems.reduce((total, item) => total + item.quantity, 0), total: totalItemsToRecycle })}</Text>
             </View>
             {/* Recycling Goal Bar */}
             <View style={styles.recyclingGoalBar}>
@@ -374,9 +379,9 @@ export default function UserAccount() {
           {/* Recycling Stats */}
           <View style={styles.recyclingInfoContainer}>
             <View style={styles.recyclingHeader}>
-              <Text style={styles.recyclingHeaderText}> RECYCLING STATS </Text>
+              <Text style={styles.recyclingHeaderText}> {t("profile.recyclingStats")} </Text>
               {/*<Pressable style={styles.updateButton}>
-                <Text style={styles.updateButtonText}> UPDATE </Text>
+                <Text style={styles.updateButtonText}> {t("profile.update")} </Text>
               </Pressable>*/}
             </View>
             <View
@@ -388,7 +393,7 @@ export default function UserAccount() {
               <View style={styles.recyclingStatsTextContainer}>
                 <View style={styles.recyclingStatsText}>
                   <Text style={styles.recyclingStatsLabel}>
-                    Total Items Recycled:
+                    {t("profile.totalRecycled")}
                   </Text>
                   <Text style={styles.recyclingStatsInfo}>
                     {addedItems.reduce((total, item) => total + item.quantity, 0)}
@@ -407,7 +412,7 @@ export default function UserAccount() {
                         style={styles.materialDropdown}
                         onPress={() => setIsDropdownVisible(true)}
                       >
-                        <Text style={styles.materialLabel}>{selectedMaterial}</Text>
+                        <Text style={styles.materialLabel}>{itemName(selectedMaterial)}</Text>
                         <Text style={styles.dropdownArrow}>▼</Text>
                       </TouchableOpacity>
 
@@ -426,7 +431,7 @@ export default function UserAccount() {
 
                       {/* Add Button */}
                       <TouchableOpacity style={styles.addButton} onPress={handleAddMaterial}>
-                        <Text style={styles.addButtonText}>ADD</Text>
+                        <Text style={styles.addButtonText}>{t("profile.add")}</Text>
                       </TouchableOpacity>
                     </View>
 
@@ -436,7 +441,7 @@ export default function UserAccount() {
                         {addedItems.map((item) => (
                           <View key={item.id} style={styles.addedItemRow}>
                             <View style={styles.itemInfo}>
-                              <Text style={styles.itemName}>{item.name}</Text>
+                              <Text style={styles.itemName}>{itemName(item.name)}</Text>
                               <Text style={styles.itemQuantity}>× {item.quantity}</Text>
                             </View>
                             <View style={styles.itemActions}>
@@ -490,7 +495,7 @@ export default function UserAccount() {
                                 styles.dropdownItemText,
                                 selectedMaterial === item && styles.selectedDropdownItemText
                               ]}>
-                                {item}
+                                {itemName(item)}
                               </Text>
                             </TouchableOpacity>
                           ))}
@@ -505,9 +510,9 @@ export default function UserAccount() {
 
           {/* Carbon Offset Section */}
           <View style={styles.recyclingInfoContainer}>
-            <Text style={styles.recyclingHeaderText}>CARBON OFFSET</Text>
+            <Text style={styles.recyclingHeaderText}>{t("profile.carbonOffset")}</Text>
             <View style={[styles.carbonOffsetContainer, styles.recyclingStatsContainerShadow]}>
-              <Text style={styles.carbonOffsetLabel}>Estimated CO2 Offset:</Text>
+              <Text style={styles.carbonOffsetLabel}>{t("profile.estimatedOffset")}</Text>
               <Text style={styles.carbonOffsetValue}>
                 {calculateTotalCarbonOffset().toFixed(1)} kg
               </Text>
@@ -516,7 +521,7 @@ export default function UserAccount() {
 
           {/* Interactive Games */}
           <View style={styles.interactiveGamesContainer}>
-            <Text style={styles.recyclingHeaderText}> INTERACTIVE GAME </Text>
+            <Text style={styles.recyclingHeaderText}> {t("profile.interactiveGame")} </Text>
             <ScrollView
               horizontal
               style={styles.interactiveGamesContainerScroll}
@@ -840,6 +845,13 @@ const styles = StyleSheet.create({
   },
   settings: {
     alignItems: "flex-end",
+    marginRight: normalize(15, "width"),
+  },
+  headerActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: normalize(12, "width"),
     marginRight: normalize(15, "width"),
   },
   logoutButton: {

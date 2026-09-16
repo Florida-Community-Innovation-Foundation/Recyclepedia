@@ -1,38 +1,42 @@
 import { useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { normalize } from "~/utils/normalize";
+import { useTranslation } from "~/i18n";
 
 // How many sites to show before the "Show more" button. The full county list
 // for a category can be hundreds of rows, which is useless on a phone.
 const INITIAL_VISIBLE = 10;
 const STEP = 10;
 
-const formatDistance = (miles) => {
-  if (!Number.isFinite(miles)) return null;
-  if (miles < 0.1) return "< 0.1 mi";
-  return `${miles.toFixed(1)} mi`;
-};
 
 // List of drop-off sites for the chosen item type, nearest first.
 // `searched` is the category the user submitted (null before the first search)
 export default function LocationList({ locations, onSelectCity, searched }) {
   const [visible, setVisible] = useState(INITIAL_VISIBLE);
+  const { t } = useTranslation();
+  const formatDistance = (miles) => {
+    if (!Number.isFinite(miles)) return null;
+    if (miles < 0.1) return t("locations.lessThanTenth");
+    return t("locations.miles", { miles: miles.toFixed(1) });
+  };
   const all = locations ?? [];
   const shown = all.slice(0, visible);
 
   return (
     <View style={styles.container}>
       <Text style={styles.alternativeText}>
-        {all.length > 0
-          ? `${all.length} Drop-Off Location${all.length === 1 ? "" : "s"} — nearest first`
-          : "Available Drop-Off Locations"}
+        {all.length === 0
+          ? t("locations.header")
+          : all.length === 1
+            ? t("locations.countOne")
+            : t("locations.count", { count: all.length })}
       </Text>
 
       {all.length === 0 && (
         <Text style={styles.emptyText}>
           {searched
-            ? `We don't have a drop-off site listed for "${searched}" yet. Check with your city's solid waste department.`
-            : "Choose what you want to recycle and press Submit to see where you can drop it off."}
+            ? t("locations.emptySearched", { category: searched })
+            : t("locations.emptyIdle")}
         </Text>
       )}
 
@@ -61,7 +65,7 @@ export default function LocationList({ locations, onSelectCity, searched }) {
           onPress={() => setVisible((v) => v + STEP)}
         >
           <Text style={styles.moreButtonText}>
-            Show {Math.min(STEP, all.length - visible)} more
+            {t("common.showMore", { count: Math.min(STEP, all.length - visible) })}
           </Text>
         </TouchableOpacity>
       )}

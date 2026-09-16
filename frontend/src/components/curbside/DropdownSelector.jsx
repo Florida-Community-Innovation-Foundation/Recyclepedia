@@ -3,9 +3,13 @@ import _ from "lodash";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { useTranslation } from "~/i18n";
 
+// `categories` may be plain strings or { label, value } objects (so the
+// label can be translated while the value stays the English data key).
 export default function DropdownSelector({ setItem, cities, categories }) {
   const [selected, setSelected] = useState("");
+  const { t } = useTranslation();
 
   return (
     <Dropdown
@@ -15,12 +19,14 @@ export default function DropdownSelector({ setItem, cities, categories }) {
           ? _.map(cities, (city) => {
               return { label: city, value: city };
             })
-          : _.map(categories, (category) => {
-              return { label: category, value: category };
-            })
+          : _.map(categories, (category) =>
+              typeof category === "object"
+                ? category
+                : { label: category, value: category },
+            )
       }
       search
-      searchPlaceholder="Search..."
+      searchPlaceholder={t("common.searchPlaceholder")}
       labelField="label"
       valueField="value"
       renderItem={(item) => (
@@ -31,7 +37,7 @@ export default function DropdownSelector({ setItem, cities, categories }) {
       selectedTextStyle={styles.selectedTextStyle}
       placeholderStyle={styles.placeholderStyle}
       placeholder={
-        cities ? "Select municipality" : "What do you want to recycle?"
+        cities ? t("home.selectMunicipality") : t("home.whatToRecycle")
       }
       value={selected}
       onChange={(item) => {
